@@ -3,9 +3,31 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <stdio.h>
 #include <string>
+#include <point.h>
+#include <stdlib.h>
 
-using namespace std;
+//using namespace std;
+
+void create_plane(float length, float width, std::vector<float>& vec){
+	//first triangle
+	point p1(0, 0, 0);
+	p1.add_to(vec);
+	point p2(0, 0, length);
+	p2.add_to(vec);
+	point p3(width, 0, length);
+	p3.add_to(vec);
+
+	//second triangle
+	point p4(width, 0, length);
+	p4.add_to(vec);
+	point p5(width, 0, 0);
+	p5.add_to(vec);
+	point p6(0, 0, 0);
+	p6.add_to(vec);
+	std::cout << "myvector stores " << int(vec.size()) << " numbers.\n";
+}
 
 int main(int argc, char* argv[])
 {
@@ -51,10 +73,5 @@ int main(int argc, char* argv[])
 	}
 	else
 		cout << "Command not recognized";
-
-
-
-
-
 }
 
