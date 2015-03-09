@@ -10,6 +10,17 @@
 
 using namespace std;
 
+void create_file(const char* filename, vector<point> points, int *tpi, int tpi_size){
+	FILE *f;
+	if (fopen_s(&f, filename, "w") == 0){
+		fwrite(&points, sizeof(points[0]), sizeof(points.size()), f);
+		fwrite(tpi, sizeof(int), sizeof(tpi_size), f);
+		//fprintf(f, "Teste String YAY!!\n chipiyay \tmadafacas.");
+	}
+	else
+		cout << "Could not create specified file\n";
+}
+
 void create_plane(float length, float width, vector<point> points, int tpi[6]){
 	int i = 0;
 
@@ -37,20 +48,21 @@ void create_plane(float length, float width, vector<point> points, int tpi[6]){
 int main(int argc, char* argv[])
 {
 	if (argc < 2){
-		cout << "Too few arguments";
+		cout << "Too few arguments\n";
 		return 0;
 	}
 	else if (strcmp(argv[1], "plane") == 0){
 		if (argc != 5){
-			cout << "Must receive 5 arguments";
+			cout << "Must receive 5 arguments\n";
 			return 0;
 		}
-		cout << "Generating Plane... \n";
+		cout << "Generating Plane...\n";
 		std::vector<point> points;
 		int triangle_point_index[6];
 		create_plane(atoi(argv[2]), atoi(argv[3]), points, triangle_point_index);
-		//create_file(argv[4], points, triangle_point_index);
-		cout << "Done \n";
+		cout << "Writing to file...\n";
+		create_file(argv[4], points, triangle_point_index, 4);
+		cout << "Done\n";
 	}/*
 	else if (strcmp(argv[1], "sphere") == 0){
 		if (argc < 5){
