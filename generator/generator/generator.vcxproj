@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\generator;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\generator;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\generator\generator;C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\generator;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\generator\generator;C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\generator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
