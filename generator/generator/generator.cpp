@@ -28,14 +28,17 @@ void create_file(const char* filename, vector<point> points, int *tpi, int tpi_s
 		fwrite(&points, sizeof(points[0]), sizeof(points.size()), f);
 		fwrite(tpi, sizeof(int), sizeof(tpi_size), f);
 		//fprintf(f, "Teste String YAY!!\n chipiyay \tmadafacas.");
+		fclose(f);
 	}
 	else
 		cout << "Could not create specified file\n";*/
 }
 
+
 void create_plane(float length, float width, vector<point> &points, int tpi[6]){
 	int i = 0;
 
+void create_plane(float length, float width, vector<point> points, int tpi[6]){
 	//first triangle
 	point p1(0, 0, 0);
 	points.push_back(p1);
@@ -53,8 +56,6 @@ void create_plane(float length, float width, vector<point> &points, int tpi[6]){
 	points.push_back(p4);
 	tpi[3];
 	tpi[0];
-
-	//std::cout << "myvector stores " << int(vec.size()) << " numbers.\n";
 }
 
 int main(int argc, char* argv[])
