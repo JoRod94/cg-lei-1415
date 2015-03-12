@@ -13,28 +13,15 @@ using namespace std;
 
 point *points;
 
-int bin_dec(char * bin, int size)
-{
-	int nr = 0, pow = 1;
-	for (int i = size; i >= 0; --i, pow <<= 1)
-		nr += ( (int) bin[i]) * pow;
-	return nr;
-}
-
 void read_bin(string filename){
-	ifstream file;
-	char * sizeLine;
+	int arraySize;
 
-	file.open(filename);
-	file.read( sizeLine, sizeof(long));
-
-	int arraySize = bin_dec(sizeLine, sizeof(long));
+	ifstream i(filename, ios::binary);
+	i.read((char *)&arraySize, sizeof(arraySize));
 
 	points = (point *) malloc(arraySize*sizeof(point));
 
-	file.seekg(sizeof(long));
-
-	file.read( (char *) points, arraySize*sizeof(point));
+	i.read( (char *) points, arraySize*sizeof(point));
 }	
 
 
