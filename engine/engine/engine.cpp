@@ -16,17 +16,17 @@
 
 using namespace std;
 
-point *points;
+vector<point> points ;
 
 void read_bin(string filename){
-	int arraySize;
+	unsigned long int arraySize;
 
 	ifstream i(filename, ios::binary);
 	i.read((char *)&arraySize, sizeof(arraySize));
 
-	points = (point *) malloc(arraySize*sizeof(point));
-
-	i.read( (char *) points, arraySize*sizeof(point));
+	printf("SIZE: %lu\n", arraySize);
+	points.resize(arraySize);
+	i.read( (char *) &points[0], arraySize*sizeof(point));
 }	
 
 
@@ -87,8 +87,11 @@ void read_xml(char* filename) {
 int _tmain(int argc, _TCHAR* argv[])
 {
 	cout << "Hello world! This is engine!" << endl;
-	// read_file("test.txt");
+	read_bin("testing3.binary");
 	read_xml("model.xml");
+	for (int i = 0; i < points.size(); i++){
+		printf("X: %f, Y: %f, Z: %f\n", points[i].x, points[i].y, points[i].z);
+	}
 	return 0;
 }
 

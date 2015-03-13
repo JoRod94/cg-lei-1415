@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include <string>
 #include <point.h>
@@ -11,17 +12,28 @@
 using namespace std;
 
 void create_file(const char* filename, vector<point> points, int *tpi, int tpi_size){
-	FILE *f;
+	unsigned long int size = points.size();
+
+	ofstream newFile("testing3.binary", ios::binary);
+	printf("SIZE: %lu\n", size);
+	newFile.write((char *)&size, sizeof(size));
+	newFile.write((char *)&points[0], size*sizeof(point));
+
+	/*
+	fwrite(&points, sizeof(points[0]), sizeof(points.size()), newFile);
+	fwrite(tpi, sizeof(int), sizeof(tpi_size), newFile);
+
 	if (fopen_s(&f, filename, "w") == 0){
+		f.write(&size, sizeof(long));
 		fwrite(&points, sizeof(points[0]), sizeof(points.size()), f);
 		fwrite(tpi, sizeof(int), sizeof(tpi_size), f);
 		//fprintf(f, "Teste String YAY!!\n chipiyay \tmadafacas.");
 	}
 	else
-		cout << "Could not create specified file\n";
+		cout << "Could not create specified file\n";*/
 }
 
-void create_plane(float length, float width, vector<point> points, int tpi[6]){
+void create_plane(float length, float width, vector<point> &points, int tpi[6]){
 	int i = 0;
 
 	//first triangle
