@@ -16,6 +16,19 @@
 
 using namespace std;
 
+point *points;
+
+void read_bin(string filename){
+	int arraySize;
+
+	ifstream i(filename, ios::binary);
+	i.read((char *)&arraySize, sizeof(arraySize));
+
+	points = (point *) malloc(arraySize*sizeof(point));
+
+	i.read( (char *) points, arraySize*sizeof(point));
+}	
+
 
 void read_file(string name) {
 	ifstream file;
