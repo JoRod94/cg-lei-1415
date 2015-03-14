@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include "point.h"
+#include "file_tree.h"
 #include "tinyxml2.h"
 
 #define _XML_FILE	"ficheiro"
@@ -16,17 +17,37 @@
 
 using namespace std;
 
-vector<point> points ;
+FileTree files;
+vector<point> points;
 
 void read_bin(string filename){
 	unsigned long int arraySize;
 
+	string* file = new string(filename);
+
 	ifstream i(filename, ios::binary);
 	i.read((char *)&arraySize, sizeof(arraySize));
+	
+	cout << "\n########## READING BINARY FILE ##########"
+		<< "\n\nNR POINTS:"
+		<< arraySize
+		<< endl;
 
-	printf("SIZE: %lu\n", arraySize);
 	points.resize(arraySize);
 	i.read( (char *) &points[0], arraySize*sizeof(point));
+
+	cout << "\n########## FINISHED FILE READ ##########" << endl;
+
+	cout << "\nINSERTING INTO FILE TREE...\n"
+		<< "\n\n...ENTER THE POINTER MADNESS.\n"
+		<< endl;
+
+	files.add_or_find(file, &points);
+
+	cout << "\nFINISHED INSERTING INTO FILE TREE" << endl;
+	cout << "\n~~~~~~~~~~ PRINTING THE TREE CONTENTS ~~~~~~~~~~\n" << endl;
+	files.print();
+	cout << "\n~~~~~~~~~~ FINISHED PRINTING TREE ~~~~~~~~~~" << endl;
 }	
 
 
@@ -88,10 +109,12 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	cout << "Hello world! This is engine!" << endl;
 	read_bin("testing3.binary");
-	read_xml("model.xml");
+	// read_xml("model.xml");
+	cout << "\n########## PRINTING VECTOR READ FROM FILE ##########" << endl;
 	for (int i = 0; i < points.size(); i++){
 		printf("X: %f, Y: %f, Z: %f\n", points[i].x, points[i].y, points[i].z);
 	}
+	cout << "\n########## FINISHED VECTOR PRINT ##########" << endl;
 	return 0;
 }
 
