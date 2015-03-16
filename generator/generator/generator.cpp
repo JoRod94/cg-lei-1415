@@ -6,12 +6,16 @@
 #include <fstream>
 #include <stdio.h>
 #include <string>
-#include <point.h>
+#include "point.h"
 #include <stdlib.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace std;
 
-void create_file(const char* filename, vector<point> points, int *tpi, int tpi_size){
+vector<point> points;
+
+void create_file(const char* filename, int *tpi, int tpi_size){
 	unsigned long int size = points.size();
 
 	ofstream newFile("testing3.binary", ios::binary);
@@ -56,7 +60,7 @@ vector<float> pointArrays(float size, float div){
 * Since the plane is a 2D object, the parameters 'o' and 'c' are there to complete the points (which are 3D).
 * 'o' has valid values "x", "y", "z". 'c' is the value of that coordinate.
 */
-void planePoints(char o, float c, vector<float> xs, vector<float> ys, vector<point> points){
+void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 
 
 	if (o == 'x'){
@@ -131,11 +135,10 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys, vector<poi
 */
 
 void create_plane(float length, float width, int columns, int rows){
-	vector<point> points;
 	vector<float> r = pointArrays(length, rows);
 	vector<float> c = pointArrays(width, columns);
 
-	planePoints('z', 0.0f, r, c, points);
+	planePoints('z', 0.0f, r, c);
 }
 
 
@@ -144,23 +147,24 @@ void create_plane(float length, float width, int columns, int rows){
 * Function calls the plane
 */
 void create_parallelepipep(float length, float width, float height, int slices, int stacks){
-	vector<point> points;
 	vector<float> lenpts = pointArrays(length, slices);
 	vector<float> widpts = pointArrays(width, slices);
 	vector<float> higpts = pointArrays(height, stacks);
 
 	// one plane for each side of the parallelepiped
-	planePoints('z', (width / 2), lenpts, higpts, points);
-	planePoints('x', (length / 2), higpts, widpts, points);
-	planePoints('y', (height / 2), lenpts, widpts, points);
-	planePoints('z', -(width / 2), lenpts, higpts, points);
-	planePoints('x', -(length / 2), higpts, widpts, points);
-	planePoints('y', -(height / 2), lenpts, widpts, points);
+	planePoints('z', (width / 2), lenpts, higpts);
+	planePoints('x', (length / 2), higpts, widpts);
+	planePoints('y', (height / 2), lenpts, widpts);
+	planePoints('z', -(width / 2), lenpts, higpts);
+	planePoints('x', -(length / 2), higpts, widpts);
+	planePoints('y', -(height / 2), lenpts, widpts);
 
 }
 
 
 void draw_sphere(float ray, float nSlices, float nLayers ){
+	vector<int> indexes;
+
 	float sliceInc = (2.0f * M_PI) / nSlices;
 	float layerInc = (M_PI / 2.0f) / nLayers;
 
@@ -171,33 +175,33 @@ void draw_sphere(float ray, float nSlices, float nLayers ){
 
 		alfa = 0.0f;
 		for (int j = 0; j < nSlices; j++){
-			glColor3f(1, 0, 0);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta));
-			glVertex3f(ray * sin(alfa + sliceInc) * cos(beta), ray * sin(beta), ray * cos(alfa + sliceInc) * cos(beta));
-			glVertex3f(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc));
-			glEnd();
+		//	glColor3f(1, 0, 0);
+		//	glBegin(GL_TRIANGLES);
+			points.push_back(point(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta)));
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta), ray * sin(beta), ray * cos(alfa + sliceInc) * cos(beta)));
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc)));
+		//	glEnd();
 
-			glColor3f(0, 1, 0);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc));
-			glVertex3f(ray * sin(alfa) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa) * cos(beta + layerInc));
-			glVertex3f(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta));
-			glEnd();
+		//	glColor3f(0, 1, 0);
+		//	glBegin(GL_TRIANGLES);
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc)));
+			points.push_back(point(ray * sin(alfa) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa) * cos(beta + layerInc)));
+			points.push_back(point(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta)));
+		//	glEnd();
 
-			glColor3f(1, 0, 0);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta));
-			glVertex3f(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta));
-			glVertex3f(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc));
-			glEnd();
+		//	glColor3f(1, 0, 0);
+		//	glBegin(GL_TRIANGLES);
+			points.push_back(point(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta)));
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta)));
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc)));
+		//	glEnd();
 
-			glColor3f(0, 1, 0);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc));
-			glVertex3f(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc));
-			glVertex3f(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta));
-			glEnd();
+		//	glColor3f(0, 1, 0);
+		//	glBegin(GL_TRIANGLES);
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc)));
+			points.push_back(point(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc)));
+			points.push_back(point(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta)));
+		//	glEnd();
 
 			alfa += sliceInc;
 		}
@@ -214,11 +218,11 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 
 	//cone base
 	for (int i = 0; i < nSlices; i++){
-		glBegin(GL_TRIANGLES);
-		glVertex3f(ray * sin(alfa), 0.0f, ray * cos(alfa));
-		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(ray * sin(alfa + sliceInc), 0.0f, ray * cos(alfa + sliceInc));
-		glEnd();
+		// glBegin(GL_TRIANGLES);
+		points.push_back(point(ray * sin(alfa), 0.0f, ray * cos(alfa)));
+		points.push_back(point(0.0f, 0.0f, 0.0f));
+		points.push_back(point(ray * sin(alfa + sliceInc), 0.0f, ray * cos(alfa + sliceInc)));
+		//glEnd();
 
 		alfa += sliceInc;
 	}
@@ -233,20 +237,20 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 
 		for (int j = 0; j < nSlices; j++){
 			//first triangle
-			glColor3f(1, 0, 0);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta));
-			glVertex3f(currentRay * sin(alfa + sliceInc) * cos(beta), currentheight, currentRay * cos(alfa + sliceInc) * cos(beta));
-			glVertex3f(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc));
-			glEnd();
+		//	glColor3f(1, 0, 0);
+		//	glBegin(GL_TRIANGLES);
+			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
+			points.push_back(point(currentRay * sin(alfa + sliceInc) * cos(beta), currentheight, currentRay * cos(alfa + sliceInc) * cos(beta)));
+			points.push_back(point(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc)));
+		//	glEnd();
 
 			//second triangle
-			glColor3f(0, 1, 0);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc));
-			glVertex3f(nextRay * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa) * cos(beta + layerInc));
-			glVertex3f(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta));
-			glEnd();
+		//	glColor3f(0, 1, 0);
+		//	glBegin(GL_TRIANGLES);
+			points.push_back(point(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc)));
+			points.push_back(point(nextRay * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa) * cos(beta + layerInc)));
+			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
+		//	glEnd();
 
 			alfa += sliceInc;
 		}
@@ -258,10 +262,7 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 	}
 }
 
-void create_plane(float length, float width, vector<point> &points, int tpi[6]){
-	int i = 0;
-
-void create_plane(float length, float width, vector<point> points, int tpi[6]){
+void create_plane(float length, float width, int tpi[6]){
 	//first triangle
 	point p1(0, 0, 0);
 	points.push_back(p1);
@@ -293,11 +294,10 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 		cout << "Generating Plane...\n";
-		std::vector<point> points;
 		int triangle_point_index[6];
-		create_plane(atoi(argv[2]), atoi(argv[3]), points, triangle_point_index);
+		create_plane(atoi(argv[2]), atoi(argv[3]), triangle_point_index);
 		cout << "Writing to file...\n";
-		create_file(argv[4], points, triangle_point_index, 4);
+		create_file(argv[4], triangle_point_index, 4);
 		cout << "Done\n";
 	}/*
 	else if (strcmp(argv[1], "sphere") == 0){
