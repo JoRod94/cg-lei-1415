@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <map>
 #include "point.h"
-#include "file_tree.h"
 #include "tinyxml2.h"
 
 #define _XML_FILE	"ficheiro"
@@ -17,13 +17,19 @@
 
 using namespace std;
 
-FileTree files;
+map<string, vector<point>> files;
 vector<point> points;
 
 void read_bin(string filename){
 	unsigned long int arraySize;
 
-	string* file = new string(filename);
+	map<string, vector<point>>::iterator file = files.find(filename);
+
+	if (file != files.end()) {
+		points = file->second;
+		cout << "FILE ALREADY EXISTS" << endl;
+		return;
+	}
 
 	ifstream i(filename, ios::binary);
 	i.read((char *)&arraySize, sizeof(arraySize));
@@ -38,16 +44,12 @@ void read_bin(string filename){
 
 	cout << "\n########## FINISHED FILE READ ##########" << endl;
 
-	cout << "\nINSERTING INTO FILE TREE...\n"
-		<< "\n\n...ENTER THE POINTER MADNESS.\n"
+	cout << "\nINSERTING INTO HASH...\n"
 		<< endl;
 
-	files.add_or_find(file, &points);
+	files[filename] = points;
 
-	cout << "\nFINISHED INSERTING INTO FILE TREE" << endl;
-	cout << "\n~~~~~~~~~~ PRINTING THE TREE CONTENTS ~~~~~~~~~~\n" << endl;
-	files.print();
-	cout << "\n~~~~~~~~~~ FINISHED PRINTING TREE ~~~~~~~~~~" << endl;
+	cout << "\nFINISHED INSERTING INTO HASH" << endl;
 }	
 
 
@@ -115,6 +117,18 @@ int _tmain(int argc, _TCHAR* argv[])
 		printf("X: %f, Y: %f, Z: %f\n", points[i].x, points[i].y, points[i].z);
 	}
 	cout << "\n########## FINISHED VECTOR PRINT ##########" << endl;
+	
+	cout << "\n\n\n\n\n SECOND READ" << endl;
+	read_bin("testing3.binary");
+	// read_xml("model.xml");
+	cout << "\n########## PRINTING VECTOR READ FROM FILE ##########" << endl;
+	for (int i = 0; i < points.size(); i++){
+		printf("X: %f, Y: %f, Z: %f\n", points[i].x, points[i].y, points[i].z);
+	}
+	cout << "\n########## FINISHED VECTOR PRINT ##########" << endl;
+
+
+
 	return 0;
 }
 
