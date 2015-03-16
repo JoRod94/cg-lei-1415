@@ -34,6 +34,50 @@ void create_file(const char* filename, vector<point> points, int *tpi, int tpi_s
 		cout << "Could not create specified file\n";*/
 }
 
+void draw_sphere(float ray, float nSlices, float nLayers ){
+	float sliceInc = (2.0f * M_PI) / nSlices;
+	float layerInc = (M_PI / 2.0f) / nLayers;
+
+	//alfa: horizontal angle; beta vertical angle;
+	float alfa = 0.0f, beta = 0.0f;
+
+	for (int i = 0; i < nLayers; i++){
+
+		alfa = 0.0f;
+		for (int j = 0; j < nSlices; j++){
+			glColor3f(1, 0, 0);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta));
+			glVertex3f(ray * sin(alfa + sliceInc) * cos(beta), ray * sin(beta), ray * cos(alfa + sliceInc) * cos(beta));
+			glVertex3f(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc));
+			glEnd();
+
+			glColor3f(0, 1, 0);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc));
+			glVertex3f(ray * sin(alfa) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa) * cos(beta + layerInc));
+			glVertex3f(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta));
+			glEnd();
+
+			glColor3f(1, 0, 0);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta));
+			glVertex3f(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta));
+			glVertex3f(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc));
+			glEnd();
+
+			glColor3f(0, 1, 0);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc));
+			glVertex3f(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc));
+			glVertex3f(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta));
+			glEnd();
+
+			alfa += sliceInc;
+		}
+		beta += layerInc;
+	}
+}
 
 void draw_cone(float ray, float height, float nSlices, float nLayers){
 	float sliceInc = (2.0f * M_PI) / nSlices;
