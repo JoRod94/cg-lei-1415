@@ -35,6 +35,59 @@ void create_file(const char* filename, vector<point> points, int *tpi, int tpi_s
 }
 
 
+void draw_cone(float ray, float height, float nSlices, float nLayers){
+	float sliceInc = (2.0f * M_PI) / nSlices;
+	float layerInc = (M_PI / 2.0f) / nLayers;
+	float heightInc = height / nLayers;
+	float rayDec = ray / nLayers;
+	float alfa = 0.0f, beta = 0.0f, currentRay = ray, nextRay = ray, innerRay = ray, currentheight = 0.0f;
+
+	//cone base
+	for (int i = 0; i < nSlices; i++){
+		glBegin(GL_TRIANGLES);
+		glVertex3f(ray * sin(alfa), 0.0f, ray * cos(alfa));
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(ray * sin(alfa + sliceInc), 0.0f, ray * cos(alfa + sliceInc));
+		glEnd();
+
+		alfa += sliceInc;
+	}
+
+	//rest of the cone
+
+	currentRay = innerRay;
+	for (int i = 0; i < nLayers; i++){
+		//we need this, otherwise we would get a sphere
+		nextRay = (innerRay - rayDec) / cos(beta + layerInc);
+		alfa = 0.0f;
+
+		for (int j = 0; j < nSlices; j++){
+			//first triangle
+			glColor3f(1, 0, 0);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta));
+			glVertex3f(currentRay * sin(alfa + sliceInc) * cos(beta), currentheight, currentRay * cos(alfa + sliceInc) * cos(beta));
+			glVertex3f(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc));
+			glEnd();
+
+			//second triangle
+			glColor3f(0, 1, 0);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc));
+			glVertex3f(nextRay * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa) * cos(beta + layerInc));
+			glVertex3f(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta));
+			glEnd();
+
+			alfa += sliceInc;
+		}
+
+		currentheight += heightInc;
+		currentRay = nextRay;
+		innerRay -= rayDec;
+		beta += layerInc;
+	}
+}
+
 void create_plane(float length, float width, vector<point> &points, int tpi[6]){
 	int i = 0;
 
