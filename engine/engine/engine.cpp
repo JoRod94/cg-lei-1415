@@ -10,6 +10,7 @@
 #include <map>
 #include "point.h"
 #include "tinyxml2.h"
+#include <GL/glut.h>
 
 #define _XML_FILE	"ficheiro"
 #define _XML_SCENE	"cena"
@@ -19,6 +20,18 @@ using namespace std;
 
 map<string, vector<point>> files;
 vector<point> points;
+
+
+void renderPoints(){
+
+	map<string, vector<point> >::iterator iter;
+	glBegin(GL_TRIANGLES);
+	for (iter = files.begin(); iter != files.end(); iter++) {
+		for (int i = 0; i < (iter->second).size(); i++)
+			glVertex3f((iter->second)[i].x, (iter->second)[i].y, (iter->second)[i].z);
+	}
+	glEnd();
+}
 
 void read_bin(string filename){
 	unsigned long int arraySize;
@@ -33,14 +46,14 @@ void read_bin(string filename){
 
 	ifstream i(filename, ios::binary);
 	i.read((char *)&arraySize, sizeof(arraySize));
-	
+
 	cout << "\n########## READING BINARY FILE ##########"
 		<< "\n\nNR POINTS:"
 		<< arraySize
 		<< endl;
 
 	points.resize(arraySize);
-	i.read( (char *) &points[0], arraySize*sizeof(point));
+	i.read((char *)&points[0], arraySize*sizeof(point));
 
 	cout << "\n########## FINISHED FILE READ ##########" << endl;
 
@@ -50,7 +63,64 @@ void read_bin(string filename){
 	files[filename] = points;
 
 	cout << "\nFINISHED INSERTING INTO HASH" << endl;
-}	
+}
+
+
+void parseScene(tinyxml2::XMLElement* scene) {
+	for (tinyxml2::XMLElement* model = scene->FirstChildElement(_XML_MODEL); model != NULL; model = model->NextSiblingElement(_XML_MODEL))
+		read_bin(model->Attribute(_XML_FILE));
+}
+
+
+void read_xml(char * xmlName) {
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile(xmlName);
+
+	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE); scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
+		parseScene(scene);
+}
+
+void changeSize(int w, int h) {
+
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window with zero width).
+	if (h == 0)
+		h = 1;
+
+	// compute window's aspect ratio 
+	float ratio = w * 1.0 / h;
+
+	// Set the projection matrix as current
+	glMatrixMode(GL_PROJECTION);
+	// Load Identity Matrix
+	glLoadIdentity();
+
+	// Set the viewport to be the entire window
+	glViewport(0, 0, w, h);
+
+	// Set perspective
+	gluPerspective(45.0f, ratio, 1.0f, 1000.0f);
+
+	// return to the model view matrix mode
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void renderScene(void) {
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glLoadIdentity();
+	//TESTE, ALTERAR
+	gluLookAt(0.0f, 0.0f, 5.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f);
+	glColor3f(1, 0, 0);
+	glRotatef(3, 1, 0, 0);
+
+	renderPoints();
+
+	glutSwapBuffers();
+}
 
 
 void read_file(string name) {
@@ -93,42 +163,40 @@ void read_file(string name) {
 	cout << "NR POINTS READ: " << nr_points << " TYPE OF FIGURE: " << drawing << endl;
 }
 
-void parseScene(tinyxml2::XMLElement* scene) {
-	for (tinyxml2::XMLElement* model = scene->FirstChildElement(_XML_MODEL); model != NULL; model = model->NextSiblingElement(_XML_MODEL))
-		cout << model->Attribute(_XML_FILE) << endl;
-		// read_file(model -> Attribute("ficheiro");
-}
 
-void read_xml(char* filename) {
-	tinyxml2::XMLDocument doc;
-	doc.LoadFile(filename);
 
-	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE); scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
-		parseScene(scene);
-}
-
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char **argv)
 {
-	cout << "Hello world! This is engine!" << endl;
-	read_bin("testing3.binary");
-	// read_xml("model.xml");
-	cout << "\n########## PRINTING VECTOR READ FROM FILE ##########" << endl;
-	for (int i = 0; i < points.size(); i++){
-		printf("X: %f, Y: %f, Z: %f\n", points[i].x, points[i].y, points[i].z);
+	if (argc < 2){
+		printf("Not enough arguments\n");
+		return 0;
 	}
-	cout << "\n########## FINISHED VECTOR PRINT ##########" << endl;
-	
-	cout << "\n\n\n\n\n SECOND READ" << endl;
-	read_bin("testing3.binary");
-	// read_xml("model.xml");
-	cout << "\n########## PRINTING VECTOR READ FROM FILE ##########" << endl;
-	for (int i = 0; i < points.size(); i++){
-		printf("X: %f, Y: %f, Z: %f\n", points[i].x, points[i].y, points[i].z);
-	}
-	cout << "\n########## FINISHED VECTOR PRINT ##########" << endl;
+	read_xml(argv[1]);
+
+	// inicialização
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowPosition(100, 100);
+	glutInitWindowSize(800, 800);
+	glutCreateWindow("TP");
 
 
+	// registo de funções 
+	glutDisplayFunc(renderScene);
+	glutIdleFunc(renderScene);
+	glutReshapeFunc(changeSize);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	return 0;
+
+	// pôr aqui a criação do menu
+
+
+	// alguns settings para OpenGL
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	// entrar no ciclo do GLUT 
+	glutMainLoop();
+
+	return 1;
 }
-
