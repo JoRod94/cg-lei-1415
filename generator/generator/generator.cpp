@@ -34,6 +34,132 @@ void create_file(const char* filename, vector<point> points, int *tpi, int tpi_s
 		cout << "Could not create specified file\n";*/
 }
 
+
+
+/*
+* Function receives float 'size' (width, length or height), and a float 'div' (number of slices or stacks)
+* and returns a vector with the coordinates of all the points according to the given parameters.
+*/
+vector<float> pointArrays(float size, float div){
+	size_t tot = 2 + (div - 1);
+	float incr = -(size / 2);
+	vector<float> pts(tot);
+	for (int i = 0; i < tot; i++){
+		pts[i] = incr;
+		incr += (size / div);
+	}
+	return pts;
+}
+
+/*
+* Function planePoints puts together the values of two vectors to create the points.
+* Since the plane is a 2D object, the parameters 'o' and 'c' are there to complete the points (which are 3D).
+* 'o' has valid values "x", "y", "z". 'c' is the value of that coordinate.
+*/
+void planePoints(char o, float c, vector<float> xs, vector<float> ys, vector<point> points){
+
+
+	if (o == 'x'){
+		for (int i = 0; i < xs.size() - 1; i++){
+			for (int j = 0; j < ys.size() - 1; j++){
+				point p1(c, xs[i], ys[j]);
+				point p2(c, xs[i + 1], ys[j + 1]);
+				point p3(c, xs[i], ys[j + 1]);
+
+				point p4(c, xs[i], ys[j]);
+				point p5(c, xs[i + 1], ys[j]);
+				point p6(c, xs[i + 1], ys[j + 1]);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+			}
+		}
+	}
+	else if (o == 'y'){
+		for (int i = 0; i < xs.size() - 1; i++){
+			for (int j = 0; j < ys.size() - 1; j++){
+				point p1(xs[i], c, ys[j]);
+				point p2(xs[i + 1], c, ys[j + 1]);
+				point p3(xs[i], c, ys[j + 1]);
+
+				point p4(xs[i], c, ys[j]);
+				point p5(xs[i + 1], c, ys[j]);
+				point p6(xs[i + 1], c, ys[j + 1]);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+			}
+		}
+	}
+	else if (o == 'z'){
+		for (int i = 0; i < xs.size() - 1; i++){
+			for (int j = 0; j < ys.size() - 1; j++){
+				point p1(xs[i], ys[j], c);
+				point p2(xs[i + 1], ys[j + 1], c);
+				point p3(xs[i], ys[j + 1], c);
+
+				point p4(xs[i], ys[j], c);
+				point p5(xs[i + 1], ys[j], c);
+				point p6(xs[i + 1], ys[j + 1], c);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+			}
+		}
+	}
+
+}
+
+/*
+* Creates a plane given its length, width, number of columns and number of rows.
+* The plane will be xOy, with z = 0.
+*/
+
+void create_plane(float length, float width, int columns, int rows){
+	vector<point> points;
+	vector<float> r = pointArrays(length, rows);
+	vector<float> c = pointArrays(width, columns);
+
+	planePoints('z', 0.0f, r, c, points);
+}
+
+
+/*
+* Creates a parallelepiped given it's length, width, height, number of slices and number of stacks.
+* Function calls the plane
+*/
+void create_parallelepipep(float length, float width, float height, int slices, int stacks){
+	vector<point> points;
+	vector<float> lenpts = pointArrays(length, slices);
+	vector<float> widpts = pointArrays(width, slices);
+	vector<float> higpts = pointArrays(height, stacks);
+
+	// one plane for each side of the parallelepiped
+	planePoints('z', (width / 2), lenpts, higpts, points);
+	planePoints('x', (length / 2), higpts, widpts, points);
+	planePoints('y', (height / 2), lenpts, widpts, points);
+	planePoints('z', -(width / 2), lenpts, higpts, points);
+	planePoints('x', -(length / 2), higpts, widpts, points);
+	planePoints('y', -(height / 2), lenpts, widpts, points);
+
+}
+
+
 void draw_sphere(float ray, float nSlices, float nLayers ){
 	float sliceInc = (2.0f * M_PI) / nSlices;
 	float layerInc = (M_PI / 2.0f) / nLayers;
