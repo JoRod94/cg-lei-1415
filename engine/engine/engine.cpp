@@ -20,6 +20,7 @@ using namespace std;
 
 map<string, vector<point>> files;
 vector<point> points;
+GLenum mode = GL_FILL;
 
 
 void renderPoints(){
@@ -117,6 +118,8 @@ void renderScene(void) {
 	glColor3f(1, 0, 0);
 	glRotatef(3, 1, 0, 0);
 
+	glPolygonMode(GL_FRONT_AND_BACK, mode);
+
 	renderPoints();
 
 	glutSwapBuffers();
@@ -163,7 +166,20 @@ void read_file(string name) {
 	cout << "NR POINTS READ: " << nr_points << " TYPE OF FIGURE: " << drawing << endl;
 }
 
-
+void createMenu(int id_op){
+	switch (id_op){
+	case 1:
+		mode = GL_LINE;
+		break;
+	case 2:
+		mode = GL_POINT;
+		break;
+	case 3:
+		mode = GL_FILL;
+		break;
+	}
+	glutPostRedisplay();
+}
 
 int main(int argc, char **argv)
 {
@@ -189,7 +205,11 @@ int main(int argc, char **argv)
 
 
 	// pôr aqui a criação do menu
-
+	glutCreateMenu(createMenu);
+	glutAddMenuEntry("Line Mode", 1);
+	glutAddMenuEntry("Point Mode", 2);
+	glutAddMenuEntry("Fill Mode", 3);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);

@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\_toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\_toolkits\libs;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
