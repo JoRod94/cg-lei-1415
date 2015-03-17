@@ -15,27 +15,12 @@ using namespace std;
 
 vector<point> points;
 
-void create_file(const char* filename, int *tpi, int tpi_size){
+void create_file(const char* filename){
 	unsigned long int size = points.size();
 
-	ofstream newFile("testing3.binary", ios::binary);
-	printf("SIZE: %lu\n", size);
+	ofstream newFile(filename, ios::binary);
 	newFile.write((char *)&size, sizeof(size));
 	newFile.write((char *)&points[0], size*sizeof(point));
-
-	/*
-	fwrite(&points, sizeof(points[0]), sizeof(points.size()), newFile);
-	fwrite(tpi, sizeof(int), sizeof(tpi_size), newFile);
-
-	if (fopen_s(&f, filename, "w") == 0){
-		f.write(&size, sizeof(long));
-		fwrite(&points, sizeof(points[0]), sizeof(points.size()), f);
-		fwrite(tpi, sizeof(int), sizeof(tpi_size), f);
-		//fprintf(f, "Teste String YAY!!\n chipiyay \tmadafacas.");
-		fclose(f);
-	}
-	else
-		cout << "Could not create specified file\n";*/
 }
 
 
@@ -262,26 +247,6 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 	}
 }
 
-void create_plane(float length, float width, int tpi[6]){
-	//first triangle
-	point p1(0, 0, 0);
-	points.push_back(p1);
-	tpi[0];
-	point p2(0, 0, length);
-	points.push_back(p2);
-	tpi[1];
-	point p3(width, 0, length);
-	points.push_back(p3);
-	tpi[2];
-
-	//second triangle
-	tpi[2];
-	point p4(width, 0, 0);
-	points.push_back(p4);
-	tpi[3];
-	tpi[0];
-}
-
 int main(int argc, char* argv[])
 {
 	if (argc < 2){
@@ -289,45 +254,45 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 	else if (strcmp(argv[1], "plane") == 0){
-		if (argc != 5){
-			cout << "Must receive 5 arguments\n";
+		if (argc != 7){
+			cout << "Wrong number of arguments\n";
 			return 0;
 		}
 		cout << "Generating Plane...\n";
-		int triangle_point_index[6];
-		create_plane(atoi(argv[2]), atoi(argv[3]), triangle_point_index);
-		cout << "Writing to file...\n";
-		create_file(argv[4], triangle_point_index, 4);
-		cout << "Done\n";
-	}/*
+		create_plane(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+	}
 	else if (strcmp(argv[1], "sphere") == 0){
-		if (argc < 5){
-			cout << "Too few arguments";
+		if (argc != 6){
+			cout << "Wrong number of arguments";
 			return 0;
 		}
 		cout << "Generating Sphere... \n";
-		writeSphere(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
-		cout << "Done \n";
+		draw_sphere(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 	}
 	else if (strcmp(argv[1], "box") == 0){
-		if (argc < 5){
-			cout << "Too few arguments";
+		if (argc != 8){
+			cout << "Wrong number of arguments";
 			return 0;
 		}
 		cout << "Generating Box... \n";
-		writeBox(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
-		cout << "Done \n";
+		create_parallelepipep(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
 	}
 	else if (strcmp(argv[1], "cone") == 0){
-		if (argc < 6){
-			cout << "Too few arguments";
+		if (argc != 7){
+			cout << "Wrong number of arguments";
 			return 0;
 		}
 		cout << "Generating Cone... \n";
-		writeCone(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
-		cout << "Done \n";
-	}*/
-	else
+		draw_cone(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+	}
+	else{
 		cout << "Command not recognized";
+		return 0;
+	}
+	cout << "Writing to file...\n";
+	create_file(argv[argc-1]);
+	cout << "Done\n";
+
+	return 0;
 }
 

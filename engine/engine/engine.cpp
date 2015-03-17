@@ -116,7 +116,6 @@ void renderScene(void) {
 		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f);
 	glColor3f(1, 0, 0);
-	glRotatef(3, 1, 0, 0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
 
