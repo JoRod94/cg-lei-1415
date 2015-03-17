@@ -69,7 +69,28 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 			}
 		}
 	}
-	else if (o == 'y'){
+	else if (o == 'X'){
+		for (int i = 0; i < xs.size() - 1; i++){
+			for (int j = 0; j < ys.size() - 1; j++){
+				point p1(c, xs[i], ys[j]);
+				point p2(c, xs[i], ys[j + 1]);
+				point p3(c, xs[i + 1], ys[j + 1]);
+
+				point p4(c, xs[i], ys[j]);
+				point p5(c, xs[i + 1], ys[j + 1]);
+				point p6(c, xs[i + 1], ys[j]);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+			}
+		}
+	}
+	else if (o == 'Y'){
 		for (int i = 0; i < xs.size() - 1; i++){
 			for (int j = 0; j < ys.size() - 1; j++){
 				point p1(xs[i], c, ys[j]);
@@ -90,6 +111,31 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 			}
 		}
 	}
+	else if (o == 'y'){
+		for (int i = 0; i < xs.size() - 1; i++){
+			for (int j = 0; j < ys.size() - 1; j++){
+				point p1(xs[i], c, ys[j]);
+				point p2(xs[i], c, ys[j + 1]);
+				point p3(xs[i + 1], c, ys[j + 1]);
+
+				point p4(xs[i], c, ys[j]);
+				point p5(xs[i + 1], c, ys[j + 1]);
+				point p6(xs[i + 1], c, ys[j]);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+
+
+
+
+			}
+		}
+	}
 	else if (o == 'z'){
 		for (int i = 0; i < xs.size() - 1; i++){
 			for (int j = 0; j < ys.size() - 1; j++){
@@ -100,6 +146,27 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 				point p4(xs[i], ys[j], c);
 				point p5(xs[i + 1], ys[j], c);
 				point p6(xs[i + 1], ys[j + 1], c);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+			}
+		}
+	}
+	else if (o == 'Z'){
+		for (int i = 0; i < xs.size() - 1; i++){
+			for (int j = 0; j < ys.size() - 1; j++){
+				point p1(xs[i], ys[j], c);
+				point p2(xs[i], ys[j + 1], c);
+				point p3(xs[i + 1], ys[j + 1], c);
+
+				point p4(xs[i], ys[j], c);
+				point p5(xs[i + 1], ys[j + 1], c);
+				point p6(xs[i + 1], ys[j], c);
 
 
 				points.push_back(p1);
@@ -140,9 +207,9 @@ void create_parallelepipep(float length, float width, float height, int slices, 
 	planePoints('z', (width / 2), lenpts, higpts);
 	planePoints('x', (length / 2), higpts, widpts);
 	planePoints('y', (height / 2), lenpts, widpts);
-	planePoints('z', -(width / 2), lenpts, higpts);
-	planePoints('x', -(length / 2), higpts, widpts);
-	planePoints('y', -(height / 2), lenpts, widpts);
+	planePoints('Z', -(width / 2), lenpts, higpts);
+	planePoints('X', -(length / 2), higpts, widpts);
+	planePoints('Y', -(height / 2), lenpts, widpts);
 
 }
 

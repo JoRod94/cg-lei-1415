@@ -22,6 +22,13 @@ map<string, vector<point>> files;
 vector<point> points;
 GLenum mode = GL_FILL;
 
+// Camera variables
+float alpha = 0;
+float beta = 0;
+float radius = 10;
+int xOri = -1;
+int yOri = -1;
+
 
 void renderPoints(){
 
@@ -112,7 +119,7 @@ void renderScene(void) {
 
 	glLoadIdentity();
 	//TESTE, ALTERAR
-	gluLookAt(0.0f, 0.0f, 5.0f,
+	gluLookAt((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))),
 		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f);
 	glColor3f(1, 0, 0);
@@ -165,6 +172,50 @@ void read_file(string name) {
 	cout << "NR POINTS READ: " << nr_points << " TYPE OF FIGURE: " << drawing << endl;
 }
 
+
+// Mouse button callback
+void mousePress(int button, int state, int x, int y) {
+
+	// Camera only moves while the left mouse button is pressed
+	if (button == GLUT_LEFT_BUTTON) {
+		// If the button is released, origin coordinates reset.
+		if (state == GLUT_UP) {
+			xOri = -1;
+			yOri = -1;
+		}
+		// Else, button is pressed, origin coordinates are updated.
+		else  {
+			xOri = x;
+			yOri = y;
+		}
+		glutPostRedisplay();
+	}
+}
+
+
+// Motion while mouse button is pressed
+void mouseMotion(int x, int y) {
+
+	if (xOri >= 0) {
+		int xDiff = x - xOri;
+		int yDiff = y - yOri;
+
+		alpha += xDiff * 0.01f;
+
+		if (yDiff > 0){
+			if (beta <= (M_PI / 2))
+				beta += yDiff * 0.01f;
+		}
+		else
+			if (beta >= -(M_PI / 2))
+				beta -= -(yDiff * 0.01f);
+	}
+	xOri = x;
+	yOri = y;
+	glutPostRedisplay();
+}
+
+
 void createMenu(int id_op){
 	switch (id_op){
 	case 1:
@@ -209,6 +260,10 @@ int main(int argc, char **argv)
 	glutAddMenuEntry("Point Mode", 2);
 	glutAddMenuEntry("Fill Mode", 3);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+	// Camera stuff
+	glutMouseFunc(mousePress);
+	glutMotionFunc(mouseMotion);
 
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);
