@@ -11,6 +11,8 @@
 #include "point.h"
 #include "tinyxml2.h"
 #include <GL/glut.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #define _XML_FILE	"ficheiro"
 #define _XML_SCENE	"cena"
@@ -18,7 +20,12 @@
 
 using namespace std;
 
-map<string, vector<point>> files;
+typedef struct figure {
+	vector<point> points;
+	int count;
+} figure;
+
+map<string, figure> files;
 vector<point> points;
 GLenum mode = GL_FILL;
 
@@ -32,11 +39,12 @@ int yOri = -1;
 
 void renderPoints(){
 
-	map<string, vector<point> >::iterator iter;
+	map<string, figure>::iterator iter;
 	glBegin(GL_TRIANGLES);
 	for (iter = files.begin(); iter != files.end(); iter++) {
-		for (int i = 0; i < (iter->second).size(); i++)
-			glVertex3f((iter->second)[i].x, (iter->second)[i].y, (iter->second)[i].z);
+		for (int j = 0; j < iter->second.count; j++)
+			for (int i = 0; i < (iter->second).points.size(); i++)
+				glVertex3f((iter->second).points[i].x, (iter->second).points[i].y, (iter->second).points[i].z);
 	}
 	glEnd();
 }
@@ -44,10 +52,11 @@ void renderPoints(){
 void read_bin(string filename){
 	unsigned long int arraySize;
 
-	map<string, vector<point>>::iterator file = files.find(filename);
+	map<string, figure>::iterator file = files.find(filename);
 
 	if (file != files.end()) {
-		points = file->second;
+		points = file->second.points;
+		file->second.count++;
 		cout << "FILE ALREADY EXISTS" << endl;
 		return;
 	}
@@ -68,7 +77,7 @@ void read_bin(string filename){
 	cout << "\nINSERTING INTO HASH...\n"
 		<< endl;
 
-	files[filename] = points;
+	files[filename] = figure{points, 1};
 
 	cout << "\nFINISHED INSERTING INTO HASH" << endl;
 }
