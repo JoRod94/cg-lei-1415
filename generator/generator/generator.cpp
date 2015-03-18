@@ -214,7 +214,7 @@ void create_parallelepipep(float length, float width, float height, int slices, 
 }
 
 
-void draw_sphere(float ray, float nSlices, float nLayers ){
+void create_sphere(float ray, float nSlices, float nLayers ){
 	vector<int> indexes;
 
 	float sliceInc = (2.0f * M_PI) / nSlices;
@@ -261,19 +261,56 @@ void draw_sphere(float ray, float nSlices, float nLayers ){
 	}
 }
 
-void draw_cone(float ray, float height, float nSlices, float nLayers){
+void create_cylinder(float radius, float height, float slices, float layers){
+	float currAng = 0.0f;
+	float currH;
+	float angInc = (2 * M_PI) / slices;
+	float hInc = height / layers;
+
+	//cada fatia
+	for (int i = 1; i <= slices; i++){
+		//triangulo do fundo
+		points.push_back(point(0, -(height / 2), 0));
+		points.push_back(point(sin(currAng + angInc)*radius, -(height / 2), cos(currAng + angInc)*radius));
+		points.push_back(point(sin(currAng)*radius, -(height / 2), cos(currAng)*radius));
+		//triangulo do topo
+		points.push_back(point(0, (height / 2), 0));
+		points.push_back(point(sin(currAng)*radius, (height / 2), cos(currAng)*radius));
+		points.push_back(point(sin(currAng + angInc)*radius, (height / 2), cos(currAng + angInc)*radius));
+		currH = -(height / 2);
+		// rectangulo lateral
+		for (int j = 1; j <= layers; j++){
+
+			// rectangulo lateral: triangulo de baixo
+			points.push_back(point(sin(currAng)*radius, currH, cos(currAng)*radius));
+			points.push_back(point(sin(currAng + angInc)*radius, currH, cos(currAng + angInc)*radius));
+			points.push_back(point(sin(currAng + angInc)*radius, currH + hInc, cos(currAng + angInc)*radius));
+
+			// rectangulo lateral: triangulo do topo
+			points.push_back(point(sin(currAng + angInc)*radius, currH + hInc, cos(currAng + angInc)*radius));
+			points.push_back(point(sin(currAng)*radius, currH + hInc, cos(currAng)*radius));
+			points.push_back(point(sin(currAng)*radius, currH, cos(currAng)*radius));
+
+			currH += hInc;
+		}
+		currAng += angInc;
+
+	}
+}
+
+void create_cone(float radius, float height, float nSlices, float nLayers){
 	float sliceInc = (2.0f * M_PI) / nSlices;
 	float layerInc = (M_PI / 2.0f) / nLayers;
 	float heightInc = height / nLayers;
-	float rayDec = ray / nLayers;
-	float alfa = 0.0f, beta = 0.0f, currentRay = ray, nextRay = ray, innerRay = ray, currentheight = 0.0f;
+	float rayDec = radius / nLayers;
+	float alfa = 0.0f, beta = 0.0f, currentRay = radius, nextRadius = radius, innerRadius = radius, currentheight = 0.0f;
 
 	//cone base
 	for (int i = 0; i < nSlices; i++){
 		// glBegin(GL_TRIANGLES);
-		points.push_back(point(ray * sin(alfa), 0.0f, ray * cos(alfa)));
+		points.push_back(point(radius * sin(alfa), 0.0f, radius * cos(alfa)));
 		points.push_back(point(0.0f, 0.0f, 0.0f));
-		points.push_back(point(ray * sin(alfa + sliceInc), 0.0f, ray * cos(alfa + sliceInc)));
+		points.push_back(point(radius * sin(alfa + sliceInc), 0.0f, radius * cos(alfa + sliceInc)));
 		//glEnd();
 
 		alfa += sliceInc;
@@ -281,10 +318,10 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 
 	//rest of the cone
 
-	currentRay = innerRay;
+	currentRay = innerRadius;
 	for (int i = 0; i < nLayers; i++){
 		//we need this, otherwise we would get a sphere
-		nextRay = (innerRay - rayDec) / cos(beta + layerInc);
+		nextRadius = (innerRadius - rayDec) / cos(beta + layerInc);
 		alfa = 0.0f;
 
 		for (int j = 0; j < nSlices; j++){
@@ -293,14 +330,14 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 		//	glBegin(GL_TRIANGLES);
 			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
 			points.push_back(point(currentRay * sin(alfa + sliceInc) * cos(beta), currentheight, currentRay * cos(alfa + sliceInc) * cos(beta)));
-			points.push_back(point(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc)));
+			points.push_back(point(nextRadius * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa + sliceInc) * cos(beta + layerInc)));
 		//	glEnd();
 
 			//second triangle
 		//	glColor3f(0, 1, 0);
 		//	glBegin(GL_TRIANGLES);
-			points.push_back(point(nextRay * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa + sliceInc) * cos(beta + layerInc)));
-			points.push_back(point(nextRay * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRay * cos(alfa) * cos(beta + layerInc)));
+			points.push_back(point(nextRadius * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa + sliceInc) * cos(beta + layerInc)));
+			points.push_back(point(nextRadius * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa) * cos(beta + layerInc)));
 			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
 		//	glEnd();
 
@@ -308,8 +345,8 @@ void draw_cone(float ray, float height, float nSlices, float nLayers){
 		}
 
 		currentheight += heightInc;
-		currentRay = nextRay;
-		innerRay -= rayDec;
+		currentRay = nextRadius;
+		innerRadius -= rayDec;
 		beta += layerInc;
 	}
 }
@@ -334,7 +371,7 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 		cout << "Generating Sphere... \n";
-		draw_sphere(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+		create_sphere(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 	}
 	else if (strcmp(argv[1], "box") == 0){
 		if (argc != 8){
@@ -350,7 +387,15 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 		cout << "Generating Cone... \n";
-		draw_cone(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+		create_cone(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+	}
+	else if (strcmp(argv[1], "cylinder") == 0){
+		if (argc != 7){
+			cout << "Wrong number of arguments";
+			return 0;
+		}
+		cout << "Generating Cylinder... \n";
+		create_cylinder(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 	}
 	else{
 		cout << "Command not recognized";
