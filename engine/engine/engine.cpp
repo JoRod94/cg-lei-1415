@@ -11,6 +11,7 @@
 #include "point.h"
 #include "tinyxml2.h"
 #include <GL/glut.h>
+#include <regex>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -245,12 +246,29 @@ void createMenu(int id_op){
 	glutPostRedisplay();
 }
 
+int valid_xml(char* filename) {
+	int name = regex_match(filename, regex(".*\.xml"));
+	ifstream f(filename);
+	int exists = f.good();
+	f.close();
+	return name && exists;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 2){
-		printf("Not enough arguments\n");
+		cout << "Not enough arguments" << endl;
 		return 0;
 	}
+	else if (argc > 2) {
+		cout << "Too many arguments" << endl;
+		return 0;
+	}
+	else if (!valid_xml(argv[1])) {
+		cout << "Please enter a valid XML file" << endl;
+		return 0;
+	}
+
 	read_xml(argv[1]);
 
 	// inicialização
