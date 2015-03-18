@@ -18,7 +18,7 @@ vector<point> points;
 void create_file(const char* filename){
 	unsigned long int size = points.size();
 
-	ofstream newFile(filename, ios::binary);
+	ofstream newFile(string(filename) + ".3d", ios::binary);
 	newFile.write((char *)&size, sizeof(size));
 	newFile.write((char *)&points[0], size*sizeof(point));
 }
