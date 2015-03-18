@@ -1,3 +1,6 @@
+#ifndef _POINT_H
+#define _POINT_H
+
 #include <vector>
 
 using namespace std;
@@ -11,8 +14,7 @@ public:
 
 	bool operator== (const point& p) const;
 
-	bool point::operator< (const point& p) const;
-
 	void add_to(vector<float> &vec);
 };
 
+#endif
