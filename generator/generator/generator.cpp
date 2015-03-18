@@ -8,6 +8,7 @@
 #include <string>
 #include "point.h"
 #include <stdlib.h>
+#include <regex>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -372,67 +373,84 @@ void create_torus(float ir, float or, float nRings, float nLayers){
 	}
 }
 
-int main(int argc, char* argv[])
-{
+int valid_input(int argc, char* argv[]) {
+	int nrs = 1;
+	int file = 1;
+	regex number("[0-9]+");
+	regex word("[a-zA-Z0-9\-_\.]*[a-zA-Z0-9]");
+
+	for (int i = 2; i < argc - 1 && nrs; i++)
+		nrs = regex_match(argv[i], number);
+
+	file = regex_match(argv[argc - 1], word);
+
+	return file && nrs;
+}
+
+int main(int argc, char* argv[]) {
 	if (argc < 2){
-		cout << "Too few arguments." << endl;
+		std::cout << "Too few arguments." << endl;
+		return 0;
+	}
+	else if (!valid_input(argc, argv)) {
+		std::cout << "Invalid input" << endl;
 		return 0;
 	}
 	else if (strcmp(argv[1], "plane") == 0){
 		if (argc != 7){
-			cout << "Wrong number of arguments" << endl;
+			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		cout << "Generating Plane..." << endl;
+		std::cout << "Generating Plane..." << endl;
 		create_plane(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 	}
 	else if (strcmp(argv[1], "sphere") == 0){
 		if (argc != 6){
-			cout << "Wrong number of arguments" << endl;
+			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		cout << "Generating Sphere..." << endl;
+		std::cout << "Generating Sphere..." << endl;
 		create_sphere(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 	}
 	else if (strcmp(argv[1], "box") == 0){
 		if (argc != 8){
-			cout << "Wrong number of arguments" << endl;
+			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		cout << "Generating Box..." << endl;
+		std::cout << "Generating Box..." << endl;
 		create_parallelepiped(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
 	}
 	else if (strcmp(argv[1], "cone") == 0){
 		if (argc != 7){
-			cout << "Wrong number of arguments" << endl;
+			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		cout << "Generating Cone..." << endl;
+		std::cout << "Generating Cone..." << endl;
 		create_cone(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 	}
 	else if (strcmp(argv[1], "cylinder") == 0){
 		if (argc != 7){
-			cout << "Wrong number of arguments" << endl;
+			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		cout << "Generating Cylinder..." << endl;
+		std::cout << "Generating Cylinder..." << endl;
 		create_cylinder(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 	}
 	else if (strcmp(argv[1], "torus") == 0){
 		if (argc != 7){
-			cout << "Wrong number of arguments" << endl;
+			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		cout << "Generating Torus..." << endl;
+		std::cout << "Generating Torus..." << endl;
 		create_torus(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 	}
 	else{
-		cout << "Command not recognized" << endl;
+		std::cout << "Command not recognized" << endl;
 		return 0;
 	}
-	cout << "Writing to file..." << endl;
+	std::cout << "Writing to file..." << endl;
 	create_file(argv[argc-1]);
-	cout << "Done" << endl;
+	std::cout << "Done" << endl;
 
 	return 0;
 }
