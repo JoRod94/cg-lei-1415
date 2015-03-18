@@ -300,11 +300,9 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 
 	//cone base
 	for (int i = 0; i < nSlices; i++){
-		// glBegin(GL_TRIANGLES);
 		points.push_back(point(radius * sin(alfa), 0.0f, radius * cos(alfa)));
 		points.push_back(point(0.0f, 0.0f, 0.0f));
 		points.push_back(point(radius * sin(alfa + sliceInc), 0.0f, radius * cos(alfa + sliceInc)));
-		//glEnd();
 
 		alfa += sliceInc;
 	}
@@ -319,20 +317,14 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 
 		for (int j = 0; j < nSlices; j++){
 			//first triangle
-		//	glColor3f(1, 0, 0);
-		//	glBegin(GL_TRIANGLES);
 			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
 			points.push_back(point(currentRay * sin(alfa + sliceInc) * cos(beta), currentheight, currentRay * cos(alfa + sliceInc) * cos(beta)));
 			points.push_back(point(nextRadius * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa + sliceInc) * cos(beta + layerInc)));
-		//	glEnd();
 
 			//second triangle
-		//	glColor3f(0, 1, 0);
-		//	glBegin(GL_TRIANGLES);
 			points.push_back(point(nextRadius * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa + sliceInc) * cos(beta + layerInc)));
 			points.push_back(point(nextRadius * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa) * cos(beta + layerInc)));
 			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
-		//	glEnd();
 
 			alfa += sliceInc;
 		}
