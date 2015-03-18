@@ -343,6 +343,35 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 	}
 }
 
+void create_torus(float ir, float or, float nRings, float nLayers){
+	int i, j;
+	point o1, o2, o3;
+	float ray = ir + or;
+	float layerInc = (2.0f * M_PI) / nLayers;
+	float ringInc = (2.0f * M_PI) / nRings;
+	float alfa = 0.0f, beta = 0.0f;
+
+	for (i = 0; i < nRings; i++){
+		//calculate 2 reference points for torus ring generation
+		o1 = point(ray * sin(alfa) * cos(beta), 0, ray * cos(alfa) * cos(beta));
+		o2 = point(ray * sin(alfa + ringInc) * cos(beta), 0, ray * cos(alfa + ringInc) * cos(beta));
+
+		for (j = 0; j < nLayers; j++){
+			points.push_back(point(o1.x + or * sin(alfa) * cos(beta), or * sin(beta), o1.z + or * cos(alfa) * cos(beta)));
+			points.push_back(point(o2.x + or * sin(alfa + ringInc) * cos(beta), or * sin(beta), o2.z + or * cos(alfa + ringInc) * cos(beta)));
+			points.push_back(point(o2.x + or * sin(alfa + ringInc) * cos(beta + layerInc), or * sin(beta + layerInc), o2.z + or * cos(alfa + ringInc) * cos(beta + layerInc)));
+
+			points.push_back(point(o2.x + or * sin(alfa + ringInc) * cos(beta + layerInc), or * sin(beta + layerInc), o2.z + or * cos(alfa + ringInc) * cos(beta + layerInc)));
+			points.push_back(point(o1.x + or * sin(alfa) * cos(beta + layerInc), or * sin(beta + layerInc), o1.z + or * cos(alfa) * cos(beta + layerInc)));
+			points.push_back(point(o1.x + or * sin(alfa) * cos(beta), or * sin(beta), o1.z + or * cos(alfa) * cos(beta)));
+
+			beta += layerInc;
+		}
+
+		alfa += ringInc;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc < 2){
