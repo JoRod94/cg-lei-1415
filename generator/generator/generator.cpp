@@ -226,37 +226,29 @@ void create_sphere(float ray, float nSlices, float nLayers ){
 	for (int i = 0; i < nLayers; i++){
 
 		alfa = 0.0f;
+
 		for (int j = 0; j < nSlices; j++){
-		//	glColor3f(1, 0, 0);
-		//	glBegin(GL_TRIANGLES);
+			//top half triangles
 			points.push_back(point(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta)));
 			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta), ray * sin(beta), ray * cos(alfa + sliceInc) * cos(beta)));
 			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc)));
-		//	glEnd();
 
-		//	glColor3f(0, 1, 0);
-		//	glBegin(GL_TRIANGLES);
 			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc)));
 			points.push_back(point(ray * sin(alfa) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa) * cos(beta + layerInc)));
 			points.push_back(point(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta)));
-		//	glEnd();
 
-		//	glColor3f(1, 0, 0);
-		//	glBegin(GL_TRIANGLES);
-			points.push_back(point(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta)));
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta)));
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc)));
-		//	glEnd();
-
-		//	glColor3f(0, 1, 0);
-		//	glBegin(GL_TRIANGLES);
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc)));
+			//bottom half triangles
 			points.push_back(point(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc)));
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc)));
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta)));
+
+			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta)));
 			points.push_back(point(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta)));
-		//	glEnd();
+			points.push_back(point(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc)));
 
 			alfa += sliceInc;
 		}
+
 		beta += layerInc;
 	}
 }
