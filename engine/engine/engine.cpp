@@ -62,6 +62,11 @@ void read_bin(string filename){
 	}
 
 	ifstream i(filename, ios::binary);
+	if (!i) {
+		cout << "INEXISTENT FILE" << endl;
+		return;
+	}
+
 	i.read((char *)&arraySize, sizeof(arraySize));
 
 	cout << "\n########## READING BINARY FILE ##########"
