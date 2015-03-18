@@ -418,6 +418,14 @@ int main(int argc, char* argv[])
 		cout << "Generating Cylinder..." << endl;
 		create_cylinder(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 	}
+	else if (strcmp(argv[1], "torus") == 0){
+		if (argc != 7){
+			cout << "Wrong number of arguments" << endl;
+			return 0;
+		}
+		cout << "Generating Cylinder..." << endl;
+		create_torus(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+	}
 	else{
 		cout << "Command not recognized" << endl;
 		return 0;
