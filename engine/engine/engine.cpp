@@ -146,48 +146,6 @@ void renderScene(void) {
 	glutSwapBuffers();
 }
 
-
-void read_file(string name) {
-	ifstream file;
-	file.open(name);
-
-	string line,
-		   drawing,
-		   _nr_points;
-
-	getline(file, line);
-
-	istringstream ss(line);
-
-	getline(ss, drawing, ',');
-	getline(ss, _nr_points);
-
-	int nr_points = stoi(_nr_points);
-
-	if (nr_points % 3) {
-		std::cout << "Invalid number of points" << endl;
-		return;
-	}
-
-	for (int i = 0; i < nr_points; i += 3) {
-		float x, y, z;
-		string token;
-		getline(file, line);
-		istringstream stream(line);
-		getline(stream, token, ',');
-		x = stof(token);
-		getline(stream, token, ',');
-		y = stof(token);
-		getline(stream, token);
-		z = stof(token);
-		point p(x, y, z);
-		cout << x << " " << y << " " << z << endl;
-	}
-
-	cout << "NR POINTS READ: " << nr_points << " TYPE OF FIGURE: " << drawing << endl;
-}
-
-
 // Mouse button callback
 void mousePress(int button, int state, int x, int y) {
 
@@ -248,9 +206,11 @@ void createMenu(int id_op){
 
 int valid_xml(char* filename) {
 	int name = regex_match(filename, regex(".*\.xml"));
+	
 	ifstream f(filename);
 	int exists = f.good();
 	f.close();
+
 	return name && exists;
 }
 
