@@ -43,23 +43,18 @@ vector<float> pointArrays(float size, float div){
 
 /*
 * Function planePoints puts together the values of two vectors to create the points.
-* Since the plane is a 2D object, the parameters 'o' and 'c' are there to complete the points (which are 3D).
-* 'o' has valid values "x", "y", "z". 'c' is the value of that coordinate.
+* Since the plane is a 2D object, the parameter 'c' completes the points (which are 3D).
 */
-void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 
+// xOy plane facing forward
 
-	if (o == 'x'){
-		for (int i = 0; i < xs.size() - 1; i++){
-			for (int j = 0; j < ys.size() - 1; j++){
-				point p1(c, xs[i], ys[j]);
-				point p2(c, xs[i + 1], ys[j + 1]);
-				point p3(c, xs[i], ys[j + 1]);
-
-				point p4(c, xs[i], ys[j]);
-				point p5(c, xs[i + 1], ys[j]);
-				point p6(c, xs[i + 1], ys[j + 1]);
-
+void YZFwdPlanePoints(float c, float y1, float y2, float z1, float z2, vector<point> points){
+				point p1 (c, y1, z1);
+				point p2 (c, y2, z2);
+				point p3 (c, y1, z2);
+				point p4 (c, y1, z1);
+				point p5 (c, y2, z1);
+				point p6(c, y2, z2);
 
 				points.push_back(p1);
 				points.push_back(p2);
@@ -67,20 +62,19 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 				points.push_back(p4);
 				points.push_back(p5);
 				points.push_back(p6);
-			}
-		}
+			
+		
 	}
-	else if (o == 'X'){
-		for (int i = 0; i < xs.size() - 1; i++){
-			for (int j = 0; j < ys.size() - 1; j++){
-				point p1(c, xs[i], ys[j]);
-				point p2(c, xs[i], ys[j + 1]);
-				point p3(c, xs[i + 1], ys[j + 1]);
 
-				point p4(c, xs[i], ys[j]);
-				point p5(c, xs[i + 1], ys[j + 1]);
-				point p6(c, xs[i + 1], ys[j]);
+// yOz facing forward
+	void YZBwdPlanePoints(float c, float y1, float y2, float z1, float z2, vector<point> points){
+				point p1(c, y1, z1);
+				point p2(c, y1, z2);
+				point p3(c, y2, z2);
 
+				point p4(c, y1, z1);
+				point p5(c, y2, z2);
+				point p6(c, y2, z1);
 
 				points.push_back(p1);
 				points.push_back(p2);
@@ -88,99 +82,83 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 				points.push_back(p4);
 				points.push_back(p5);
 				points.push_back(p6);
-			}
-		}
-	}
-	else if (o == 'Y'){
-		for (int i = 0; i < xs.size() - 1; i++){
-			for (int j = 0; j < ys.size() - 1; j++){
-				point p1(xs[i], c, ys[j]);
-				point p2(xs[i + 1], c, ys[j + 1]);
-				point p3(xs[i], c, ys[j + 1]);
-
-				point p4(xs[i], c, ys[j]);
-				point p5(xs[i + 1], c, ys[j]);
-				point p6(xs[i + 1], c, ys[j + 1]);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-			}
-		}
-	}
-	else if (o == 'y'){
-		for (int i = 0; i < xs.size() - 1; i++){
-			for (int j = 0; j < ys.size() - 1; j++){
-				point p1(xs[i], c, ys[j]);
-				point p2(xs[i], c, ys[j + 1]);
-				point p3(xs[i + 1], c, ys[j + 1]);
-
-				point p4(xs[i], c, ys[j]);
-				point p5(xs[i + 1], c, ys[j + 1]);
-				point p6(xs[i + 1], c, ys[j]);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-
-
-
-
-			}
-		}
-	}
-	else if (o == 'z'){
-		for (int i = 0; i < xs.size() - 1; i++){
-			for (int j = 0; j < ys.size() - 1; j++){
-				point p1(xs[i], ys[j], c);
-				point p2(xs[i + 1], ys[j + 1], c);
-				point p3(xs[i], ys[j + 1], c);
-
-				point p4(xs[i], ys[j], c);
-				point p5(xs[i + 1], ys[j], c);
-				point p6(xs[i + 1], ys[j + 1], c);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-			}
-		}
-	}
-	else if (o == 'Z'){
-		for (int i = 0; i < xs.size() - 1; i++){
-			for (int j = 0; j < ys.size() - 1; j++){
-				point p1(xs[i], ys[j], c);
-				point p2(xs[i], ys[j + 1], c);
-				point p3(xs[i + 1], ys[j + 1], c);
-
-				point p4(xs[i], ys[j], c);
-				point p5(xs[i + 1], ys[j + 1], c);
-				point p6(xs[i + 1], ys[j], c);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-			}
-		}
-	}
-
+			
 }
+
+
+void XZBwdPlanePoints(float c, float x1, float x2, float z1, float z2, vector<point> points){
+				point p1(x1, c, z1);
+				point p2(x2, c, z2);
+				point p3(x1, c, z2);
+
+				point p4(x1, c, z1);
+				point p5(x2, c, z1);
+				point p6(x2, c, z2);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+}
+
+// xOz plane facing forward
+void XZFwdPlanePoints(float c, float x1, float x2, float z1, float z2, vector<point> points){
+				point p1(x1, c, z1);
+				point p2(x1, c, z2);
+				point p3(x2, c, z2);
+				point p4(x1, c, z1);
+				point p5(x2, c, z2);
+				point p6(x2, c, z1);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+}
+
+void XYFwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<point> points){
+				point p1(x1, y1, c);
+				point p2(x2, y2, c);
+				point p3(x1, y2, c);
+
+				point p4(x1, y1, c);
+				point p5(x2, y1, c);
+				point p6(x2, y2, c);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+}
+
+void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<point> points){
+				point p1(x1, y1, c);
+				point p2(x1, y2, c);
+				point p3(x2, y2, c);
+
+				point p4(x1, y1, c);
+				point p5(x2, y2, c);
+				point p6(x2, y1, c);
+
+
+				points.push_back(p1);
+				points.push_back(p2);
+				points.push_back(p3);
+				points.push_back(p4);
+				points.push_back(p5);
+				points.push_back(p6);
+}
+	
+
 
 /*
 * Creates a plane given its length, width, number of columns and number of rows.
@@ -188,32 +166,46 @@ void planePoints(char o, float c, vector<float> xs, vector<float> ys){
 */
 
 void create_plane(float length, float width, int columns, int rows){
+	vector<point> points;
 	vector<float> r = pointArrays(length, rows);
 	vector<float> c = pointArrays(width, columns);
-
-	planePoints('z', 0.0f, r, c);
+	for (int i = 0; i < r.size() - 1; i++)
+		for (int j = 0; j < c.size() - 1; j++)
+			XYFwdPlanePoints(0.0f, r[i], r[i+1], c[j], c[j+1], points);
 }
 
 
 /*
-* Creates a parallelepiped given it's length, width, height, number of slices and number of stacks.
-* Function calls the plane
-*/
-void create_parallelepiped(float length, float width, float height, int slices, int stacks){
+ * Creates a parallelepiped given it's length, width, height, number of slices and number of stacks.
+ * Function calls the plane
+ */
+void create_parallelepipep(float length, float width, float height, int slices, int stacks){
+	vector<point> points;
 	vector<float> lenpts = pointArrays(length, slices);
 	vector<float> widpts = pointArrays(width, slices);
 	vector<float> higpts = pointArrays(height, stacks);
-
+	
 	// one plane for each side of the parallelepiped
-	planePoints('z', (width / 2), lenpts, higpts);
-	planePoints('x', (length / 2), higpts, widpts);
-	planePoints('y', (height / 2), lenpts, widpts);
-	planePoints('Z', -(width / 2), lenpts, higpts);
-	planePoints('X', -(length / 2), higpts, widpts);
-	planePoints('Y', -(height / 2), lenpts, widpts);
+	for (int i = 0; i < lenpts.size() - 1; i++)
+		for (int j = 0; j < higpts.size() - 1; j++){
+			XYFwdPlanePoints((width / 2), lenpts[i], lenpts[i+1], higpts[j], higpts[j+1], points);
+			XYBwdPlanePoints(-(width / 2), lenpts[i], lenpts[i + 1], higpts[j], higpts[j + 1], points);
+		}
+
+	for (int i = 0; i < higpts.size() - 1; i++)
+		for (int j = 0; j < widpts.size(); j++){
+			YZFwdPlanePoints((length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1], points);
+			YZBwdPlanePoints(-(length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1], points);
+		}
+
+	for (int i = 0; i < lenpts.size() - 1; i++)
+		for (int j = 0; j < widpts.size(); j++){
+			XZFwdPlanePoints((height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1], points);
+			XZBwdPlanePoints(-(height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1], points);
+		}
+
 
 }
-
 
 void create_sphere(float ray, float nSlices, float nLayers ){
 	vector<int> indexes;
