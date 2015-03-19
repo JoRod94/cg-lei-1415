@@ -179,7 +179,7 @@ void create_plane(float length, float width, int columns, int rows){
  * Creates a parallelepiped given it's length, width, height, number of slices and number of stacks.
  * Function calls the plane
  */
-void create_parallelepipep(float length, float width, float height, int slices, int stacks){
+void create_parallelepiped(float length, float width, float height, int slices, int stacks){
 	vector<point> points;
 	vector<float> lenpts = pointArrays(length, slices);
 	vector<float> widpts = pointArrays(width, slices);
