@@ -207,7 +207,7 @@ void create_parallelepiped(float length, float width, float height, int slices, 
 
 }
 
-void create_sphere(float ray, float nSlices, float nLayers ){
+void create_sphere(float radius, float nSlices, float nLayers){
 	vector<int> indexes;
 
 	float sliceInc = (2.0f * M_PI) / nSlices;
@@ -222,22 +222,22 @@ void create_sphere(float ray, float nSlices, float nLayers ){
 
 		for (int j = 0; j < nSlices; j++){
 			//top half triangles
-			points.push_back(point(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta)));
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta), ray * sin(beta), ray * cos(alfa + sliceInc) * cos(beta)));
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc)));
+			points.push_back(point(radius * sin(alfa) * cos(beta), radius * sin(beta), radius * cos(alfa) * cos(beta)));
+			points.push_back(point(radius * sin(alfa + sliceInc) * cos(beta), radius * sin(beta), radius * cos(alfa + sliceInc) * cos(beta)));
+			points.push_back(point(radius * sin(alfa + sliceInc) * cos(beta + layerInc), radius * sin(beta + layerInc), radius * cos(alfa + sliceInc) * cos(beta + layerInc)));
 
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa + sliceInc) * cos(beta + layerInc)));
-			points.push_back(point(ray * sin(alfa) * cos(beta + layerInc), ray * sin(beta + layerInc), ray * cos(alfa) * cos(beta + layerInc)));
-			points.push_back(point(ray * sin(alfa) * cos(beta), ray * sin(beta), ray * cos(alfa) * cos(beta)));
+			points.push_back(point(radius * sin(alfa + sliceInc) * cos(beta + layerInc), radius * sin(beta + layerInc), radius * cos(alfa + sliceInc) * cos(beta + layerInc)));
+			points.push_back(point(radius * sin(alfa) * cos(beta + layerInc), radius * sin(beta + layerInc), radius * cos(alfa) * cos(beta + layerInc)));
+			points.push_back(point(radius * sin(alfa) * cos(beta), radius * sin(beta), radius * cos(alfa) * cos(beta)));
 
 			//bottom half triangles
-			points.push_back(point(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc)));
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa + sliceInc) * cos(-beta - layerInc)));
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta)));
+			points.push_back(point(radius * sin(alfa) * cos(-beta - layerInc), radius * sin(-beta - layerInc), radius * cos(alfa) * cos(-beta - layerInc)));
+			points.push_back(point(radius * sin(alfa + sliceInc) * cos(-beta - layerInc), radius * sin(-beta - layerInc), radius * cos(alfa + sliceInc) * cos(-beta - layerInc)));
+			points.push_back(point(radius * sin(alfa + sliceInc) * cos(-beta), radius * sin(-beta), radius * cos(alfa + sliceInc) * cos(-beta)));
 
-			points.push_back(point(ray * sin(alfa + sliceInc) * cos(-beta), ray * sin(-beta), ray * cos(alfa + sliceInc) * cos(-beta)));
-			points.push_back(point(ray * sin(alfa) * cos(-beta), ray * sin(-beta), ray * cos(alfa) * cos(-beta)));
-			points.push_back(point(ray * sin(alfa) * cos(-beta - layerInc), ray * sin(-beta - layerInc), ray * cos(alfa) * cos(-beta - layerInc)));
+			points.push_back(point(radius * sin(alfa + sliceInc) * cos(-beta), radius * sin(-beta), radius * cos(alfa + sliceInc) * cos(-beta)));
+			points.push_back(point(radius * sin(alfa) * cos(-beta), radius * sin(-beta), radius * cos(alfa) * cos(-beta)));
+			points.push_back(point(radius * sin(alfa) * cos(-beta - layerInc), radius * sin(-beta - layerInc), radius * cos(alfa) * cos(-beta - layerInc)));
 
 			alfa += sliceInc;
 		}
@@ -287,8 +287,8 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 	float sliceInc = (2.0f * M_PI) / nSlices;
 	float layerInc = (M_PI / 2.0f) / nLayers;
 	float heightInc = height / nLayers;
-	float rayDec = radius / nLayers;
-	float alfa = 0.0f, beta = 0.0f, currentRay = radius, nextRadius = radius, innerRadius = radius, currentheight = 0.0f;
+	float radiusDec = radius / nLayers;
+	float alfa = 0.0f, beta = 0.0f, currentRadius = radius, nextRadius = radius, innerRadius = radius, currentheight = 0.0f;
 
 	//cone base
 	for (int i = 0; i < nSlices; i++){
@@ -300,30 +300,29 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 	}
 
 	//rest of the cone
-
-	currentRay = innerRadius;
+	currentRadius = innerRadius;
 	for (int i = 0; i < nLayers; i++){
 		//we need this, otherwise we would get a sphere
-		nextRadius = (innerRadius - rayDec) / cos(beta + layerInc);
+		nextRadius = (innerRadius - radiusDec) / cos(beta + layerInc);
 		alfa = 0.0f;
 
 		for (int j = 0; j < nSlices; j++){
 			//first triangle
-			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
-			points.push_back(point(currentRay * sin(alfa + sliceInc) * cos(beta), currentheight, currentRay * cos(alfa + sliceInc) * cos(beta)));
+			points.push_back(point(currentRadius * sin(alfa) * cos(beta), currentheight, currentRadius * cos(alfa) * cos(beta)));
+			points.push_back(point(currentRadius * sin(alfa + sliceInc) * cos(beta), currentheight, currentRadius * cos(alfa + sliceInc) * cos(beta)));
 			points.push_back(point(nextRadius * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa + sliceInc) * cos(beta + layerInc)));
 
 			//second triangle
 			points.push_back(point(nextRadius * sin(alfa + sliceInc) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa + sliceInc) * cos(beta + layerInc)));
 			points.push_back(point(nextRadius * sin(alfa) * cos(beta + layerInc), currentheight + heightInc, nextRadius * cos(alfa) * cos(beta + layerInc)));
-			points.push_back(point(currentRay * sin(alfa) * cos(beta), currentheight, currentRay * cos(alfa) * cos(beta)));
+			points.push_back(point(currentRadius * sin(alfa) * cos(beta), currentheight, currentRadius * cos(alfa) * cos(beta)));
 
 			alfa += sliceInc;
 		}
 
 		currentheight += heightInc;
-		currentRay = nextRadius;
-		innerRadius -= rayDec;
+		currentRadius = nextRadius;
+		innerRadius -= radiusDec;
 		beta += layerInc;
 	}
 }
@@ -331,15 +330,15 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 void create_torus(float ir, float or, float nRings, float nLayers){
 	int i, j;
 	point o1, o2, o3;
-	float ray = ir + or;
+	float radius = ir + or;
 	float layerInc = (2.0f * M_PI) / nLayers;
 	float ringInc = (2.0f * M_PI) / nRings;
 	float alfa = 0.0f, beta = 0.0f;
 
 	for (i = 0; i < nRings; i++){
-		//calculate 2 reference points for torus ring generation
-		o1 = point(ray * sin(alfa) * cos(beta), 0, ray * cos(alfa) * cos(beta));
-		o2 = point(ray * sin(alfa + ringInc) * cos(beta), 0, ray * cos(alfa + ringInc) * cos(beta));
+		//calculate 2 reference points for torus ring point generation
+		o1 = point(radius * sin(alfa) * cos(beta), 0, radius * cos(alfa) * cos(beta));
+		o2 = point(radius * sin(alfa + ringInc) * cos(beta), 0, radius * cos(alfa + ringInc) * cos(beta));
 
 		for (j = 0; j < nLayers; j++){
 			points.push_back(point(o1.x + or * sin(alfa) * cos(beta), or * sin(beta), o1.z + or * cos(alfa) * cos(beta)));
