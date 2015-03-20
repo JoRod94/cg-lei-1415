@@ -134,6 +134,16 @@ void renderScene(void) {
 	glutSwapBuffers();
 }
 
+
+void keyBoardInput(unsigned char key, int x, int y){
+	if (key == 'r')
+		radius--;
+	if (key == 'f')
+		radius++;
+	glutPostRedisplay();
+
+}
+
 // Mouse button callback
 void mousePress(int button, int state, int x, int y) {
 
@@ -244,6 +254,7 @@ int main(int argc, char **argv)
 	// Camera stuff
 	glutMouseFunc(mousePress);
 	glutMotionFunc(mouseMotion);
+	glutKeyboardFunc(keyBoardInput);
 
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);

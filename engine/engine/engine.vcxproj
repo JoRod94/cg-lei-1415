@@ -41,12 +41,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\_toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(IncludePath);C:\toolkits\includes;</IncludePath>
+    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\engine\toolkits\includes;C:\_toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(IncludePath);C:\toolkits\includes;</IncludePath>
     <LibraryPath>C:\_toolkits\libs;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(LibraryPath);C:\toolkits\libs</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\includes;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\engine\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\includes;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
