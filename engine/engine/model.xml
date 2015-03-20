@@ -1,9 +1,0 @@
-<cena>
-	<modelo ficheiro="esfera.3d" />
-	<modelo ficheiro="plano.3d" />
-	<modelo ficheiro="plano.3d" />
-</cena>
-<cena>
-	<modelo ficheiro="esfera2.3d" />
-	<modelo ficheiro="plano2.3d" />
-</cena>
