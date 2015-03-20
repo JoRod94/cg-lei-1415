@@ -1,0 +1,5 @@
+<cena>
+	<modelo ficheiro="sphere.3d" />
+	<modelo ficheiro="torus.3d" />
+	<modelo ficheiro="cone.3d" />
+</cena>
