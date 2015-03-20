@@ -165,7 +165,7 @@ void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<po
 * The plane will be xOy, with z = 0.
 */
 
-void create_plane(float length, float width, int columns, int rows){
+void create_plane(float length, float width, float columns, float rows){
 	vector<point> points;
 	vector<float> r = pointArrays(length, rows);
 	vector<float> c = pointArrays(width, columns);
@@ -179,7 +179,7 @@ void create_plane(float length, float width, int columns, int rows){
  * Creates a parallelepiped given it's length, width, height, number of slices and number of stacks.
  * Function calls the plane
  */
-void create_parallelepiped(float length, float width, float height, int slices, int stacks){
+void create_parallelepiped(float length, float width, float height, float slices, float stacks){
 	vector<point> points;
 	vector<float> lenpts = pointArrays(length, slices);
 	vector<float> widpts = pointArrays(width, slices);
@@ -210,8 +210,8 @@ void create_parallelepiped(float length, float width, float height, int slices, 
 void create_sphere(float radius, float nSlices, float nLayers){
 	vector<int> indexes;
 
-	float sliceInc = (2.0f * M_PI) / nSlices;
-	float layerInc = (M_PI / 2.0f) / nLayers;
+	float sliceInc = (2.0f * ((float)M_PI)) / nSlices;
+	float layerInc = (((float)M_PI) / 2.0f) / nLayers;
 
 	//alfa: horizontal angle; beta vertical angle;
 	float alfa = 0.0f, beta = 0.0f;
@@ -249,7 +249,7 @@ void create_sphere(float radius, float nSlices, float nLayers){
 void create_cylinder(float radius, float height, float slices, float layers){
 	float currAng = 0.0f;
 	float currH;
-	float angInc = (2 * M_PI) / slices;
+	float angInc = (2 * ((float)M_PI)) / slices;
 	float hInc = height / layers;
 
 	//cada fatia
@@ -284,8 +284,8 @@ void create_cylinder(float radius, float height, float slices, float layers){
 }
 
 void create_cone(float radius, float height, float nSlices, float nLayers){
-	float sliceInc = (2.0f * M_PI) / nSlices;
-	float layerInc = (M_PI / 2.0f) / nLayers;
+	float sliceInc = (2.0f * ( (float) M_PI)) / nSlices;
+	float layerInc = ( (float) M_PI / 2.0f) / nLayers;
 	float heightInc = height / nLayers;
 	float radiusDec = radius / nLayers;
 	float alfa = 0.0f, beta = 0.0f, currentRadius = radius, nextRadius = radius, innerRadius = radius, currentheight = 0.0f;
@@ -331,8 +331,8 @@ void create_torus(float ir, float or, float nRings, float nLayers){
 	int i, j;
 	point o1, o2, o3;
 	float radius = ir + or;
-	float layerInc = (2.0f * M_PI) / nLayers;
-	float ringInc = (2.0f * M_PI) / nRings;
+	float layerInc = (2.0f * ((float)M_PI)) / nLayers;
+	float ringInc = (2.0f * ((float)M_PI)) / nRings;
 	float alfa = 0.0f, beta = 0.0f;
 
 	for (i = 0; i < nRings; i++){
@@ -359,7 +359,7 @@ void create_torus(float ir, float or, float nRings, float nLayers){
 int valid_input(int argc, char* argv[]) {
 	int nrs = 1;
 	int file = 1;
-	regex number("[0-9]+");
+	regex number("[0-9]*\.?[0-9]+");
 	regex word("[a-zA-Z0-9\-_\.]*[a-zA-Z0-9]");
 
 	for (int i = 2; i < argc - 1 && nrs; i++)
@@ -385,7 +385,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Plane..." << endl;
-		create_plane(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+		create_plane(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
 	else if (strcmp(argv[1], "sphere") == 0){
 		if (argc != 6){
@@ -393,7 +393,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Sphere..." << endl;
-		create_sphere(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+		create_sphere(stof(argv[2]), stof(argv[3]), stof(argv[4]));
 	}
 	else if (strcmp(argv[1], "box") == 0){
 		if (argc != 8){
@@ -401,7 +401,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Box..." << endl;
-		create_parallelepiped(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
+		create_parallelepiped(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]));
 	}
 	else if (strcmp(argv[1], "cone") == 0){
 		if (argc != 7){
@@ -409,7 +409,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Cone..." << endl;
-		create_cone(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+		create_cone(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
 	else if (strcmp(argv[1], "cylinder") == 0){
 		if (argc != 7){
@@ -417,7 +417,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Cylinder..." << endl;
-		create_cylinder(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+		create_cylinder(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
 	else if (strcmp(argv[1], "torus") == 0){
 		if (argc != 7){
@@ -425,16 +425,17 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Torus..." << endl;
-		create_torus(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+		create_torus(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
 	else{
 		std::cout << "Command not recognized" << endl;
 		return 0;
 	}
 	std::cout << "Writing to file..." << endl;
-	create_file(argv[argc-1]);
+	create_file(argv[argc - 1]);
 	std::cout << "Done" << endl;
 
 	return 0;
 }
+
 
