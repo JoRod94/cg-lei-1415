@@ -208,18 +208,16 @@ void create_parallelepiped(float length, float width, float height, float slices
 void create_sphere(float radius, float nSlices, float nLayers){
 	vector<int> indexes;
 
-	float sliceInc = (2.0f * ((float)M_PI)) / nSlices;
-	float layerInc = (((float)M_PI) / 2.0f) / nLayers;
+	float sliceInc = (2.0f * M_PI) / nSlices;
+	float layerInc = (M_PI) / nLayers;
 
 	//alfa: horizontal angle; beta vertical angle;
 	float alfa = 0.0f, beta = 0.0f;
 
-	for (int i = 0; i < nLayers; i++){
+	for (int i = 0; i < nSlices; i++){
+		beta = -(M_PI / 2.0f);
 
-		alfa = 0.0f;
-
-		for (int j = 0; j < nSlices; j++){
-			//top half triangles
+		for (int j = 0; j < nLayers; j++){
 			points.push_back(point(radius * sin(alfa) * cos(beta), radius * sin(beta), radius * cos(alfa) * cos(beta)));
 			points.push_back(point(radius * sin(alfa + sliceInc) * cos(beta), radius * sin(beta), radius * cos(alfa + sliceInc) * cos(beta)));
 			points.push_back(point(radius * sin(alfa + sliceInc) * cos(beta + layerInc), radius * sin(beta + layerInc), radius * cos(alfa + sliceInc) * cos(beta + layerInc)));
@@ -228,19 +226,10 @@ void create_sphere(float radius, float nSlices, float nLayers){
 			points.push_back(point(radius * sin(alfa) * cos(beta + layerInc), radius * sin(beta + layerInc), radius * cos(alfa) * cos(beta + layerInc)));
 			points.push_back(point(radius * sin(alfa) * cos(beta), radius * sin(beta), radius * cos(alfa) * cos(beta)));
 
-			//bottom half triangles
-			points.push_back(point(radius * sin(alfa) * cos(-beta - layerInc), radius * sin(-beta - layerInc), radius * cos(alfa) * cos(-beta - layerInc)));
-			points.push_back(point(radius * sin(alfa + sliceInc) * cos(-beta - layerInc), radius * sin(-beta - layerInc), radius * cos(alfa + sliceInc) * cos(-beta - layerInc)));
-			points.push_back(point(radius * sin(alfa + sliceInc) * cos(-beta), radius * sin(-beta), radius * cos(alfa + sliceInc) * cos(-beta)));
-
-			points.push_back(point(radius * sin(alfa + sliceInc) * cos(-beta), radius * sin(-beta), radius * cos(alfa + sliceInc) * cos(-beta)));
-			points.push_back(point(radius * sin(alfa) * cos(-beta), radius * sin(-beta), radius * cos(alfa) * cos(-beta)));
-			points.push_back(point(radius * sin(alfa) * cos(-beta - layerInc), radius * sin(-beta - layerInc), radius * cos(alfa) * cos(-beta - layerInc)));
-
-			alfa += sliceInc;
+			beta += layerInc;
 		}
 
-		beta += layerInc;
+		alfa += sliceInc;
 	}
 }
 

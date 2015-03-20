@@ -46,8 +46,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\engine\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\engine\toolkits\includes;C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\engine\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\engine\toolkits\libs;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
