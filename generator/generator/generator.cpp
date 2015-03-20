@@ -20,6 +20,7 @@ void create_file(const char* filename){
 	unsigned long int size = points.size();
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
+	printf("%lu\n", size);
 	newFile.write((char *)&size, sizeof(size));
 	newFile.write((char *)&points[0], size*sizeof(point));
 }
@@ -48,7 +49,7 @@ vector<float> pointArrays(float size, float div){
 
 // xOy plane facing forward
 
-void YZFwdPlanePoints(float c, float y1, float y2, float z1, float z2, vector<point> points){
+void YZFwdPlanePoints(float c, float y1, float y2, float z1, float z2){
 				point p1 (c, y1, z1);
 				point p2 (c, y2, z2);
 				point p3 (c, y1, z2);
@@ -67,7 +68,7 @@ void YZFwdPlanePoints(float c, float y1, float y2, float z1, float z2, vector<po
 	}
 
 // yOz facing forward
-	void YZBwdPlanePoints(float c, float y1, float y2, float z1, float z2, vector<point> points){
+	void YZBwdPlanePoints(float c, float y1, float y2, float z1, float z2){
 				point p1(c, y1, z1);
 				point p2(c, y1, z2);
 				point p3(c, y2, z2);
@@ -86,7 +87,7 @@ void YZFwdPlanePoints(float c, float y1, float y2, float z1, float z2, vector<po
 }
 
 
-void XZBwdPlanePoints(float c, float x1, float x2, float z1, float z2, vector<point> points){
+void XZBwdPlanePoints(float c, float x1, float x2, float z1, float z2){
 				point p1(x1, c, z1);
 				point p2(x2, c, z2);
 				point p3(x1, c, z2);
@@ -105,7 +106,7 @@ void XZBwdPlanePoints(float c, float x1, float x2, float z1, float z2, vector<po
 }
 
 // xOz plane facing forward
-void XZFwdPlanePoints(float c, float x1, float x2, float z1, float z2, vector<point> points){
+void XZFwdPlanePoints(float c, float x1, float x2, float z1, float z2){
 				point p1(x1, c, z1);
 				point p2(x1, c, z2);
 				point p3(x2, c, z2);
@@ -122,11 +123,10 @@ void XZFwdPlanePoints(float c, float x1, float x2, float z1, float z2, vector<po
 				points.push_back(p6);
 }
 
-void XYFwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<point> points){
+void XYFwdPlanePoints(float c, float x1, float x2, float y1, float y2){
 				point p1(x1, y1, c);
 				point p2(x2, y2, c);
 				point p3(x1, y2, c);
-
 				point p4(x1, y1, c);
 				point p5(x2, y1, c);
 				point p6(x2, y2, c);
@@ -140,7 +140,7 @@ void XYFwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<po
 				points.push_back(p6);
 }
 
-void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<point> points){
+void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2){
 				point p1(x1, y1, c);
 				point p2(x1, y2, c);
 				point p3(x2, y2, c);
@@ -165,13 +165,12 @@ void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2, vector<po
 * The plane will be xOy, with z = 0.
 */
 
-void create_plane(float length, float width, float columns, float rows){
-	vector<point> points;
+void create_plane(float length, float width, int columns, int rows){
 	vector<float> r = pointArrays(length, rows);
 	vector<float> c = pointArrays(width, columns);
 	for (int i = 0; i < r.size() - 1; i++)
 		for (int j = 0; j < c.size() - 1; j++)
-			XYFwdPlanePoints(0.0f, r[i], r[i+1], c[j], c[j+1], points);
+			XYFwdPlanePoints(0.0f, r[i], r[i+1], c[j], c[j+1]);
 }
 
 
@@ -188,20 +187,20 @@ void create_parallelepiped(float length, float width, float height, float slices
 	// one plane for each side of the parallelepiped
 	for (int i = 0; i < lenpts.size() - 1; i++)
 		for (int j = 0; j < higpts.size() - 1; j++){
-			XYFwdPlanePoints((width / 2), lenpts[i], lenpts[i+1], higpts[j], higpts[j+1], points);
-			XYBwdPlanePoints(-(width / 2), lenpts[i], lenpts[i + 1], higpts[j], higpts[j + 1], points);
+			XYFwdPlanePoints((width / 2), lenpts[i], lenpts[i+1], higpts[j], higpts[j+1]);
+			XYBwdPlanePoints(-(width / 2), lenpts[i], lenpts[i + 1], higpts[j], higpts[j + 1]);
 		}
 
 	for (int i = 0; i < higpts.size() - 1; i++)
-		for (int j = 0; j < widpts.size(); j++){
-			YZFwdPlanePoints((length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1], points);
-			YZBwdPlanePoints(-(length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1], points);
+		for (int j = 0; j < widpts.size() -1; j++){
+			YZFwdPlanePoints((length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1]);
+			YZBwdPlanePoints(-(length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1]);
 		}
 
 	for (int i = 0; i < lenpts.size() - 1; i++)
-		for (int j = 0; j < widpts.size(); j++){
-			XZFwdPlanePoints((height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1], points);
-			XZBwdPlanePoints(-(height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1], points);
+		for (int j = 0; j < widpts.size() - 1; j++){
+			XZFwdPlanePoints((height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1]);
+			XZBwdPlanePoints(-(height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1]);
 		}
 
 
