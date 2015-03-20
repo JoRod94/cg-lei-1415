@@ -20,7 +20,6 @@ void create_file(const char* filename){
 	unsigned long int size = points.size();
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
-	printf("%lu\n", size);
 	newFile.write((char *)&size, sizeof(size));
 	newFile.write((char *)&points[0], size*sizeof(point));
 }
@@ -165,7 +164,7 @@ void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2){
 * The plane will be xOy, with z = 0.
 */
 
-void create_plane(float length, float width, int columns, int rows){
+void create_plane(float length, float width, float columns, float rows){
 	vector<float> r = pointArrays(length, rows);
 	vector<float> c = pointArrays(width, columns);
 	for (int i = 0; i < r.size() - 1; i++)
@@ -330,9 +329,9 @@ void create_torus(float ir, float or, float nRings, float nLayers){
 	int i, j;
 	point o1, o2, o3;
 	float radius = ir + or;
-	float layerInc = (2.0f * ((float)M_PI)) / nLayers;
-	float ringInc = (2.0f * ((float)M_PI)) / nRings;
-	float alfa = 0.0f, beta = 0.0f;
+	double layerInc = (2.0f * (M_PI)) / nLayers;
+	double ringInc = (2.0f * (M_PI)) / nRings;
+	double alfa = 0.0f, beta = 0.0f;
 
 	for (i = 0; i < nRings; i++){
 		//calculate 2 reference points for torus ring point generation

@@ -70,22 +70,10 @@ void read_bin(string filename){
 
 	i.read((char *)&arraySize, sizeof(arraySize));
 
-	cout << "\n########## READING BINARY FILE ##########"
-		<< "\n\nNR POINTS:"
-		<< arraySize
-		<< endl;
-
 	points.resize(arraySize);
 	i.read((char *)&points[0], arraySize*sizeof(point));
 
-	cout << "\n########## FINISHED FILE READ ##########" << endl;
-
-	cout << "\nINSERTING INTO HASH...\n"
-		<< endl;
-
 	files[filename] = figure{points, 1};
-
-	cout << "\nFINISHED INSERTING INTO HASH" << endl;
 }
 
 
