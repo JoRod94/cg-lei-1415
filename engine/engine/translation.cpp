@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include <GL/glut.h>
 #include "translation.h"
-
 
 
 void Translation::apply(){

@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include <GL/glut.h>
 #include "scale.h"
-
 
 
 void Scale::apply(){

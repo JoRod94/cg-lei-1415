@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <GL/glut.h>
 #include "rotation.h"
 
