@@ -118,7 +118,7 @@ group new_group(vector<Transformation> transformations; vector<string> points, v
     return g;
 }
 
-void renderGroups() {
+void renderPoints() {
     for(vector<group>::iterator it = groups.begin();
             it != groups.end();
             ++it)
@@ -318,6 +318,7 @@ void renderScene(void) {
 	glLoadIdentity();
 
 	keyActions();
+
 	if (freeCamera){
 		gluLookAt(px, py, pz,
 			px + rx, py + ry, pz + rz,
