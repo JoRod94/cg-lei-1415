@@ -12,8 +12,13 @@
 #include "tinyxml2.h"
 #include <GL/glut.h>
 #include <regex>
+#include "transformation.h"
+#include "translation.h"
+#include "rotation.h"
+#include "scale.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+
 
 #define _XML_FILE           "ficheiro"
 #define _XML_SCENE          "cena"
@@ -68,25 +73,25 @@ void keyHoldsInit(){
 }
 
 void keyActions(){
-	if (keyHolds['z'] == true)
+	if (keyHolds['z'])
 		radius--;
-	if (keyHolds['x'] == true)
+	if (keyHolds['x'])
 		radius++;
-	if (keyHolds['w'] == true){
+	if (keyHolds['w']){
 		pz += 0.01f*rz;
 		px += 0.01f*rx;
 		py += 0.01f*ry;
 	}
-	if (keyHolds['s'] == true){
+	if (keyHolds['s']){
 		pz -= 0.01f*rz;
 		px -= 0.01f*rx;
 		py -= 0.01f*ry;
 	}
-	if (keyHolds['d'] == true){
+	if (keyHolds['d']){
 		pz += 0.01f*rx;
 		px -= 0.01f*rz;
 	}
-	if (keyHolds['a'] == true){
+	if (keyHolds['a']){
 		pz -= 0.01f*rx;
 		px += 0.01f*rz;
 	}
@@ -118,17 +123,20 @@ group new_group(vector<Transformation> transformations; vector<string> points, v
     return g;
 }
 
-void renderPoints() {
-    for(vector<group>::iterator it = groups.begin();
-            it != groups.end();
-            ++it)
-        draw_group(*it);
+
+void render_points(vector<point> vp){
+	glBegin(GL_TRIANGLES);
+
+	for (int i = 0; i < vp.size(); i++)
+		glVertex3f(vp[i].x, vp[i].y, vp[i].z);
+
+	glEnd();
 }
 
 void draw_group(group g) {
     glPushMatrix();
 
-    for(vector<group>::iterator it = g.transformations.begin();
+    for(vector<Transformation>::iterator it = g.transformations.begin();
             it != g.transformations.end();
             ++it)
         it -> apply();
@@ -137,39 +145,35 @@ void draw_group(group g) {
             it != g.points.end();
             ++it)
     {
-        vector<point>::iterator p = files.find(*it);
+        map<string, vector<point>>::iterator p = files.find(*it);
 
-        if(p)
-            render_points(*p);
+        if(p != files.end())
+            render_points(p->second);
     }
 
     for(vector<group>::iterator it = g.subgroups.begin();
             it != g.subgroups.end();
             ++it)
-       draw_group(g -> subgroup);
+       draw_group(*it);
 
     glPopMatrix();
 }
 
-void render_points(vector<point> vp){
-    vector<point>::iterator iter = vp.begin();
-    glBegin(GL_TRIANGLES);
 
-    for (int i = 0; i < iter -> size(); i++)
-	    glVertex3f((*iter)[i].x, (*iter)[i].y, (*iter)[i].z);
-
-    glEnd();
+void renderPoints() {
+	for (vector<group>::iterator it = groups.begin();
+		it != groups.end();
+		++it)
+		draw_group(*it);
 }
-
 
 void read_bin(string filename){
 	unsigned long int arraySize;
 
-	map<string, figure>::iterator file = files.find(filename);
+	map<string, vector<point>>::iterator file = files.find(filename);
 
 	if (file != files.end()) {
-		points = file->second.points;
-		file->second.count++;
+		points = file->second;
 		cout << "FILE ALREADY EXISTS" << endl;
 		return;
 	}
@@ -185,7 +189,7 @@ void read_bin(string filename){
 	points.resize(arraySize);
 	i.read((char *)&points[0], arraySize*sizeof(point));
 
-	files[filename] = figure{ points, 1 };
+	files[filename] =  points;
 }
 
 static bool valid_group(tinyxml2::XMLElement* group) {
@@ -225,7 +229,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
         vt.push_back( Translation(
                     translation->IntAttribute(_XML_X),
                     translation->IntAttribute(_XML_Y),
-                    translation->IntAttribute(_XML_Z) );
+                    translation->IntAttribute(_XML_Z) ));
     }
 
 
@@ -235,7 +239,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
                     rotation->IntAttribute(_XML_ANGLE),
                     rotation->IntAttribute(_XML_X_AXIS),
                     rotation->IntAttribute(_XML_Y_AXIS),
-                    rotation->IntAttribute(_XML_Z_AXIS) );
+                    rotation->IntAttribute(_XML_Z_AXIS) ));
     }
 
     for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
@@ -243,31 +247,31 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
         vt.push_back( Scale(
                     scale->IntAttribute(_XML_X),
                     scale->IntAttribute(_XML_Y),
-                    scale->IntAttribute(_XML_Z) );
+                    scale->IntAttribute(_XML_Z) ));
     }
 
     return vt;
 }
 
-bool parseGroup(tinyxml2::XMLElement* group, group* ret) {
-    if(! valid_group(group)) {
+bool parseGroup(tinyxml2::XMLElement* g, group* ret) {
+    if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
     }
 
-    vector<Transformation> t = group_transformations(group);
-    vector<string> pt = group_points(group);
+    vector<Transformation> t = group_transformations(g);
+    vector<string> pt = group_points(g);
     vector<group> sg;
 
 
-    for (tinyxml2::XMLElement* subgroup = group->FirstChildElement(_XML_GROUP);
+    for (tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
             subgroup != NULL;
             subgroup = subgroup->NextSiblingElement(_XML_GROUP)) {
 
-            group* maybe_sub;
+            group* maybe_sub = NULL;
 
-            if( parseGroup(group, maybe_sub) )
-               sg.push_back( parseGroup(subgroup), *maybe_sub );
+            if( parseGroup(g, maybe_sub) )
+               sg.push_back( *maybe_sub );
         }
 
     *ret = new_group(t, pt, sg);
@@ -278,10 +282,12 @@ void read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
 
-	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE); scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
-		for (tinyxml2::XMLElement* group = scene->FirstChildElement(_XML_GROUP); group != NULL; group = group->NextSiblingElement(_XML_GROUP)) {
-            group* ret;
-            if( parseGroup(group, ret) )
+	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
+			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
+		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP); 
+				g != NULL; g = g->NextSiblingElement(_XML_GROUP)) {
+            group* ret = NULL;
+            if( parseGroup(g, ret) )
                 groups.push_back(*ret);
         }
 }
