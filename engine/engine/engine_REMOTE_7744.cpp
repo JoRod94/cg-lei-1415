@@ -30,73 +30,15 @@ typedef struct group {
 vector<group> groups;
 map<string, vector<point>> files;
 vector<point> points;
-
-//Menu variables
 GLenum mode = GL_FILL;
-bool shouldDrawGrid = false;
 
-//Camera variables
-bool freeCamera = false;
-bool keyHolds[256];
+// Camera variables
 float alpha = 0;
 float beta = 0;
 float radius = 10;
-float px = 0.0f;
-float py = 0.0f;
-float pz = 0.0f;
-float rx = 0.0f;
-float ry = 0.0f;
-float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
 
-void keyHoldsInit(){
-	for (int i = 0; i < 256; i++)
-		keyHolds[i] = false;
-}
-
-void keyActions(){
-	if (keyHolds['z'] == true)
-		radius--;
-	if (keyHolds['x'] == true)
-		radius++;
-	if (keyHolds['w'] == true){
-		pz += 0.01f*rz;
-		px += 0.01f*rx;
-		py += 0.01f*ry;
-	}
-	if (keyHolds['s'] == true){
-		pz -= 0.01f*rz;
-		px -= 0.01f*rx;
-		py -= 0.01f*ry;
-	}
-	if (keyHolds['d'] == true){
-		pz += 0.01f*rx;
-		px -= 0.01f*rz;
-	}
-	if (keyHolds['a'] == true){
-		pz -= 0.01f*rx;
-		px += 0.01f*rz;
-	}
-}
-
-void drawGrid(){
-	if (shouldDrawGrid){
-		glColor3ub(0, 255, 0);
-
-		for (float i = -50; i <= 50; i += 1){
-			glBegin(GL_LINES);
-
-			glVertex3f(-50, 0, i);
-			glVertex3f(50, 0, i);
-
-			glVertex3f(i, 0, -50);
-			glVertex3f(i, 0, 50);
-
-			glEnd();
-		}
-	}
-}
 
 void renderGroups() {
     for(vector<group>::iterator it = groups.begin();
@@ -159,7 +101,7 @@ void read_bin(string filename){
 	points.resize(arraySize);
 	i.read((char *)&points[0], arraySize*sizeof(point));
 
-	files[filename] = figure{ points, 1 };
+	files[filename] = figure{points, 1};
 }
 
 
@@ -207,44 +149,27 @@ void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	keyActions();
-	if (freeCamera){
-		gluLookAt(px, py, pz,
-			px + rx, py + ry, pz + rz,
-			0.0f, 1.0f, 0.0f);
-	}
-	else{
-		gluLookAt((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))),
-			0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f);
-	}
+	//TESTE, ALTERAR
+	gluLookAt((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))),
+		0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f);
 	glColor3f(1, 0, 0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
 
 	renderPoints();
 
-	drawGrid();
-
 	glutSwapBuffers();
 }
 
 
 void keyBoardInput(unsigned char key, int x, int y){
-	if (key == 'f'){
-		alpha = 0.0f;
-		beta = 0.0f;
-		freeCamera = !freeCamera;
-	}
-	else
-		keyHolds[key] = true;
-
+	if (key == 'r')
+		radius--;
+	if (key == 'f')
+		radius++;
 	glutPostRedisplay();
-}
 
-void keyUp(unsigned char key, int x, int y){
-	keyHolds[key] = false;
-	glutPostRedisplay();
 }
 
 // Mouse button callback
@@ -274,16 +199,15 @@ void mouseMotion(int x, int y) {
 		int xDiff = x - xOri;
 		int yDiff = y - yOri;
 
-		alpha -= xDiff * 0.01f;
-		beta -= yDiff * 0.01f;
+		alpha += xDiff * 0.01f;
 
-		if (beta > (M_PI / 2) - 0.001) beta = (M_PI / 2) - 0.001;
-		if (beta < -(M_PI / 2) + 0.001) beta = -(M_PI / 2) + 0.001;
-
-		rx = radius*cos(beta)*sin(alpha);
-		ry = radius*sin(beta);
-		rz = radius*cos(beta)*cos(alpha);
-
+		if (yDiff > 0){
+			if (beta <= (M_PI / 2))
+				beta += yDiff * 0.01f;
+		}
+		else
+			if (beta >= -(M_PI / 2))
+				beta -= -(yDiff * 0.01f);
 	}
 	xOri = x;
 	yOri = y;
@@ -291,7 +215,7 @@ void mouseMotion(int x, int y) {
 }
 
 
-void polygonModeHandler(int id_op){
+void createMenu(int id_op){
 	switch (id_op){
 	case 1:
 		mode = GL_LINE;
@@ -304,38 +228,6 @@ void polygonModeHandler(int id_op){
 		break;
 	}
 	glutPostRedisplay();
-}
-
-void gridModeHandler(int id_op){
-	switch (id_op){
-		case 1:
-			shouldDrawGrid = false;
-			break;
-		case 2:
-			shouldDrawGrid = true;
-			break;
-	}
-}
-
-void mainMenuHandler(int id_op){}
-
-void createMenu(){
-	int polygonMode, gridMode, mainMenu;
-
-	polygonMode = glutCreateMenu(polygonModeHandler);
-	glutAddMenuEntry("Line Mode", 1);
-	glutAddMenuEntry("Point Mode", 2);
-	glutAddMenuEntry("Fill Mode", 3);
-
-	gridMode = glutCreateMenu(gridModeHandler);
-	glutAddMenuEntry("No Grid", 1);
-	glutAddMenuEntry("X-Z Grid", 2);
-
-	mainMenu = glutCreateMenu(mainMenuHandler);
-	glutAddSubMenu("Polygon Mode", polygonMode);
-	glutAddSubMenu("Grid Mode", gridMode);
-
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
 int valid_xml(char* filename) {
@@ -381,20 +273,20 @@ int main(int argc, char **argv)
 
 
 	// pôr aqui a criação do menu
-	createMenu();
+	glutCreateMenu(createMenu);
+	glutAddMenuEntry("Line Mode", 1);
+	glutAddMenuEntry("Point Mode", 2);
+	glutAddMenuEntry("Fill Mode", 3);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	// Camera stuff
 	glutMouseFunc(mousePress);
 	glutMotionFunc(mouseMotion);
 	glutKeyboardFunc(keyBoardInput);
-	glutKeyboardUpFunc(keyUp);
 
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-
-	// initialize keyHolds array
-	keyHoldsInit();
 
 	// entrar no ciclo do GLUT
 	glutMainLoop();

@@ -21,21 +21,16 @@
 
 using namespace std;
 
-typedef struct group {
-    vector<transformation> transformations;
-    vector<string> points;
-    struct group* subgroup;
-} group;
+typedef struct figure {
+	vector<point> points;
+	int count;
+} figure;
 
-vector<group> groups;
-map<string, vector<point>> files;
+map<string, figure> files;
 vector<point> points;
-
-//Menu variables
 GLenum mode = GL_FILL;
-bool shouldDrawGrid = false;
 
-//Camera variables
+// Free Camera variables
 bool freeCamera = false;
 bool keyHolds[256];
 float alpha = 0;
@@ -80,61 +75,17 @@ void keyActions(){
 	}
 }
 
-void drawGrid(){
-	if (shouldDrawGrid){
-		glColor3ub(0, 255, 0);
+void renderPoints(){
 
-		for (float i = -50; i <= 50; i += 1){
-			glBegin(GL_LINES);
-
-			glVertex3f(-50, 0, i);
-			glVertex3f(50, 0, i);
-
-			glVertex3f(i, 0, -50);
-			glVertex3f(i, 0, 50);
-
-			glEnd();
-		}
+	map<string, figure>::iterator iter;
+	glBegin(GL_TRIANGLES);
+	for (iter = files.begin(); iter != files.end(); iter++) {
+		for (int j = 0; j < iter->second.count; j++)
+			for (int i = 0; i < (iter->second).points.size(); i++)
+				glVertex3f((iter->second).points[i].x, (iter->second).points[i].y, (iter->second).points[i].z);
 	}
+	glEnd();
 }
-
-void renderGroups() {
-    for(vector<group>::iterator it = groups.begin();
-            it != groups.end();
-            ++it)
-        draw_group(*it);
-}
-
-void draw_group(group g) {
-    for(vector<group>::iterator it = g.transformation.begin();
-            it != g.transformation.end();
-            ++it)
-        it -> apply();
-
-    for(vector<string>::iterator it = g.points.begin();
-            it != g.points.end();
-            ++it) {
-        vector<point>::iterator p = files.find(*it);
-
-        if(p)
-            render_points(*p);
-    }
-
-
-    if(g -> subgroup)
-        draw_group(g -> subgroup);
-}
-
-void render_points(vector<point> vp){
-    vector<point>::iterator iter = vp.begin();
-    glBegin(GL_TRIANGLES);
-
-    for (int i = 0; i < iter -> size(); i++)
-	    glVertex3f((*iter)[i].x, (*iter)[i].y, (*iter)[i].z);
-
-    glEnd();
-}
-
 
 void read_bin(string filename){
 	unsigned long int arraySize;
@@ -184,7 +135,7 @@ void changeSize(int w, int h) {
 	if (h == 0)
 		h = 1;
 
-	// compute window's aspect ratio
+	// compute window's aspect ratio 
 	float ratio = w * 1.0 / h;
 
 	// Set the projection matrix as current
@@ -224,18 +175,13 @@ void renderScene(void) {
 
 	renderPoints();
 
-	drawGrid();
-
 	glutSwapBuffers();
 }
 
 
 void keyBoardInput(unsigned char key, int x, int y){
-	if (key == 'f'){
-		alpha = 0.0f;
-		beta = 0.0f;
+	if (key == 'f')
 		freeCamera = !freeCamera;
-	}
 	else
 		keyHolds[key] = true;
 
@@ -291,7 +237,7 @@ void mouseMotion(int x, int y) {
 }
 
 
-void polygonModeHandler(int id_op){
+void createMenu(int id_op){
 	switch (id_op){
 	case 1:
 		mode = GL_LINE;
@@ -304,38 +250,6 @@ void polygonModeHandler(int id_op){
 		break;
 	}
 	glutPostRedisplay();
-}
-
-void gridModeHandler(int id_op){
-	switch (id_op){
-		case 1:
-			shouldDrawGrid = false;
-			break;
-		case 2:
-			shouldDrawGrid = true;
-			break;
-	}
-}
-
-void mainMenuHandler(int id_op){}
-
-void createMenu(){
-	int polygonMode, gridMode, mainMenu;
-
-	polygonMode = glutCreateMenu(polygonModeHandler);
-	glutAddMenuEntry("Line Mode", 1);
-	glutAddMenuEntry("Point Mode", 2);
-	glutAddMenuEntry("Fill Mode", 3);
-
-	gridMode = glutCreateMenu(gridModeHandler);
-	glutAddMenuEntry("No Grid", 1);
-	glutAddMenuEntry("X-Z Grid", 2);
-
-	mainMenu = glutCreateMenu(mainMenuHandler);
-	glutAddSubMenu("Polygon Mode", polygonMode);
-	glutAddSubMenu("Grid Mode", gridMode);
-
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
 int valid_xml(char* filename) {
@@ -373,7 +287,7 @@ int main(int argc, char **argv)
 	glutCreateWindow("TP");
 
 
-	// registo de funções
+	// registo de funções 
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(renderScene);
 	glutReshapeFunc(changeSize);
@@ -381,7 +295,11 @@ int main(int argc, char **argv)
 
 
 	// pôr aqui a criação do menu
-	createMenu();
+	glutCreateMenu(createMenu);
+	glutAddMenuEntry("Line Mode", 1);
+	glutAddMenuEntry("Point Mode", 2);
+	glutAddMenuEntry("Fill Mode", 3);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	// Camera stuff
 	glutMouseFunc(mousePress);
@@ -396,7 +314,7 @@ int main(int argc, char **argv)
 	// initialize keyHolds array
 	keyHoldsInit();
 
-	// entrar no ciclo do GLUT
+	// entrar no ciclo do GLUT 
 	glutMainLoop();
 
 	return 1;
