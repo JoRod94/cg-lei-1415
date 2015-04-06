@@ -15,16 +15,28 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#define _XML_FILE	"ficheiro"
-#define _XML_SCENE	"cena"
-#define _XML_MODEL	"modelo"
+#define _XML_FILE           "ficheiro"
+#define _XML_SCENE          "cena"
+#define _XML_MODEL          "modelo"
+#define _XML_MODELS         "modelos"
+#define _XML_GROUP          "grupo"
+#define _XML_TRANSLATION    "translação"
+#define _XML_ROTATION       "rotação"
+#define _XML_SCALE          "escala"
+#define _XML_X              "X"
+#define _XML_Y              "Y"
+#define _XML_Z              "Z"
+#define _XML_ANGLE          "ângulo"
+#define _XML_X_AXIS         "eixoX"
+#define _XML_Y_AXIS         "eixoY"
+#define _XML_Z_AXIS         "eixoZ"
 
 using namespace std;
 
 typedef struct group {
-    vector<transformation> transformations;
+    vector<Transformation> transformations;
     vector<string> points;
-    struct group* subgroup;
+    vector<group> subgroups;
 } group;
 
 vector<group> groups;
@@ -98,6 +110,14 @@ void drawGrid(){
 	}
 }
 
+group new_group(vector<Transformation> transformations; vector<string> points, vector<group> subgroups) {
+    group g;
+    g.transformations = transformations;
+    g.points = points;
+    g.subgroups = subgroups;
+    return g;
+}
+
 void renderGroups() {
     for(vector<group>::iterator it = groups.begin();
             it != groups.end();
@@ -106,23 +126,29 @@ void renderGroups() {
 }
 
 void draw_group(group g) {
-    for(vector<group>::iterator it = g.transformation.begin();
-            it != g.transformation.end();
+    glPushMatrix();
+
+    for(vector<group>::iterator it = g.transformations.begin();
+            it != g.transformations.end();
             ++it)
         it -> apply();
 
     for(vector<string>::iterator it = g.points.begin();
             it != g.points.end();
-            ++it) {
+            ++it)
+    {
         vector<point>::iterator p = files.find(*it);
 
         if(p)
             render_points(*p);
     }
 
+    for(vector<group>::iterator it = g.subgroups.begin();
+            it != g.subgroups.end();
+            ++it)
+       draw_group(g -> subgroup);
 
-    if(g -> subgroup)
-        draw_group(g -> subgroup);
+    glPopMatrix();
 }
 
 void render_points(vector<point> vp){
@@ -162,19 +188,102 @@ void read_bin(string filename){
 	files[filename] = figure{ points, 1 };
 }
 
+static bool valid_group(tinyxml2::XMLElement* group) {
+    tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
+    tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
+    tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
+    tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
 
-void parseScene(tinyxml2::XMLElement* scene) {
-	for (tinyxml2::XMLElement* model = scene->FirstChildElement(_XML_MODEL); model != NULL; model = model->NextSiblingElement(_XML_MODEL))
-		read_bin(model->Attribute(_XML_FILE));
+    return (
+            models != NULL &&
+            models->NextSiblingElement(_XML_MODELS) == NULL &&
+            (translation == NULL || translation->NextSiblingElement(_XML_TRANSLATION) == NULL) &&
+            (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
+            (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL)
+           );
 }
 
+static vector<string> group_points(tinyxml2::XMLElement* group) {
+    vector<string> points;
+    tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
 
-void read_xml(char * xmlName) {
+    for(tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
+            model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
+        string filename = model->Attribute(_XML_FILE);
+        read_bin(filename);
+        points.push_back(filename);
+    }
+
+    return points;
+}
+
+static vector<Transformation> group_transformations(tinyxml2::XMLElement* group) {
+    vector<Transformation> vt;
+
+    for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
+            translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
+        vt.push_back( Translation(
+                    translation->IntAttribute(_XML_X),
+                    translation->IntAttribute(_XML_Y),
+                    translation->IntAttribute(_XML_Z) );
+    }
+
+
+    for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
+            rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
+        vt.push_back( Rotation(
+                    rotation->IntAttribute(_XML_ANGLE),
+                    rotation->IntAttribute(_XML_X_AXIS),
+                    rotation->IntAttribute(_XML_Y_AXIS),
+                    rotation->IntAttribute(_XML_Z_AXIS) );
+    }
+
+    for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
+            scale != NULL; scale = scale->NextSiblingElement(_XML_SCALE)) {
+        vt.push_back( Scale(
+                    scale->IntAttribute(_XML_X),
+                    scale->IntAttribute(_XML_Y),
+                    scale->IntAttribute(_XML_Z) );
+    }
+
+    return vt;
+}
+
+bool parseGroup(tinyxml2::XMLElement* group, group* ret) {
+    if(! valid_group(group)) {
+        cout << "Invalid group found. Ignoring..." << endl;
+        return false;
+    }
+
+    vector<Transformation> t = group_transformations(group);
+    vector<string> pt = group_points(group);
+    vector<group> sg;
+
+
+    for (tinyxml2::XMLElement* subgroup = group->FirstChildElement(_XML_GROUP);
+            subgroup != NULL;
+            subgroup = subgroup->NextSiblingElement(_XML_GROUP)) {
+
+            group* maybe_sub;
+
+            if( parseGroup(group, maybe_sub) )
+               sg.push_back( parseGroup(subgroup), *maybe_sub );
+        }
+
+    *ret = new_group(t, pt, sg);
+    return true;
+}
+
+void read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
 
 	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE); scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
-		parseScene(scene);
+		for (tinyxml2::XMLElement* group = scene->FirstChildElement(_XML_GROUP); group != NULL; group = group->NextSiblingElement(_XML_GROUP)) {
+            group* ret;
+            if( parseGroup(group, ret) )
+                groups.push_back(*ret);
+        }
 }
 
 void changeSize(int w, int h) {
@@ -207,6 +316,7 @@ void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
+
 	keyActions();
 	if (freeCamera){
 		gluLookAt(px, py, pz,
