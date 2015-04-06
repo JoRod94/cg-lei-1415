@@ -3,7 +3,7 @@
 #include "transformation.h"
 
 
-
+#pragma
 class Translation : public Transformation
 {
 public:

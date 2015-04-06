@@ -2,6 +2,7 @@
 #define _ROTATE_H
 #include "transformation.h"
 
+#pragma
 class Rotation : public Transformation
 {
 public:

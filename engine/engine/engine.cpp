@@ -226,7 +226,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
 
     for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
             translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
-        vt.push_back( Translation(
+		vt.push_back( Translation(
                     translation->IntAttribute(_XML_X),
                     translation->IntAttribute(_XML_Y),
                     translation->IntAttribute(_XML_Z) ));
@@ -235,7 +235,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
 
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
-        vt.push_back( Rotation(
+		vt.push_back( Rotation(
                     rotation->IntAttribute(_XML_ANGLE),
                     rotation->IntAttribute(_XML_X_AXIS),
                     rotation->IntAttribute(_XML_Y_AXIS),
@@ -247,7 +247,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
         vt.push_back( Scale(
                     scale->IntAttribute(_XML_X),
                     scale->IntAttribute(_XML_Y),
-                    scale->IntAttribute(_XML_Z) ));
+                    scale->IntAttribute(_XML_Z) ) );
     }
 
     return vt;
