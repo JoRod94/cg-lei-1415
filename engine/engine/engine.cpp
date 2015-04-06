@@ -30,7 +30,8 @@ map<string, figure> files;
 vector<point> points;
 GLenum mode = GL_FILL;
 
-// Camera variables
+// Free Camera variables
+bool freeCamera = false;
 float alpha = 0;
 float beta = 0;
 float radius = 10;
@@ -127,12 +128,16 @@ void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(px, py, pz,
-		px + rx, py + ry, pz + rz,
-		0.0f, 1.0f, 0.0f);
-	/*gluLookAt((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))),
-		0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f);*/
+	if (freeCamera){
+		gluLookAt(px, py, pz,
+			px + rx, py + ry, pz + rz,
+			0.0f, 1.0f, 0.0f);
+	}
+	else{
+		gluLookAt((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))),
+			0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f);
+	}
 	glColor3f(1, 0, 0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
@@ -144,15 +149,15 @@ void renderScene(void) {
 
 
 void keyBoardInput(unsigned char key, int x, int y){
-	if (key == 'r')
-		radius--;
-	if (key == 'f')
-		radius++; switch (key){
-		case 'r':
+	switch (key){
+		case 'z':
 			radius--;
 			break;
-		case 'f':
+		case 'x':
 			radius++;
+			break;
+		case 'f':
+			freeCamera = !freeCamera;
 			break;
 		case 'w':
 			pz += 0.01f*rz;
@@ -206,7 +211,7 @@ void mouseMotion(int x, int y) {
 		int yDiff = y - yOri;
 
 		alpha -= xDiff * 0.01f;
-		beta -= yDiff * 0.001f;
+		beta -= yDiff * 0.01f;
 
 		if (beta > (M_PI / 2) - 0.001) beta = (M_PI / 2) - 0.001;
 		if (beta < -(M_PI / 2) + 0.001) beta = -(M_PI / 2) + 0.001;
