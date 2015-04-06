@@ -32,6 +32,7 @@ GLenum mode = GL_FILL;
 
 // Free Camera variables
 bool freeCamera = false;
+bool keyHolds[256];
 float alpha = 0;
 float beta = 0;
 float radius = 10;
@@ -44,6 +45,35 @@ float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
 
+void keyHoldsInit(){
+	for (int i = 0; i < 256; i++)
+		keyHolds[i] = false;
+}
+
+void keyActions(){
+	if (keyHolds['z'] == true)
+		radius--;
+	if (keyHolds['x'] == true)
+		radius++;
+	if (keyHolds['w'] == true){
+		pz += 0.01f*rz;
+		px += 0.01f*rx;
+		py += 0.01f*ry;
+	}
+	if (keyHolds['s'] == true){
+		pz -= 0.01f*rz;
+		px -= 0.01f*rx;
+		py -= 0.01f*ry;
+	}
+	if (keyHolds['d'] == true){
+		pz += 0.01f*rx;
+		px -= 0.01f*rz;
+	}
+	if (keyHolds['a'] == true){
+		pz -= 0.01f*rx;
+		px += 0.01f*rz;
+	}
+}
 
 void renderPoints(){
 
@@ -80,7 +110,7 @@ void read_bin(string filename){
 	points.resize(arraySize);
 	i.read((char *)&points[0], arraySize*sizeof(point));
 
-	files[filename] = figure{points, 1};
+	files[filename] = figure{ points, 1 };
 }
 
 
@@ -128,6 +158,7 @@ void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
+	keyActions();
 	if (freeCamera){
 		gluLookAt(px, py, pz,
 			px + rx, py + ry, pz + rz,
@@ -149,38 +180,17 @@ void renderScene(void) {
 
 
 void keyBoardInput(unsigned char key, int x, int y){
-	switch (key){
-		case 'z':
-			radius--;
-			break;
-		case 'x':
-			radius++;
-			break;
-		case 'f':
-			freeCamera = !freeCamera;
-			break;
-		case 'w':
-			pz += 0.01f*rz;
-			px += 0.01f*rx;
-			py += 0.01f*ry;
-			break;
-		case 's':
-			pz -= 0.01f*rz;
-			px -= 0.01f*rx;
-			py -= 0.01f*ry;
-			break;
-		case 'd':
-			pz += 0.01f*rx;
-			px -= 0.01f*rz;
-			break;
-		case 'a':
-			pz -= 0.01f*rx;
-			px += 0.01f*rz;
-			break;
-	}
+	if (key == 'f')
+		freeCamera = !freeCamera;
+	else
+		keyHolds[key] = true;
 
 	glutPostRedisplay();
+}
 
+void keyUp(unsigned char key, int x, int y){
+	keyHolds[key] = false;
+	glutPostRedisplay();
 }
 
 // Mouse button callback
@@ -244,7 +254,7 @@ void createMenu(int id_op){
 
 int valid_xml(char* filename) {
 	int name = regex_match(filename, regex(".*\.xml"));
-	
+
 	ifstream f(filename);
 	int exists = f.good();
 	f.close();
@@ -295,10 +305,14 @@ int main(int argc, char **argv)
 	glutMouseFunc(mousePress);
 	glutMotionFunc(mouseMotion);
 	glutKeyboardFunc(keyBoardInput);
+	glutKeyboardUpFunc(keyUp);
 
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	// initialize keyHolds array
+	keyHoldsInit();
 
 	// entrar no ciclo do GLUT 
 	glutMainLoop();
