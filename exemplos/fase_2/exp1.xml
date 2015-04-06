@@ -1,0 +1,15 @@
+<cena>
+    <grupo>
+        <translação X=1 />
+        <modelos>
+            <modelo ficheiro="esfera.3d" />
+        </modelos>
+        <grupo>
+            <translação Y=1 />
+            <modelos>
+                <modelo ficheiro="cone.3d" />
+            </modelos>
+        </grupo>
+    </grupo>
+</cena>
+

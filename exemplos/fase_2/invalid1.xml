@@ -1,0 +1,27 @@
+<cena>
+    <grupo>
+        <grupo>
+            <modelos>
+                <modelo ficheiro="sphere.3d" />
+            </modelos>
+        </grupo>
+    </grupo>
+</cena>
+<cena>
+    <grupo>
+        <modelos>
+            <modelo ficheiro="sphere.3d" />
+        </modelos>
+        <modelos>
+            <modelo ficheiro="sphere.3d" />
+        </modelos>
+    </grupo>
+    <grupo>
+        <translação X=2 />
+        <translação Y=1 />
+        <modelos>
+            <modelo ficheiro="sphere.3d" />
+        </modelos>
+    </grupo>
+</cena>
+
