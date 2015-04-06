@@ -1,8 +1,9 @@
 #include <GL/glut.h>
-#include "transformation.cpp"
+#include "translation.h"
 
-class Translation : public Transformation{
-	void apply(float x, float y, float z){
-		glTranslatef(x, y, z);
-	}
-};
+
+
+void Translation::apply(){
+	glTranslatef(x, y, z);
+}
+

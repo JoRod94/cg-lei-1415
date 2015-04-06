@@ -1,8 +1,9 @@
 #include <GL/glut.h>
-#include "transformation.cpp"
+#include "scale.h"
 
-class Scale : public Transformation{
-	void apply(float x, float y, float z){
-		glScalef(x, y, z);
-	}
-};
+
+
+void Scale::apply(){
+	glScalef(x, y, z);
+}
+

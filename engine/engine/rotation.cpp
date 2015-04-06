@@ -1,8 +1,9 @@
 #include <GL/glut.h>
-#include "transformation.cpp"
+#include "rotation.h"
 
-class Rotation : public Transformation{
-	void apply(double degrees, double x, double y, double z){
-		glRotatef(degrees, x, y, z);
-	}
-};
+
+
+void Rotation::apply(){
+	glRotatef(angle, x, y, z);
+}
+
