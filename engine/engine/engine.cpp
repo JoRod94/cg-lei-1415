@@ -49,6 +49,7 @@ map<string, vector<point>> files;
 vector<point> points;
 
 //Menu variables
+
 GLenum mode = GL_FILL;
 bool shouldDrawGrid = false;
 
@@ -116,11 +117,18 @@ void drawGrid(){
 }
 
 group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups) {
-    group g = (group)malloc(sizeof(struct s_group));
-    g -> transformations = transformations;
-    g -> points = points;
+	group g = (group)malloc(sizeof(struct s_group));
+
+	g->transformations = transformations;
+	cout << "transformations" << endl;
+
+	g->points = points;
+	cout << "points" << endl;
+
     g -> subgroups = subgroups;
-    return g;
+	cout << "subgroups" << endl;
+    
+	return g;
 }
 
 
@@ -180,6 +188,7 @@ void renderPoints() {
 
 void read_bin(string filename){
 	unsigned long int arraySize;
+	vector<point> points;
 
 	map<string, vector<point>>::iterator file = files.find(filename);
 
@@ -221,7 +230,6 @@ static bool valid_group(tinyxml2::XMLElement* group) {
 static vector<string> group_points(tinyxml2::XMLElement* group) {
     vector<string> points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
-
     for(tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
             model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
         string filename = model->Attribute(_XML_FILE);
@@ -265,6 +273,7 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 }
 
 bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
+	cout << "nivel" << g->IntAttribute("nivel") << endl;
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
@@ -273,18 +282,21 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
     vector<Transformation*> t = group_transformations(g);
     vector<string> pt = group_points(g);
     vector<group> sg;
+	
+	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
+	while(subgroup != NULL) {			
+			cout << "IT WAS HERE" << endl;
 
-    for (tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
-            subgroup != NULL;
-            subgroup = subgroup->NextSiblingElement(_XML_GROUP)) {
+			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
-			group maybe_sub = {};
-			
-            if( parseGroup(g, &maybe_sub) )
-               sg.push_back( maybe_sub );
-        }
+			if (parseGroup(subgroup, &maybe_sub)) {
+				sg.push_back(maybe_sub);
+			}
+			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
+       }
 
     *ret = new_group(t, pt, sg);
+	cout << "wat2" << endl;
     return true;
 }
 
@@ -300,7 +312,9 @@ void read_xml(char* xmlName) {
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
 		{
 			cout << "READING GROUP" << endl;
-			if (parseGroup(g, &ret)) {
+			cout << "wat1" << endl;
+			if ( parseGroup(g, &ret) ) {
+				cout << "wat3" << endl;
 				groups.push_back(ret);
 				cout << "READ GROUP" << endl;
 			}
