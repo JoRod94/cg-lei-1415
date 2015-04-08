@@ -1,11 +1,11 @@
 <cena>
     <grupo>
-        <translação X=1 />
+        <translacao X=1 />
         <modelos>
             <modelo ficheiro="sphere.3d" />
         </modelos>
         <grupo>
-            <translação Y=1 />
+            <translacao Y=1 />
             <modelos>
                 <modelo ficheiro="torus.3d" />
             </modelos>
