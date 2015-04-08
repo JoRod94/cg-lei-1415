@@ -1,0 +1,72 @@
+<cena>
+	<grupo>
+		<escala X="8" Y="8" Z="8"/>
+		<modelos>
+			<modelo ficheiro="sphere.3d" />
+		</modelos>
+		<grupo>
+			<escala X="0.3" Y="0.3" Z="0.3"/>
+			<translacao X="10"/>
+			<modelos>
+				<modelo ficheiro="sphere.3d" />
+			</modelos>
+			<grupo>
+				<escala X="1" Y="1" Z="1"/>
+				<translacao X="2.3"/>
+				<modelos>
+					<modelo ficheiro="sphere.3d" />
+				</modelos>
+				<grupo>
+					<escala X="1" Y="1" Z="1"/>
+					<translacao X="3"/>
+					<modelos>
+						<modelo ficheiro="sphere.3d" />
+					</modelos>
+					<grupo>
+						<escala X="0.5" Y="0.5" Z="0.5"/>
+						<translacao X="3"/>
+						<modelos>
+							<modelo ficheiro="sphere.3d" />
+						</modelos>
+						<grupo>
+							<escala X="5.5" Y="5.5" Z="5.5"/>
+							<translacao X="20"/>
+							<modelos>
+								<modelo ficheiro="sphere.3d" />
+							</modelos>
+							<grupo>
+								<escala X="6" Y="6" Z="6"/>
+								<translacao X="30"/>
+								<modelos>
+									<modelo ficheiro="sphere.3d" />
+								</modelos>
+								<grupo>
+									<escala X="5.5" Y="5.5" Z="5.5"/>
+									<translacao X="20"/>
+									<modelos>
+										<modelo ficheiro="sphere.3d" />
+									</modelos>
+									<grupo>
+										<escala X="3" Y="3" Z="3"/>
+										<translacao X="20"/>
+										<modelos>
+											<modelo ficheiro="sphere.3d" />
+										</modelos>
+										<grupo>
+											<escala X="3" Y="3" Z="3"/>
+											<translacao X="20"/>
+											<modelos>
+												<modelo ficheiro="sphere.3d" />
+											</modelos>
+										</grupo>
+									</grupo>
+								</grupo>
+							</grupo>
+						</grupo>
+					</grupo>
+				</grupo>
+			</grupo>
+		</grupo>
+
+	</grupo>
+</cena>
