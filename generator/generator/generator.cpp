@@ -316,7 +316,7 @@ void create_cone(float radius, float height, float nSlices, float nLayers){
 
 void create_torus(float ir, float or, float nRings, float nLayers){
 	int i, j;
-	point o1, o2;
+	point o1, o2, o3;
 	float radius = ir + or;
 	double layerInc = (2.0f * (M_PI)) / nLayers;
 	double ringInc = (2.0f * (M_PI)) / nRings;
@@ -340,23 +340,6 @@ void create_torus(float ir, float or, float nRings, float nLayers){
 		}
 
 		alfa += ringInc;
-	}
-}
-
-void create_ring(float ir, float or, float nSlices){
-	double sliceInc = (2.0f * (M_PI)) / nSlices;
-	double alfa = 0.0f;
-
-	for (int i = 0; i < nSlices; i++){
-		points.push_back(point(or * sin(alfa), 0, or * cos(alfa)));
-		points.push_back(point(ir * sin(alfa), 0, ir * cos(alfa)));
-		points.push_back(point(ir * sin(alfa + sliceInc), 0, ir * cos(alfa + sliceInc)));
-
-		points.push_back(point(ir * sin(alfa + sliceInc), 0, ir * cos(alfa + sliceInc)));
-		points.push_back(point(or * sin(alfa + sliceInc), 0, or * cos(alfa + sliceInc)));
-		points.push_back(point(or * sin(alfa), 0, or * cos(alfa)));
-
-		alfa += sliceInc;
 	}
 }
 
@@ -430,18 +413,6 @@ int main(int argc, char* argv[]) {
 		}
 		std::cout << "Generating Torus..." << endl;
 		create_torus(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
-	}
-	else if (strcmp(argv[1], "ring") == 0){
-		if (argc != 6){
-			std::cout << "Wrong number of arguments" << endl;
-			return 0;
-		}
-		if (stof(argv[2]) > stof(argv[3]) ){
-			std::cout << "Inner radius must be smaller than outer radius" << endl;
-			return 0;
-		}
-		std::cout << "Generating Ring..." << endl;
-		create_ring(stof(argv[2]), stof(argv[3]), stof(argv[4]));
 	}
 	else{
 		std::cout << "Command not recognized" << endl;
