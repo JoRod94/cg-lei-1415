@@ -25,8 +25,8 @@
 #define _XML_MODEL          "modelo"
 #define _XML_MODELS         "modelos"
 #define _XML_GROUP          "grupo"
-#define _XML_TRANSLATION    "translação"
-#define _XML_ROTATION       "rotação"
+#define _XML_TRANSLATION    "translacao"
+#define _XML_ROTATION       "rotacao"
 #define _XML_SCALE          "escala"
 #define _XML_X              "X"
 #define _XML_Y              "Y"
@@ -143,22 +143,18 @@ void draw_points(vector<point> vp){
 }
 
 void draw_group(group g) {
-	cout << "ENTERED" << endl;
-    glPushMatrix();
+	glPushMatrix();
 
-	for (vector<Transformation*>::iterator it = g -> transformations.begin();
-		it != g -> transformations.end();
-		++it) {
-		(*it)->apply();
-		cout << "APPLIED TRANSFORMATION" << endl;
+	for (unsigned int i = 0; i < g->transformations.size(); i++) {
+		cout << "APPLYING TRANSFORMATION" << endl;
+		(g->transformations[i])->apply();
+		cout << "TRANSFORMATION APPLIED" << endl;
 	}
 
-    for(vector<string>::iterator it = g -> points.begin();
-            it != g -> points.end();
-            ++it)
-    {
+
+	for (unsigned int i = 0; i < g->points.size(); i++) {
 		cout << "SEARCHING FILE" << endl;
-        map<string, vector<point>>::iterator p = files.find(*it);
+        map<string, vector<point>>::iterator p = files.find(g->points[i]);
 
 		if (p != files.end()) {
 			cout << "FILE FOUND, ABOUT TO DRAW POINTS..." << endl;
@@ -167,11 +163,9 @@ void draw_group(group g) {
 		}
     }
 
-	for (vector<group>::iterator it = g -> subgroups.begin();
-		it != g -> subgroups.end();
-		++it) {
+	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
 		cout << "FOUND GROUP" << endl;
-		draw_group(*it);
+		draw_group(g->subgroups[i]);
 		cout << "DREW GROUP" << endl;
 	}
 
@@ -245,7 +239,8 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
     for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
             translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
-		vt.push_back( &Translation(
+		cout << "FOUND TRANSLATION" << endl;
+		vt.push_back( new Translation(
                     translation->IntAttribute(_XML_X),
                     translation->IntAttribute(_XML_Y),
                     translation->IntAttribute(_XML_Z) ));
@@ -254,7 +249,8 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
-		vt.push_back( &Rotation(
+		cout << "FOUND ROTATION" << endl;
+		vt.push_back( new Rotation(
                     rotation->IntAttribute(_XML_ANGLE),
                     rotation->IntAttribute(_XML_X_AXIS),
                     rotation->IntAttribute(_XML_Y_AXIS),
@@ -263,7 +259,8 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
     for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
             scale != NULL; scale = scale->NextSiblingElement(_XML_SCALE)) {
-        vt.push_back( &Scale(
+		cout << "FOUND SCALE" << endl;
+        vt.push_back( new Scale(
                     scale->IntAttribute(_XML_X),
                     scale->IntAttribute(_XML_Y),
                     scale->IntAttribute(_XML_Z) ) );
