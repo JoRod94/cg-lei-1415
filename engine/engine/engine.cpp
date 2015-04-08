@@ -117,8 +117,8 @@ void drawGrid(){
 }
 
 group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups) {
-	group g = (group)malloc(sizeof(struct s_group));
-
+	group g = (group)calloc(1, sizeof(struct s_group));
+	
 	g->transformations = transformations;
 	cout << "transformations" << endl;
 
