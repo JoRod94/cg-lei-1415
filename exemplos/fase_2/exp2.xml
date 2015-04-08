@@ -1,15 +1,15 @@
 <cena>
     <grupo>
-        <translaÃ§Ã£o X=1 Z=0 />
+        <translação X=1 Z=0 />
         <grupo>
-            <translaÃ§Ã£o Y=2 />
+            <translação Y=2 />
             <modelos>
                 <modelo ficheiro="sphere.3d" />
                 <modelo ficheiro="torus.3d" />
             </modelos>
         </grupo>
         <grupo>
-            <translaÃ§Ã£o Z=1 />
+            <translação Z=1 />
             <modelos>
                 <modelo ficheiro="sphere.3d" />
             </modelos>

@@ -1,13 +1,13 @@
 <cena>
     <grupo>
-        <translaÃ§Ã£o X=1 />
+        <translação X=1 />
         <modelos>
-            <modelo ficheiro="esfera.3d" />
+            <modelo ficheiro="sphere.3d" />
         </modelos>
         <grupo>
-            <translaÃ§Ã£o Y=1 />
+            <translação Y=1 />
             <modelos>
-                <modelo ficheiro="cone.3d" />
+                <modelo ficheiro="torus.3d" />
             </modelos>
         </grupo>
     </grupo>

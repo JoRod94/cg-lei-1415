@@ -17,8 +17,8 @@
         </modelos>
     </grupo>
     <grupo>
-        <translaÃ§Ã£o X=2 />
-        <translaÃ§Ã£o Y=1 />
+        <translação X=2 />
+        <translação Y=1 />
         <modelos>
             <modelo ficheiro="sphere.3d" />
         </modelos>
