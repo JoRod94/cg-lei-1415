@@ -41,13 +41,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\engine\toolkits\includes;C:\_toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(IncludePath);C:\toolkits\includes;</IncludePath>
-    <LibraryPath>C:\_toolkits\libs;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(LibraryPath);C:\toolkits\libs</LibraryPath>
+    <IncludePath>..\toolkits\includes;C:\_toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\engine;$(IncludePath);C:\toolkits\includes;</IncludePath>
+    <LibraryPath>C:\_toolkits\libs;..\toolkits\libs;$(LibraryPath);C:\toolkits\libs</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\engine\toolkits\includes;C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\engine\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\engine\toolkits\libs;C:\Users\João\Documents\GitHub\cg-lei-1415\engine\toolkits\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\toolkits\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>..\toolkits\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -83,13 +83,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="point.h" />
+    <ClInclude Include="..\toolkits\includes\point.h" />
+    <ClInclude Include="..\toolkits\includes\transformation.h" />
     <ClInclude Include="rotation.h" />
     <ClInclude Include="scale.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tinyxml2.h" />
-    <ClInclude Include="transformation.h" />
     <ClInclude Include="translation.h" />
   </ItemGroup>
   <ItemGroup>

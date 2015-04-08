@@ -38,11 +38,11 @@
 
 using namespace std;
 
-typedef struct group {
-    vector<Transformation> transformations;
+typedef struct s_group {
+    vector<Transformation*> transformations;
     vector<string> points;
-    vector<group> subgroups;
-} group;
+    vector<struct s_group *> subgroups;
+} *group;
 
 vector<group> groups;
 map<string, vector<point>> files;
@@ -115,46 +115,57 @@ void drawGrid(){
 	}
 }
 
-group new_group(vector<Transformation> transformations; vector<string> points, vector<group> subgroups) {
-    group g;
-    g.transformations = transformations;
-    g.points = points;
-    g.subgroups = subgroups;
+group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups) {
+    group g = (group)malloc(sizeof(struct s_group));
+    g -> transformations = transformations;
+    g -> points = points;
+    g -> subgroups = subgroups;
     return g;
 }
 
 
-void render_points(vector<point> vp){
+void draw_points(vector<point> vp){
 	glBegin(GL_TRIANGLES);
 
-	for (int i = 0; i < vp.size(); i++)
+	for (unsigned int i = 0; i < vp.size(); i++) {
 		glVertex3f(vp[i].x, vp[i].y, vp[i].z);
+	}
 
 	glEnd();
 }
 
 void draw_group(group g) {
+	cout << "ENTERED" << endl;
     glPushMatrix();
 
-    for(vector<Transformation>::iterator it = g.transformations.begin();
-            it != g.transformations.end();
-            ++it)
-        it -> apply();
+	for (vector<Transformation*>::iterator it = g -> transformations.begin();
+		it != g -> transformations.end();
+		++it) {
+		(*it)->apply();
+		cout << "APPLIED TRANSFORMATION" << endl;
+	}
 
-    for(vector<string>::iterator it = g.points.begin();
-            it != g.points.end();
+    for(vector<string>::iterator it = g -> points.begin();
+            it != g -> points.end();
             ++it)
     {
+		cout << "SEARCHING FILE" << endl;
         map<string, vector<point>>::iterator p = files.find(*it);
 
-        if(p != files.end())
-            render_points(p->second);
+		if (p != files.end()) {
+			cout << "FILE FOUND, ABOUT TO DRAW POINTS..." << endl;
+			draw_points(p->second);
+			cout << "DREW POINTS." << endl;
+		}
     }
 
-    for(vector<group>::iterator it = g.subgroups.begin();
-            it != g.subgroups.end();
-            ++it)
-       draw_group(*it);
+	for (vector<group>::iterator it = g -> subgroups.begin();
+		it != g -> subgroups.end();
+		++it) {
+		cout << "FOUND GROUP" << endl;
+		draw_group(*it);
+		cout << "DREW GROUP" << endl;
+	}
 
     glPopMatrix();
 }
@@ -174,7 +185,7 @@ void read_bin(string filename){
 
 	if (file != files.end()) {
 		points = file->second;
-		cout << "FILE ALREADY EXISTS" << endl;
+		cout << "MODEL FILE ALREADY READ: " << filename << endl;
 		return;
 	}
 
@@ -189,7 +200,7 @@ void read_bin(string filename){
 	points.resize(arraySize);
 	i.read((char *)&points[0], arraySize*sizeof(point));
 
-	files[filename] =  points;
+	files[filename] = points;
 }
 
 static bool valid_group(tinyxml2::XMLElement* group) {
@@ -221,12 +232,12 @@ static vector<string> group_points(tinyxml2::XMLElement* group) {
     return points;
 }
 
-static vector<Transformation> group_transformations(tinyxml2::XMLElement* group) {
-    vector<Transformation> vt;
+static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group) {
+    vector<Transformation*> vt;
 
     for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
             translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
-		vt.push_back( Translation(
+		vt.push_back( &Translation(
                     translation->IntAttribute(_XML_X),
                     translation->IntAttribute(_XML_Y),
                     translation->IntAttribute(_XML_Z) ));
@@ -235,7 +246,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
 
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
-		vt.push_back( Rotation(
+		vt.push_back( &Rotation(
                     rotation->IntAttribute(_XML_ANGLE),
                     rotation->IntAttribute(_XML_X_AXIS),
                     rotation->IntAttribute(_XML_Y_AXIS),
@@ -244,7 +255,7 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
 
     for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
             scale != NULL; scale = scale->NextSiblingElement(_XML_SCALE)) {
-        vt.push_back( Scale(
+        vt.push_back( &Scale(
                     scale->IntAttribute(_XML_X),
                     scale->IntAttribute(_XML_Y),
                     scale->IntAttribute(_XML_Z) ) );
@@ -253,25 +264,24 @@ static vector<Transformation> group_transformations(tinyxml2::XMLElement* group)
     return vt;
 }
 
-bool parseGroup(tinyxml2::XMLElement* g, group* ret) {
+bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
     }
 
-    vector<Transformation> t = group_transformations(g);
+    vector<Transformation*> t = group_transformations(g);
     vector<string> pt = group_points(g);
     vector<group> sg;
-
 
     for (tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
             subgroup != NULL;
             subgroup = subgroup->NextSiblingElement(_XML_GROUP)) {
 
-            group* maybe_sub = NULL;
-
-            if( parseGroup(g, maybe_sub) )
-               sg.push_back( *maybe_sub );
+			group maybe_sub = {};
+			
+            if( parseGroup(g, &maybe_sub) )
+               sg.push_back( maybe_sub );
         }
 
     *ret = new_group(t, pt, sg);
@@ -281,15 +291,23 @@ bool parseGroup(tinyxml2::XMLElement* g, group* ret) {
 void read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
+	group ret = (group)malloc(sizeof(struct s_group));
 
 	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
-			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
-		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP); 
-				g != NULL; g = g->NextSiblingElement(_XML_GROUP)) {
-            group* ret = NULL;
-            if( parseGroup(g, ret) )
-                groups.push_back(*ret);
-        }
+			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
+		cout << "INSIDE SCENE" << endl;
+		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
+				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
+		{
+			cout << "READING GROUP" << endl;
+			if (parseGroup(g, &ret)) {
+				groups.push_back(ret);
+				cout << "READ GROUP" << endl;
+			}
+		}
+	}
+
+	cout << "read XML" << endl;
 }
 
 void changeSize(int w, int h) {
