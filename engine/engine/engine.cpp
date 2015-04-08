@@ -117,16 +117,13 @@ void drawGrid(){
 
 group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups) {
 	group g = (group)calloc(1, sizeof(struct s_group));
-	
+
 	g->transformations = transformations;
-	cout << "transformations" << endl;
 
 	g->points = points;
-	cout << "points" << endl;
 
-    g -> subgroups = subgroups;
-	cout << "subgroups" << endl;
-    
+    	g -> subgroups = subgroups;
+
 	return g;
 }
 
@@ -145,27 +142,20 @@ void draw_group(group g) {
 	glPushMatrix();
 
 	for (unsigned int i = 0; i < g->transformations.size(); i++) {
-		cout << "APPLYING TRANSFORMATION" << endl;
 		(g->transformations[i])->apply();
-		cout << "TRANSFORMATION APPLIED" << endl;
 	}
 
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
-		cout << "SEARCHING FILE" << endl;
-        map<string, vector<point>>::iterator p = files.find(g->points[i]);
+        		map<string, vector<point>>::iterator p = files.find(g->points[i]);
 
 		if (p != files.end()) {
-			cout << "FILE FOUND, ABOUT TO DRAW POINTS..." << endl;
 			draw_points(p->second);
-			cout << "DREW POINTS." << endl;
 		}
     }
 
 	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
-		cout << "FOUND GROUP" << endl;
 		draw_group(g->subgroups[i]);
-		cout << "DREW GROUP" << endl;
 	}
 
     glPopMatrix();
@@ -238,7 +228,6 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
     for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
             translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
-		cout << "FOUND TRANSLATION" << endl;
 		vt.push_back( new Translation(
                     translation->IntAttribute(_XML_X),
                     translation->IntAttribute(_XML_Y),
@@ -248,7 +237,6 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
-		cout << "FOUND ROTATION" << endl;
 		vt.push_back( new Rotation(
                     rotation->IntAttribute(_XML_ANGLE),
                     rotation->IntAttribute(_XML_X_AXIS),
@@ -258,7 +246,6 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
     for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
             scale != NULL; scale = scale->NextSiblingElement(_XML_SCALE)) {
-		cout << "FOUND SCALE" << endl;
         vt.push_back( new Scale(
                     scale->IntAttribute(_XML_X),
                     scale->IntAttribute(_XML_Y),
@@ -269,7 +256,6 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 }
 
 bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
-	cout << "nivel" << g->IntAttribute("nivel") << endl;
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
@@ -278,11 +264,9 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
     vector<Transformation*> t = group_transformations(g);
     vector<string> pt = group_points(g);
     vector<group> sg;
-	
-	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
-	while(subgroup != NULL) {			
-			cout << "IT WAS HERE" << endl;
 
+	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
+	while(subgroup != NULL) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
 			if (parseGroup(subgroup, &maybe_sub)) {
@@ -292,7 +276,6 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
        }
 
     *ret = new_group(t, pt, sg);
-	cout << "wat2" << endl;
     return true;
 }
 
@@ -303,21 +286,14 @@ void read_xml(char* xmlName) {
 
 	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
-		cout << "INSIDE SCENE" << endl;
 		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
 		{
-			cout << "READING GROUP" << endl;
-			cout << "wat1" << endl;
 			if ( parseGroup(g, &ret) ) {
-				cout << "wat3" << endl;
 				groups.push_back(ret);
-				cout << "READ GROUP" << endl;
 			}
 		}
 	}
-
-	cout << "read XML" << endl;
 }
 
 void changeSize(int w, int h) {
