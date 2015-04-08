@@ -46,7 +46,6 @@ typedef struct s_group {
 
 vector<group> groups;
 map<string, vector<point>> files;
-vector<point> points;
 
 //Menu variables
 
