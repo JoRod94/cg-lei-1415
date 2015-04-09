@@ -36,7 +36,7 @@
 #define _XML_R              "R"
 #define _XML_G              "G"
 #define _XML_B              "B"
-#define _XML_ANGLE          "ângulo"
+#define _XML_ANGLE          "angulo"
 #define _XML_X_AXIS         "eixoX"
 #define _XML_Y_AXIS         "eixoY"
 #define _XML_Z_AXIS         "eixoZ"

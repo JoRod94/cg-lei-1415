@@ -1,6 +1,7 @@
 <cena>
 	<grupo>
 		<escala X="8" Y="8" Z="8"/>
+		<cor R="255" G="165" B="0"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
@@ -51,24 +52,31 @@
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
+		<grupo>
+			<rotacao angulo="43" eixoX="1" />
+			<escala X="1.6" Y="1.6" Z="1.6" />
+			<modelos>
+				<modelo ficheiro="ring.3d" />
+			</modelos>
+		</grupo>
 	</grupo>
 	<grupo>
 		<escala X="5.5" Y="5.5" Z="5.5"/>
-		<translacao X="92"/>
+		<translacao X="100"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<escala X="3" Y="3" Z="3"/>
-		<translacao X="112"/>
+		<translacao X="120"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<escala X="3" Y="3" Z="3"/>
-		<translacao X="132"/>
+		<translacao X="130"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
