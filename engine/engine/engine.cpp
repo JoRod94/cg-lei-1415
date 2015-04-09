@@ -306,7 +306,8 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
 bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 	vector<Transformation*> colors = colorize(g);
 	bool r = __parse_group(g, ret);
-	(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
+	if (r)
+		(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
 	return r;
 }
 
