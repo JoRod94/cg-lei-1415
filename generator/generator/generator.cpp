@@ -356,6 +356,14 @@ void create_ring(float ir, float or, float nSlices){
 		points.push_back(point(or * sin(alfa + sliceInc), 0, or * cos(alfa + sliceInc)));
 		points.push_back(point(or * sin(alfa), 0, or * cos(alfa)));
 
+		points.push_back(point(ir * sin(alfa + sliceInc), 0, ir * cos(alfa + sliceInc)));
+		points.push_back(point(ir * sin(alfa), 0, ir * cos(alfa)));
+		points.push_back(point(or * sin(alfa), 0, or * cos(alfa)));
+
+		points.push_back(point(or * sin(alfa), 0, or * cos(alfa)));
+		points.push_back(point(or * sin(alfa + sliceInc), 0, or * cos(alfa + sliceInc)));
+		points.push_back(point(ir * sin(alfa + sliceInc), 0, ir * cos(alfa + sliceInc)));
+		
 		alfa += sliceInc;
 	}
 }
