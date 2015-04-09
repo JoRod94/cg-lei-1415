@@ -14,6 +14,7 @@
 #include <regex>
 #include "transformation.h"
 #include "translation.h"
+#include "color.h"
 #include "rotation.h"
 #include "scale.h"
 #define _USE_MATH_DEFINES
@@ -26,11 +27,15 @@
 #define _XML_MODELS         "modelos"
 #define _XML_GROUP          "grupo"
 #define _XML_TRANSLATION    "translacao"
+#define _XML_COLOR			"cor"
 #define _XML_ROTATION       "rotacao"
 #define _XML_SCALE          "escala"
 #define _XML_X              "X"
 #define _XML_Y              "Y"
 #define _XML_Z              "Z"
+#define _XML_R              "R"
+#define _XML_G              "G"
+#define _XML_B              "B"
 #define _XML_ANGLE          "ângulo"
 #define _XML_X_AXIS         "eixoX"
 #define _XML_Y_AXIS         "eixoY"
@@ -157,7 +162,7 @@ void draw_group(group g) {
 	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
 		draw_group(g->subgroups[i]);
 	}
-
+	glColor3ub(255, 255, 255);
     glPopMatrix();
 }
 
@@ -200,11 +205,14 @@ static bool valid_group(tinyxml2::XMLElement* group) {
     tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
     tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
     tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
+	tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
+
 
     return (
             models != NULL &&
             models->NextSiblingElement(_XML_MODELS) == NULL &&
             (translation == NULL || translation->NextSiblingElement(_XML_TRANSLATION) == NULL) &&
+			(color == NULL || color->NextSiblingElement(_XML_COLOR) == NULL) &&
             (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
             (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL)
            );
@@ -234,6 +242,13 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
                     translation->FloatAttribute(_XML_Z) ));
     }
 
+	for (tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
+		color != NULL; color = color->NextSiblingElement(_XML_COLOR)) {
+		vt.push_back(new Color(
+			color->FloatAttribute(_XML_R),
+			color->FloatAttribute(_XML_G),
+			color->FloatAttribute(_XML_B)));
+	}
 
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
