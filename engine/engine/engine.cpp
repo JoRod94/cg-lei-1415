@@ -60,8 +60,8 @@ bool shouldDrawGrid = false;
 //Camera variables
 bool freeCamera = false;
 bool keyHolds[256];
-float alpha = 0;
-float beta = 0;
+float alpha = 0, freeAlpha = 0;
+float beta = 0, freeBeta = 0;
 float radius = 10;
 float px = 0.0f;
 float py = 0.0f;
@@ -383,10 +383,21 @@ void renderScene(void) {
 
 
 void keyBoardInput(unsigned char key, int x, int y){
-	if (key == 'f'){
-		alpha = 0.0f;
-		beta = 0.0f;
+	if (key == 'f')
 		freeCamera = !freeCamera;
+	else if (key == 'r'){
+		if (freeCamera){
+			px = 0.0f;
+			py = 0.0f;
+			pz = 0.0f;
+			freeAlpha = 0.0f;
+			freeBeta = 0.0f;
+		}
+		else if (!freeCamera){
+			radius = 10;
+			alpha = 0.0f;
+			beta = 0.0f;
+		}
 	}
 	else
 		keyHolds[key] = true;
@@ -426,16 +437,24 @@ void mouseMotion(int x, int y) {
 		int xDiff = x - xOri;
 		int yDiff = y - yOri;
 
-		alpha -= xDiff * 0.01f;
-		beta -= yDiff * 0.01f;
+		if (freeCamera){
+			freeAlpha -= xDiff * 0.01f;
+			freeBeta -= yDiff * 0.01f;
 
-		if (beta > (M_PI / 2) - 0.001) beta = (M_PI / 2) - 0.001;
-		if (beta < -(M_PI / 2) + 0.001) beta = -(M_PI / 2) + 0.001;
+			if (freeBeta > (M_PI / 2) - 0.001) freeBeta = (M_PI / 2) - 0.001;
+			if (freeBeta < -(M_PI / 2) + 0.001) freeBeta = -(M_PI / 2) + 0.001;
 
-		rx = radius*cos(beta)*sin(alpha);
-		ry = radius*sin(beta);
-		rz = radius*cos(beta)*cos(alpha);
+			rx = radius*cos(freeBeta)*sin(freeAlpha);
+			ry = radius*sin(freeBeta);
+			rz = radius*cos(freeBeta)*cos(freeAlpha);
+		}
+		else{
+			alpha -= xDiff * 0.01f;
+			beta -= yDiff * 0.01f;
 
+			if (beta > (M_PI / 2) - 0.001) beta = (M_PI / 2) - 0.001;
+			if (beta < -(M_PI / 2) + 0.001) beta = -(M_PI / 2) + 0.001;
+		}
 	}
 	xOri = x;
 	yOri = y;
