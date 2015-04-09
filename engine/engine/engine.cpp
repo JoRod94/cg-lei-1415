@@ -229,27 +229,27 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
     for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
             translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
 		vt.push_back( new Translation(
-                    translation->IntAttribute(_XML_X),
-                    translation->IntAttribute(_XML_Y),
-                    translation->IntAttribute(_XML_Z) ));
+                    translation->FloatAttribute(_XML_X),
+                    translation->FloatAttribute(_XML_Y),
+                    translation->FloatAttribute(_XML_Z) ));
     }
 
 
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
 		vt.push_back( new Rotation(
-                    rotation->IntAttribute(_XML_ANGLE),
-                    rotation->IntAttribute(_XML_X_AXIS),
-                    rotation->IntAttribute(_XML_Y_AXIS),
-                    rotation->IntAttribute(_XML_Z_AXIS) ));
+                    rotation->FloatAttribute(_XML_ANGLE),
+                    rotation->FloatAttribute(_XML_X_AXIS),
+                    rotation->FloatAttribute(_XML_Y_AXIS),
+                    rotation->FloatAttribute(_XML_Z_AXIS) ));
     }
 
     for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
             scale != NULL; scale = scale->NextSiblingElement(_XML_SCALE)) {
         vt.push_back( new Scale(
-                    scale->IntAttribute(_XML_X),
-                    scale->IntAttribute(_XML_Y),
-                    scale->IntAttribute(_XML_Z) ) );
+                    scale->FloatAttribute(_XML_X),
+                    scale->FloatAttribute(_XML_Y),
+                    scale->FloatAttribute(_XML_Z) ) );
     }
 
     return vt;
