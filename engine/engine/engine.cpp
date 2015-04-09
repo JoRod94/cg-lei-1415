@@ -162,7 +162,7 @@ void draw_group(group g) {
 	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
 		draw_group(g->subgroups[i]);
 	}
-	glColor3ub(255, 255, 255);
+	
     glPopMatrix();
 }
 
@@ -205,14 +205,12 @@ static bool valid_group(tinyxml2::XMLElement* group) {
     tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
     tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
     tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
-	tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
 
 
     return (
             models != NULL &&
             models->NextSiblingElement(_XML_MODELS) == NULL &&
             (translation == NULL || translation->NextSiblingElement(_XML_TRANSLATION) == NULL) &&
-			(color == NULL || color->NextSiblingElement(_XML_COLOR) == NULL) &&
             (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
             (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL)
            );
@@ -242,14 +240,6 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
                     translation->FloatAttribute(_XML_Z) ));
     }
 
-	for (tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
-		color != NULL; color = color->NextSiblingElement(_XML_COLOR)) {
-		vt.push_back(new Color(
-			color->FloatAttribute(_XML_R),
-			color->FloatAttribute(_XML_G),
-			color->FloatAttribute(_XML_B)));
-	}
-
     for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
             rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
 		vt.push_back( new Rotation(
@@ -270,7 +260,26 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
     return vt;
 }
 
-bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
+vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
+	vector<Transformation*> v;
+
+	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
+	if (color == NULL)
+		v.push_back(new Color(255, 255, 255));
+	else while (color != NULL) {
+		v.push_back(new Color(
+			color->FloatAttribute(_XML_R),
+			color->FloatAttribute(_XML_G),
+			color->FloatAttribute(_XML_B)
+			));
+
+		color = color->NextSiblingElement(_XML_COLOR);
+	}
+
+	return v;
+}
+
+bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
@@ -284,7 +293,7 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 	while(subgroup != NULL) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
-			if (parseGroup(subgroup, &maybe_sub)) {
+			if (__parse_group(subgroup, &maybe_sub)) {
 				sg.push_back(maybe_sub);
 			}
 			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
@@ -292,6 +301,13 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 
     *ret = new_group(t, pt, sg);
     return true;
+}
+
+bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
+	vector<Transformation*> colors = colorize(g);
+	bool r = __parse_group(g, ret);
+	(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
+	return r;
 }
 
 void read_xml(char* xmlName) {
