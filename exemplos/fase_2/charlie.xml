@@ -28,8 +28,6 @@
                 		<modelo ficheiro="limbs.3d" />
             		</modelos>
        		</grupo>
-		<modelos>
-		</modelos>
 	    
 	</grupo>
 	<grupo>
@@ -47,8 +45,6 @@
                 		<modelo ficheiro="limbs.3d" />
           		</modelos>
         	</grupo>
-		<modelos>
-		</modelos>
     	</grupo>
 </cena>
 
