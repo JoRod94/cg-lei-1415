@@ -82,7 +82,6 @@ void set_camera(float a, float b, float r) {
 		alpha = a;
 		beta = b;
 		radius = r || 1;
-		cout << "RADIUS: " << radius << endl;
 		camera_set = true;
 	}
 }
