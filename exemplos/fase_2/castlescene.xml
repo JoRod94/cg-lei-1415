@@ -1,4 +1,5 @@
-﻿<cena>
+﻿<camera alfa="0" beta="0" raio="100"/>
+<cena>
 	<grupo>
 		<cor R="81" G="156" B="43"/>
 		<rotacao angulo="270" eixoX="1" />
@@ -24,9 +25,8 @@
         	<translacao Y="1.2" />
         	<cor R="107" G="101" B="101"/>
 		<modelos>
-               		<modelo ficheiro="boxC.3d" />
-            	</modelos>
-	    
+		    <modelo ficheiro="boxC.3d" />
+        </modelos>
 	</grupo>
 	<grupo>
 		<translacao Y="0.675" Z="-7.2" />
@@ -43,70 +43,63 @@
 		</modelos>
 	</grupo>
 	<grupo>
-        	<translacao Z="-8" />
-		
+        <translacao Z="-8" />
 		<cor R="155" G="153" B="153"/>
-        	<grupo>
-            		<translacao Y="1.5" />
+    	<grupo>
+        	<translacao Y="1.5" />
 			<grupo>
-            			<modelos>
-                			<modelo ficheiro="wall.3d" />
-          			</modelos>
-        		</grupo>
-
+      		<modelos>
+      			<modelo ficheiro="wall.3d" />
+  			</modelos>
+    		</grupo>
 			<grupo>
 				<translacao X="8" Z="8" />
 				<rotacao angulo="90" eixoY="1" />
-            			<modelos>
-                			<modelo ficheiro="wall.3d" />
-          			</modelos>
-        		</grupo>
-
+        		<modelos>
+           			<modelo ficheiro="wall.3d" />
+      			</modelos>
+    		</grupo>
 			<grupo>
 				<translacao X="-8" Z="8" />
 				<rotacao angulo="90" eixoY="1" />
 				<modelos>
-                			<modelo ficheiro="wall.3d" />
-          			</modelos>
-        		</grupo>
-
+            			<modelo ficheiro="wall.3d" />
+      			</modelos>
+    		</grupo>
 			<grupo>
 				<translacao Z="16" />
-            			<modelos>
-                			<modelo ficheiro="wall.3d" />
-          			</modelos>
-        		</grupo>
-        	</grupo>
+        		<modelos>
+           			<modelo ficheiro="wall.3d" />
+      			</modelos>
+    		</grupo>
+    	</grupo>
 		<grupo>
 			<translacao Y="2.5" />
-            		<cor R="92" G="70" B="70"/>
+            <cor R="92" G="70" B="70"/>
 			<grupo>
 				<translacao X="8" />
 				<modelos>
-                			<modelo ficheiro="corner.3d" />
-          			</modelos>
-        		</grupo>
-
+                	<modelo ficheiro="corner.3d" />
+          		</modelos>
+        	</grupo>
 			<grupo>
 				<translacao X="-8" />
-            			<modelos>
-                			<modelo ficheiro="corner.3d" />
-          			</modelos>
-        		</grupo>
-
+            	<modelos>
+          			<modelo ficheiro="corner.3d" />
+      			</modelos>
+        	</grupo>
 			<grupo>
 				<translacao X="8" Z="16" />
-            			<modelos>
-                			<modelo ficheiro="corner.3d" />
-          			</modelos>
-        		</grupo>
-
+           		<modelos>
+          			<modelo ficheiro="corner.3d" />
+       			</modelos>
+        	</grupo>
 			<grupo>
 				<translacao X="-8" Z="16" />
-            			<modelos>
-                			<modelo ficheiro="corner.3d" />
-          			</modelos>
-        		</grupo>
+            	<modelos>
+          			<modelo ficheiro="corner.3d" />
+       			</modelos>
+       		</grupo>
 		</grupo>
 		<grupo>
 			<translacao X="8" Y="10" Z="16" />
@@ -122,11 +115,9 @@
 				<modelo ficheiro="flag.3d" />
 			</modelos>
 		</grupo>
-    	</grupo>
+    </grupo>
 	<grupo>
 		<escala X="0.1" Y="0.1" Z="0.1" />
-		<modelos>
-		</modelos>
 		<grupo>
 			<translacao X="50" Y="5" Z="-125" />
 
@@ -182,7 +173,7 @@
         			</grupo>
 				<modelos>
 				</modelos>
-    			</grupo>
+    		</grupo>
 		</grupo>
 		<grupo>
 			<translacao X="86" Y="5" Z="-120" />
@@ -626,15 +617,560 @@
 	                			<modelo ficheiro="limbs.3d" />
 	          			</modelos>
 	        		</grupo>
-				<grupo>
+					<grupo>
 	            			<translacao X="0.5" />
 	            			<modelos>
 	                			<modelo ficheiro="limbs.3d" />
 	          			</modelos>
 	        		</grupo>
+	    	</grupo>
+		</grupo>
+	</grupo>
+	<grupo>
+		<escala X="1.1" Y="1.1" Z="1.1" />
+		<grupo>
+			<translacao X="14" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
 				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
 				</modelos>
-	    		</grupo>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="19" Z="-12" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="8" Z="-7" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="-12" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="5" Z="-10"/>
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="-11" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-20" Z="-9" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-2" Z="10" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="-15" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="7" Z="-18" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="-15" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="10" Z="-12" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="11" Z="-20" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="-18" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-11" Z="-15" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="-13" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="14" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="19" Z="-12" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="8" Z="7" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="12" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="5" Z="10"/>
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="11" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-20" Z="9" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-2" Z="10" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="15" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="7" Z="18" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="15" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="10" Z="12" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="11" Z="20" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="18" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-11" Z="15" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="13" />
+			<grupo>
+				<translacao Y="0.8" />
+				<cor R="52" G="206" B="62" />
+				<modelos>
+					<modelo ficheiro="treeleaves.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				<cor R="180" G="130" B="15" />
+				<modelos>
+					<modelo ficheiro="treebase.3d" />
+				</modelos>
+			</grupo>
 		</grupo>
 	</grupo>
 </cena>
