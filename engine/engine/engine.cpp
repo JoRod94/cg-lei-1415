@@ -79,11 +79,11 @@ int xOri = -1;
 int yOri = -1;
 
 void set_camera(float a, float b, float r) {
-	defAlpha = a;
-	defBeta = b;
+	defAlpha = (a * M_PI) / 180;
+	defBeta = (b * M_PI) / 180;
     defRadius = r < 1 ? DEFAULT_CAM_RADIUS : r;
-	alpha = a;
-	beta = b;
+	alpha = (a * M_PI) / 180;
+	beta = (b * M_PI) / 180;
 	radius = defRadius;
 }
 
