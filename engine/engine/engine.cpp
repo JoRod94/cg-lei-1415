@@ -100,22 +100,22 @@ void keyHoldsInit(){
 void keyActions(){
 	if (freeCamera){
 		if (keyHolds['w']){
-			pz += rz;
-			px += rx;
-			py += ry;
+			pz += rz*0.03;
+			px += rx*0.03;
+			py += ry*0.03;
 		}
 		if (keyHolds['s']){
-			pz -= rz;
-			px -= rx;
-			py -= ry;
+			pz -= rz*0.03;
+			px -= rx*0.03;
+			py -= ry*0.03;
 		}
 		if (keyHolds['d']){
-			pz += rx;
-			px -= rz;
+			pz += rx*0.03;
+			px -= rz*0.03;
 		}
 		if (keyHolds['a']){
-			pz -= rx;
-			px += rz;
+			pz -= rx*0.03;
+			px += rz*0.03;
 		}
 	}
 	else{
@@ -388,7 +388,6 @@ void read_xml(char* xmlName) {
 		set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
 			camera->FloatAttribute(_XML_CAM_BETA),
 			camera->FloatAttribute(_XML_CAM_RADIUS));
-		std::cout << "setcamera";
 	}
 
 	group ret = (group)malloc(sizeof(struct s_group));
