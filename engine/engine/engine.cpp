@@ -205,14 +205,15 @@ static bool valid_group(tinyxml2::XMLElement* group) {
     tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
     tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
     tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
+	tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
 
 
     return (
-            models != NULL &&
-            models->NextSiblingElement(_XML_MODELS) == NULL &&
+            (models == NULL || models->NextSiblingElement(_XML_MODELS) == NULL) &&
             (translation == NULL || translation->NextSiblingElement(_XML_TRANSLATION) == NULL) &&
             (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
-            (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL)
+            (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL) &&
+			(color == NULL || scale->NextSiblingElement(_XML_COLOR) == NULL)
            );
 }
 
