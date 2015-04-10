@@ -29,7 +29,22 @@
 	    
 	</grupo>
 	<grupo>
+		<translacao Y="0.675" Z="-7.2" />
+		<cor R="102" G="46" B="13"/>
+		<modelos>
+			<modelo ficheiro="door.3d" />
+		</modelos>
+	</grupo>
+	<grupo>
+		<translacao Y="0.675" Z="-8.85" />
+		<cor R="102" G="46" B="13"/>
+		<modelos>
+			<modelo ficheiro="door.3d" />
+		</modelos>
+	</grupo>
+	<grupo>
         	<translacao Z="-8" />
+		
 		<cor R="155" G="153" B="153"/>
         	<grupo>
             		<translacao Y="1.5" />
