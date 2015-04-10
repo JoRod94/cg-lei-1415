@@ -232,6 +232,23 @@ static vector<string> group_points(tinyxml2::XMLElement* group) {
     return points;
 }
 
+static vector<Transformation*> group_colors(tinyxml2::XMLElement* g) {
+	vector<Transformation*> v;
+	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
+
+	while (color != NULL) {
+		v.push_back(new Color(
+			color->FloatAttribute(_XML_R),
+			color->FloatAttribute(_XML_G),
+			color->FloatAttribute(_XML_B)
+			));
+
+		color = color->NextSiblingElement(_XML_COLOR);
+	}
+
+	return v;
+}
+
 static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group) {
     vector<Transformation*> vt;
 
@@ -269,21 +286,11 @@ vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
 	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
 	if (color == NULL)
 		v.push_back(new Color(255, 255, 255));
-	else while (color != NULL) {
-		v.push_back(new Color(
-			color->FloatAttribute(_XML_R),
-			color->FloatAttribute(_XML_G),
-			color->FloatAttribute(_XML_B)
-			));
-
-		color = color->NextSiblingElement(_XML_COLOR);
-	}
+	else
+		v = group_colors(g);
 
 	return v;
 }
-
-// birecursive functions, necessary header declaration
-bool parseGroup(tinyxml2::XMLElement* g, group *ret);
 
 bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
     if(! valid_group(g)) {
@@ -292,14 +299,17 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
     }
 
     vector<Transformation*> t = group_transformations(g);
+	vector<Transformation*> c = group_colors(g);
     vector<string> pt = group_points(g);
     vector<group> sg;
+
+	t.insert(t.end(), c.begin(), c.end());
 
 	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
 	while(subgroup != NULL) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
-			if (parseGroup(subgroup, &maybe_sub)) {
+			if (__parse_group(subgroup, &maybe_sub)) {
 				sg.push_back(maybe_sub);
 			}
 			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
