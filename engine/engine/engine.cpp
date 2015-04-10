@@ -78,27 +78,31 @@ void keyHoldsInit(){
 }
 
 void keyActions(){
-	if (keyHolds['z'])
-		radius--;
-	if (keyHolds['x'])
-		radius++;
-	if (keyHolds['w']){
-		pz += 0.01f*rz;
-		px += 0.01f*rx;
-		py += 0.01f*ry;
+	if (freeCamera){
+		if (keyHolds['w']){
+			pz += 0.01f*rz;
+			px += 0.01f*rx;
+			py += 0.01f*ry;
+		}
+		if (keyHolds['s']){
+			pz -= 0.01f*rz;
+			px -= 0.01f*rx;
+			py -= 0.01f*ry;
+		}
+		if (keyHolds['d']){
+			pz += 0.01f*rx;
+			px -= 0.01f*rz;
+		}
+		if (keyHolds['a']){
+			pz -= 0.01f*rx;
+			px += 0.01f*rz;
+		}
 	}
-	if (keyHolds['s']){
-		pz -= 0.01f*rz;
-		px -= 0.01f*rx;
-		py -= 0.01f*ry;
-	}
-	if (keyHolds['d']){
-		pz += 0.01f*rx;
-		px -= 0.01f*rz;
-	}
-	if (keyHolds['a']){
-		pz -= 0.01f*rx;
-		px += 0.01f*rz;
+	else{
+		if (keyHolds['z'])
+			radius--;
+		if (keyHolds['x'])
+			radius++;
 	}
 }
 
