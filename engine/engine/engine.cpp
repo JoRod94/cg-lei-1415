@@ -100,22 +100,22 @@ void keyHoldsInit(){
 void keyActions(){
 	if (freeCamera){
 		if (keyHolds['w']){
-			pz += 0.01f*rz;
-			px += 0.01f*rx;
-			py += 0.01f*ry;
+			pz += rz;
+			px += rx;
+			py += ry;
 		}
 		if (keyHolds['s']){
-			pz -= 0.01f*rz;
-			px -= 0.01f*rx;
-			py -= 0.01f*ry;
+			pz -= rz;
+			px -= rx;
+			py -= ry;
 		}
 		if (keyHolds['d']){
-			pz += 0.01f*rx;
-			px -= 0.01f*rz;
+			pz += rx;
+			px -= rz;
 		}
 		if (keyHolds['a']){
-			pz -= 0.01f*rx;
-			px += 0.01f*rz;
+			pz -= rx;
+			px += rz;
 		}
 	}
 	else{
@@ -525,9 +525,9 @@ void mouseMotion(int x, int y) {
 			if (freeBeta > (M_PI / 2) - 0.001) freeBeta = (M_PI / 2) - 0.001;
 			if (freeBeta < -(M_PI / 2) + 0.001) freeBeta = -(M_PI / 2) + 0.001;
 
-			rx = radius*cos(freeBeta)*sin(freeAlpha);
-			ry = radius*sin(freeBeta);
-			rz = radius*cos(freeBeta)*cos(freeAlpha);
+			rx = cos(freeBeta)*sin(freeAlpha);
+			ry = sin(freeBeta);
+			rz = cos(freeBeta)*cos(freeAlpha);
 		}
 		else{
 			alpha -= xDiff * 0.01f;
