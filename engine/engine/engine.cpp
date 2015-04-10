@@ -219,12 +219,15 @@ static bool valid_group(tinyxml2::XMLElement* group) {
 static vector<string> group_points(tinyxml2::XMLElement* group) {
     vector<string> points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
-    for(tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
-            model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
-        string filename = model->Attribute(_XML_FILE);
-        read_bin(filename);
-        points.push_back(filename);
-    }
+	
+	if (models) {
+		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
+			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
+			string filename = model->Attribute(_XML_FILE);
+			read_bin(filename);
+			points.push_back(filename);
+		}
+	}
 
     return points;
 }
