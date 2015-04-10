@@ -3,7 +3,7 @@
 		<escala X="22" Y="22" Z="22"/>
 		<cor R="255" G="165" B="0"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
@@ -11,28 +11,28 @@
 		<cor R="102" G="102" B="102"/>
 		<translacao X="30"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<translacao X="33"/>
 		<cor R="255" G="250" B="205"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<translacao X="37"/>
 		<cor B="205"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 		<grupo>
 			<escala X="0.2" Y="0.2" Z="0.2"/>
 			<cor R="200" G="200" B="200"/>
 			<translacao X="0.5" Y="1.2" Z="1.5"/>
 			<modelos>
-				<modelo ficheiro="sphere.3d"/>
+				<modelo ficheiro="basePlanet.3d"/>
 			</modelos>
 		</grupo>
 	</grupo>
@@ -41,7 +41,7 @@
 		<cor R="255" G="69"/>
 		<translacao X="40"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
@@ -49,7 +49,7 @@
 		<cor R="160" G="102" B="60"/>
 		<translacao X="62"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
@@ -57,7 +57,7 @@
 		<cor R="222" G="184" B="135"/>
 		<translacao X="92"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 		<grupo>
 			<rotacao angulo="43" eixoX="1" />
@@ -81,7 +81,7 @@
 			</modelos>
 		</grupo>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
@@ -89,7 +89,7 @@
 		<cor R="65" G="105" B="225"/>
 		<translacao X="140"/>
 		<modelos>
-			<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="basePlanet.3d" />
 		</modelos>
 	</grupo>
 </cena>
