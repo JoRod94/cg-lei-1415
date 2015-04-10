@@ -303,30 +303,31 @@ static vector<Transformation*> group_colors(tinyxml2::XMLElement* g) {
 static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group) {
     vector<Transformation*> vt;
 
-    for(tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
-            translation != NULL; translation = translation->NextSiblingElement(_XML_TRANSLATION)) {
-		vt.push_back( new Translation(
-                    translation->FloatAttribute(_XML_X),
-                    translation->FloatAttribute(_XML_Y),
-                    translation->FloatAttribute(_XML_Z) ));
-    }
+	for (tinyxml2::XMLElement* node = group->FirstChildElement(); node; node = node->NextSiblingElement()) {
+		string s = node->Value();
 
-    for(tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
-            rotation != NULL; rotation = rotation->NextSiblingElement(_XML_ROTATION)) {
-		vt.push_back( new Rotation(
-                    rotation->FloatAttribute(_XML_ANGLE),
-                    rotation->FloatAttribute(_XML_X_AXIS),
-                    rotation->FloatAttribute(_XML_Y_AXIS),
-                    rotation->FloatAttribute(_XML_Z_AXIS) ));
-    }
+		if (s == _XML_ROTATION) {
+			vt.push_back(new Rotation(
+				node->FloatAttribute(_XML_ANGLE),
+				node->FloatAttribute(_XML_X_AXIS),
+				node->FloatAttribute(_XML_Y_AXIS),
+				node->FloatAttribute(_XML_Z_AXIS)));
+		}
 
-    for(tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
-            scale != NULL; scale = scale->NextSiblingElement(_XML_SCALE)) {
-        vt.push_back( new Scale(
-                    scale->FloatAttribute(_XML_X),
-                    scale->FloatAttribute(_XML_Y),
-                    scale->FloatAttribute(_XML_Z) ) );
-    }
+		else if (s == _XML_TRANSLATION) {
+			vt.push_back(new Translation(
+				node->FloatAttribute(_XML_X),
+				node->FloatAttribute(_XML_Y),
+				node->FloatAttribute(_XML_Z)));
+		}
+
+		else if (s == _XML_SCALE) {
+			vt.push_back(new Scale(
+				node->FloatAttribute(_XML_X),
+				node->FloatAttribute(_XML_Y),
+				node->FloatAttribute(_XML_Z)));
+		}
+	}
 
     return vt;
 }
