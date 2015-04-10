@@ -59,7 +59,7 @@ map<string, vector<point>> files;
 
 //Menu variables
 GLenum mode = GL_FILL;
-int gridSize = 50;
+float gridSize = 50, gridScale = 1;
 bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, drawXY, drawZY
 
 //Camera variables
@@ -130,7 +130,7 @@ void drawGrid(){
 	if (gridBools[0]){
 		glColor3ub(0, 255, 0);
 		if (gridBools[1]){
-			for (float i = -gridSize; i <= gridSize; i += 1){
+			for (float i = -gridSize; i <= gridSize; i += gridScale){
 				glBegin(GL_LINES);
 
 				glVertex3f(-gridSize, 0, i);
@@ -143,7 +143,7 @@ void drawGrid(){
 			}
 		}
 		if (gridBools[2]){
-			for (float i = -gridSize; i <= gridSize; i += 1){
+			for (float i = -gridSize; i <= gridSize; i += gridScale){
 				glBegin(GL_LINES);
 
 				glVertex3f(-gridSize, i, 0);
@@ -156,7 +156,7 @@ void drawGrid(){
 			}
 		}
 		if (gridBools[3]){
-			for (float i = -gridSize; i <= gridSize; i += 1){
+			for (float i = -gridSize; i <= gridSize; i += gridScale){
 				glBegin(GL_LINES);
 
 				glVertex3f(0, -gridSize, i);
@@ -462,10 +462,14 @@ void renderScene(void) {
 
 void keyBoardInput(unsigned char key, int x, int y){
 	if (gridBools[0]){
-		if (key == 'c')
+		if (key == 'c'){
 			gridSize += gridSize;
-		if (key == 'v')
+			gridScale += gridScale;
+		}
+		if (key == 'v'){
 			gridSize -= gridSize / 2;
+			gridScale -= gridScale / 2;
+		}
 	}
 	if (key == 'f')
 		freeCamera = !freeCamera;
