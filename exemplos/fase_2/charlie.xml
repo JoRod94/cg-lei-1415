@@ -1,18 +1,21 @@
 ﻿<cena>
 	<grupo>
 		<translacao Y="1" />
+		<cor R="255" G="122" B="216"/>
 		<modelos>
 			<modelo ficheiro="torso.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<translacao Y="4" />
+		<cor R="233" G="191" B="154"/>
 		<modelos>
 			<modelo ficheiro="head.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
         	<translacao Y="1" />
+		<cor R="233" G="191" B="154"/>
         	<grupo>
             		<translacao X="2" />
             		<modelos>
@@ -31,6 +34,7 @@
 	</grupo>
 	<grupo>
         	<translacao Y="-3" />
+		<cor R="36" G="45" B="171"/>
         	<grupo>
             		<translacao X="-0.5" />
             		<modelos>
