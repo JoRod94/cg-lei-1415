@@ -44,7 +44,6 @@
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
-#define DEFAULT_CAM_RADIUS  10.0f
 
 using namespace std;
 
@@ -65,9 +64,10 @@ bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, dr
 //Camera variables
 bool freeCamera = false;
 bool keyHolds[256];
+float defAlpha = 0, defBeta = 0, defRadius = 10;
 float alpha = 0, freeAlpha = 0;
 float beta = 0, freeBeta = 0;
-float radius = DEFAULT_CAM_RADIUS;
+float radius = defRadius;
 float px = 0.0f;
 float py = 0.0f;
 float pz = 0.0f;
@@ -80,9 +80,9 @@ bool camera_set = false;
 
 void set_camera(float a, float b, float r) {
 	if (!camera_set) {
-		alpha = a;
-		beta = b;
-        radius = r < 1 ? DEFAULT_CAM_RADIUS : r;
+		defAlpha = a;
+		defBeta = b;
+        defRadius = r < 1 ? defRadius : r;
 		camera_set = true;
 	}
 }
@@ -471,13 +471,13 @@ void keyBoardInput(unsigned char key, int x, int y){
 			px = 0.0f;
 			py = 0.0f;
 			pz = 0.0f;
-			freeAlpha = 0.0f;
-			freeBeta = 0.0f;
+			freeAlpha = defAlpha;
+			freeBeta = defBeta;
 		}
 		else if (!freeCamera){
-			radius = 10;
-			alpha = 0.0f;
-			beta = 0.0f;
+			alpha = defAlpha;
+			beta = defBeta;
+			radius = defRadius;
 		}
 	}
 	else
@@ -562,7 +562,6 @@ void gridModeHandler(int id_op){
 	if (id_op == 1){
 		gridBoolInit();
 		gridSize = 50;
-		std::cout << "Passa";
 	}
 	else{
 		switch (id_op){
