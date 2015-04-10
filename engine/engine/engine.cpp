@@ -23,6 +23,7 @@
 
 #define _XML_FILE           "ficheiro"
 #define _XML_SCENE          "cena"
+#define _XML_CAMERA			"camera"
 #define _XML_MODEL          "modelo"
 #define _XML_MODELS         "modelos"
 #define _XML_GROUP          "grupo"
@@ -40,6 +41,9 @@
 #define _XML_X_AXIS         "eixoX"
 #define _XML_Y_AXIS         "eixoY"
 #define _XML_Z_AXIS         "eixoZ"
+#define _XML_CAM_RADIUS		"raio"
+#define _XML_CAM_ALPHA		"alfa"
+#define _XML_CAM_BETA		"beta"
 
 using namespace std;
 
@@ -62,7 +66,7 @@ bool freeCamera = false;
 bool keyHolds[256];
 float alpha = 0, freeAlpha = 0;
 float beta = 0, freeBeta = 0;
-float radius = 10;
+float radius = 1;
 float px = 0.0f;
 float py = 0.0f;
 float pz = 0.0f;
@@ -71,6 +75,17 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
+bool camera_set = false;
+
+void set_camera(float a, float b, float r) {
+	if (!camera_set) {
+		alpha = a;
+		beta = b;
+		radius = r || 1;
+		cout << "RADIUS: " << radius << endl;
+		camera_set = true;
+	}
+}
 
 void keyHoldsInit(){
 	for (int i = 0; i < 256; i++)
@@ -334,6 +349,13 @@ void read_xml(char* xmlName) {
 
 	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
+
+		tinyxml2::XMLElement* camera = scene->FirstChildElement(_XML_CAMERA);
+		if (camera)
+			set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
+						camera->FloatAttribute(_XML_CAM_BETA),
+						camera->FloatAttribute(_XML_CAM_RADIUS));
+
 		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
 		{
