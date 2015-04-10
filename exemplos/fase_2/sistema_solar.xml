@@ -3,93 +3,91 @@
 		<escala X="22" Y="22" Z="22"/>
 		<cor R="255" G="165" B="0"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
+		<translacao X="30"/>
 		<escala X="0.3" Y="0.3" Z="0.3"/>
 		<cor R="102" G="102" B="102"/>
-		<translacao X="30"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<translacao X="33"/>
 		<cor R="255" G="250" B="205"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<translacao X="37"/>
 		<cor B="205"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 		<grupo>
-			<escala X="0.2" Y="0.2" Z="0.2"/>
-			<cor R="200" G="200" B="200"/>
 			<translacao X="0.5" Y="1.2" Z="1.5"/>
+			<escala X="0.2" Y="0.2" Z="0.2"/>
+			<cor R="125" G="125" B="125"/>
 			<modelos>
-				<modelo ficheiro="basePlanet.3d"/>
+				<modelo ficheiro="sphere.3d"/>
 			</modelos>
 		</grupo>
 	</grupo>
 	<grupo>
+		<translacao X="40"/>
 		<escala X="0.5" Y="0.5" Z="0.5"/>
 		<cor R="255" G="69"/>
-		<translacao X="40"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
+		<translacao X="62"/>
 		<escala X="5.5" Y="5.5" Z="5.5"/>
 		<cor R="160" G="102" B="60"/>
-		<translacao X="62"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
+		<translacao X="92"/>
 		<escala X="6" Y="6" Z="6"/>
 		<cor R="222" G="184" B="135"/>
-		<translacao X="92"/>
 		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 		<grupo>
 			<rotacao angulo="43" eixoX="1" />
 			<escala X="1.6" Y="1.6" Z="1.6" />
-			<cor R="192" G="154" B="105"/>
 			<modelos>
 				<modelo ficheiro="saturnRing.3d" />
 			</modelos>
 		</grupo>
 	</grupo>
 	<grupo>
-		<escala X="5" Y="5" Z="5"/>
-		<cor R="70" G="130" B="180"/>
 		<translacao X="120"/>
+		<escala X="5" Y="5" Z="5"/>
+		<cor R="65" G="105" B="225"/>
+		<modelos>
+			<modelo ficheiro="sphere.3d" />
+		</modelos>
+	</grupo>
+	<grupo>
+		<translacao X="140"/>
+		<escala X="4.3" Y="4.3" Z="4.3"/>
+		<cor R="70" G="130" B="180"/>
+		<modelos>
+			<modelo ficheiro="sphere.3d" />
+		</modelos>
 		<grupo>
 			<rotacao angulo="80" eixoX="1" />
 			<escala X="1.3" Y="1.3" Z="1.3" />
-			<cor R="170" G="170" B="170"/>
 			<modelos>
 				<modelo ficheiro="uranusRing.3d" />
 			</modelos>
 		</grupo>
-		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
-		</modelos>
-	</grupo>
-	<grupo>
-		<escala X="4.3" Y="4.3" Z="4.3"/>
-		<cor R="65" G="105" B="225"/>
-		<translacao X="140"/>
-		<modelos>
-			<modelo ficheiro="basePlanet.3d" />
-		</modelos>
 	</grupo>
 </cena>
