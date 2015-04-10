@@ -1,0 +1,12 @@
+<cena>
+    <grupo>
+	<translacao X="6" />
+        <grupo>
+            <modelos>
+                <modelo ficheiro="sphere.3d" />
+            </modelos>
+        </grupo>
+    </grupo>
+</cena>
+
+ 
