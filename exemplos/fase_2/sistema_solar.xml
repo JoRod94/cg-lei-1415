@@ -1,6 +1,6 @@
 <cena>
 	<grupo>
-		<escala X="8" Y="8" Z="8"/>
+		<escala X="22" Y="22" Z="22"/>
 		<cor R="255" G="165" B="0"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
@@ -8,24 +8,28 @@
 	</grupo>
 	<grupo>
 		<escala X="0.3" Y="0.3" Z="0.3"/>
-		<translacao X="10"/>
+		<cor R="102" G="102" B="102"/>
+		<translacao X="30"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>		
-		<translacao X="13"/>
+		<translacao X="33"/>
+		<cor R="255" G="250" B="205"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>		
-		<translacao X="16"/>
+		<translacao X="37"/>
+		<cor B="205"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 		<grupo>
 			<escala X="0.2" Y="0.2" Z="0.2"/>
+			<cor R="125" G="125" B="125"/>
 			<translacao X="0.5" Y="1.2" Z="1.5"/>
 			<modelos>
 				<modelo ficheiro="sphere.3d"/>
@@ -34,21 +38,24 @@
 	</grupo>
 	<grupo>
 		<escala X="0.5" Y="0.5" Z="0.5"/>
-		<translacao X="20"/>
+		<cor R="255" G="69"/>
+		<translacao X="40"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<escala X="5.5" Y="5.5" Z="5.5"/>
-		<translacao X="42"/>
+		<cor R="160" G="102" B="60"/>
+		<translacao X="62"/>
 		<modelos>
 		<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
 		<escala X="6" Y="6" Z="6"/>
-		<translacao X="72"/>
+		<cor R="222" G="184" B="135"/>
+		<translacao X="92"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
@@ -56,29 +63,31 @@
 			<rotacao angulo="43" eixoX="1" />
 			<escala X="1.6" Y="1.6" Z="1.6" />
 			<modelos>
-				<modelo ficheiro="ring.3d" />
+				<modelo ficheiro="saturnRing.3d" />
 			</modelos>
 		</grupo>
 	</grupo>
 	<grupo>
-		<escala X="5.5" Y="5.5" Z="5.5"/>
-		<translacao X="100"/>
-		<modelos>
-			<modelo ficheiro="sphere.3d" />
-		</modelos>
-	</grupo>
-	<grupo>
-		<escala X="3" Y="3" Z="3"/>
+		<escala X="5" Y="5" Z="5"/>
+		<cor R="65" G="105" B="225"/>
 		<translacao X="120"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
-		<escala X="3" Y="3" Z="3"/>
-		<translacao X="130"/>
+		<escala X="4.3" Y="4.3" Z="4.3"/>
+		<cor R="70" G="130" B="180"/>
+		<translacao X="140"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
+		<grupo>
+			<rotacao angulo="80" eixoX="1" />
+			<escala X="1.3" Y="1.3" Z="1.3" />
+			<modelos>
+				<modelo ficheiro="uranusRing.3d" />
+			</modelos>
+		</grupo>
 	</grupo>
 </cena>
