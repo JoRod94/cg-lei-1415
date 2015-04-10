@@ -23,6 +23,7 @@
 
 #define _XML_FILE           "ficheiro"
 #define _XML_SCENE          "cena"
+#define _XML_CAMERA			"camera"
 #define _XML_MODEL          "modelo"
 #define _XML_MODELS         "modelos"
 #define _XML_GROUP          "grupo"
@@ -40,6 +41,9 @@
 #define _XML_X_AXIS         "eixoX"
 #define _XML_Y_AXIS         "eixoY"
 #define _XML_Z_AXIS         "eixoZ"
+#define _XML_CAM_RADIUS		"raio"
+#define _XML_CAM_ALPHA		"alfa"
+#define _XML_CAM_BETA		"beta"
 
 using namespace std;
 
@@ -62,7 +66,7 @@ bool freeCamera = false;
 bool keyHolds[256];
 float alpha = 0, freeAlpha = 0;
 float beta = 0, freeBeta = 0;
-float radius = 10;
+float radius = 1;
 float px = 0.0f;
 float py = 0.0f;
 float pz = 0.0f;
@@ -71,6 +75,16 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
+bool camera_set = false;
+
+void set_camera(float a, float b, float r) {
+	if (!camera_set) {
+		alpha = a;
+		beta = b;
+		radius = r || 1;
+		camera_set = true;
+	}
+}
 
 void keyHoldsInit(){
 	for (int i = 0; i < 256; i++)
@@ -236,6 +250,23 @@ static vector<string> group_points(tinyxml2::XMLElement* group) {
     return points;
 }
 
+static vector<Transformation*> group_colors(tinyxml2::XMLElement* g) {
+	vector<Transformation*> v;
+	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
+
+	while (color != NULL) {
+		v.push_back(new Color(
+			color->FloatAttribute(_XML_R),
+			color->FloatAttribute(_XML_G),
+			color->FloatAttribute(_XML_B)
+			));
+
+		color = color->NextSiblingElement(_XML_COLOR);
+	}
+
+	return v;
+}
+
 static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group) {
     vector<Transformation*> vt;
 
@@ -273,21 +304,11 @@ vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
 	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
 	if (color == NULL)
 		v.push_back(new Color(255, 255, 255));
-	else while (color != NULL) {
-		v.push_back(new Color(
-			color->FloatAttribute(_XML_R),
-			color->FloatAttribute(_XML_G),
-			color->FloatAttribute(_XML_B)
-			));
-
-		color = color->NextSiblingElement(_XML_COLOR);
-	}
+	else
+		v = group_colors(g);
 
 	return v;
 }
-
-// birecursive functions, necessary header declaration
-bool parseGroup(tinyxml2::XMLElement* g, group *ret);
 
 bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
     if(! valid_group(g)) {
@@ -296,14 +317,17 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
     }
 
     vector<Transformation*> t = group_transformations(g);
+	vector<Transformation*> c = group_colors(g);
     vector<string> pt = group_points(g);
     vector<group> sg;
+
+	t.insert(t.end(), c.begin(), c.end());
 
 	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
 	while(subgroup != NULL) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
-			if (parseGroup(subgroup, &maybe_sub)) {
+			if (__parse_group(subgroup, &maybe_sub)) {
 				sg.push_back(maybe_sub);
 			}
 			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
@@ -328,6 +352,13 @@ void read_xml(char* xmlName) {
 
 	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
+
+		tinyxml2::XMLElement* camera = scene->FirstChildElement(_XML_CAMERA);
+		if (camera)
+			set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
+						camera->FloatAttribute(_XML_CAM_BETA),
+						camera->FloatAttribute(_XML_CAM_RADIUS));
+
 		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
 		{
