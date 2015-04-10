@@ -44,6 +44,7 @@
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
+#define DEFAULT_CAM_RADIUS	10.0f
 
 using namespace std;
 
@@ -64,10 +65,10 @@ bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, dr
 //Camera variables
 bool freeCamera = false;
 bool keyHolds[256];
-float defAlpha = 0, defBeta = 0, defRadius = 10;
+float defAlpha = 0, defBeta = 0, defRadius = DEFAULT_CAM_RADIUS;
 float alpha = 0, freeAlpha = 0;
 float beta = 0, freeBeta = 0;
-float radius = defRadius;
+float radius = DEFAULT_CAM_RADIUS;
 float px = 0.0f;
 float py = 0.0f;
 float pz = 0.0f;
@@ -78,12 +79,12 @@ int xOri = -1;
 int yOri = -1;
 
 void set_camera(float a, float b, float r) {
-	if (!camera_set) {
-		defAlpha = a;
-		defBeta = b;
-        defRadius = r < 1 ? defRadius : r;
-		camera_set = true;
-	}
+	defAlpha = a;
+	defBeta = b;
+    defRadius = r < 1 ? DEFAULT_CAM_RADIUS : r;
+	alpha = a;
+	beta = b;
+	radius = defRadius;
 }
 
 void gridBoolInit(){
@@ -383,11 +384,12 @@ void read_xml(char* xmlName) {
 	doc.LoadFile(xmlName);
 
     tinyxml2::XMLElement* camera = doc.FirstChildElement(_XML_CAMERA);
-    if (camera)
-        set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
-                    camera->FloatAttribute(_XML_CAM_BETA),
-                    camera->FloatAttribute(_XML_CAM_RADIUS));
-
+	if (camera){
+		set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
+			camera->FloatAttribute(_XML_CAM_BETA),
+			camera->FloatAttribute(_XML_CAM_RADIUS));
+		std::cout << "setcamera";
+	}
 
 	group ret = (group)malloc(sizeof(struct s_group));
 
