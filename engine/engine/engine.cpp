@@ -76,15 +76,11 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
-bool camera_set = false;
 
 void set_camera(float a, float b, float r) {
-	if (!camera_set) {
-		alpha = a;
-		beta = b;
-        radius = r < 1 ? DEFAULT_CAM_RADIUS : r;
-		camera_set = true;
-	}
+    alpha = a;
+    beta = b;
+    radius = r < 1 ? DEFAULT_CAM_RADIUS : r;
 }
 
 void gridBoolInit(){
@@ -382,16 +378,18 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 void read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
+
+    tinyxml2::XMLElement* camera = doc.FirstChildElement(_XML_CAMERA);
+    if (camera)
+        set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
+                    camera->FloatAttribute(_XML_CAM_BETA),
+                    camera->FloatAttribute(_XML_CAM_RADIUS));
+
+
 	group ret = (group)malloc(sizeof(struct s_group));
 
-	for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
+    for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
-
-		tinyxml2::XMLElement* camera = scene->FirstChildElement(_XML_CAMERA);
-		if (camera)
-			set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
-						camera->FloatAttribute(_XML_CAM_BETA),
-						camera->FloatAttribute(_XML_CAM_RADIUS));
 
 		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
