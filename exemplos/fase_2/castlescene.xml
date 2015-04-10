@@ -1,0 +1,578 @@
+﻿<cena>
+	<grupo>
+		<translacao Y="3.15" />
+		<modelos>
+			<modelo ficheiro="boxA.3d" />
+		</modelos>
+	</grupo>
+	<grupo>
+		<translacao Y="6.65" />
+		<modelos>
+			<modelo ficheiro="boxB.3d" />
+		</modelos>
+	</grupo>
+	<grupo>
+        	<translacao Y="1.2" />
+        	<modelos>
+               		<modelo ficheiro="boxC.3d" />
+            	</modelos>
+	    
+	</grupo>
+	<grupo>
+        	<translacao Z="-8" />
+		<modelos>
+          	</modelos>
+
+        	<grupo>
+            		<translacao Y="1.5" />
+            		<modelos>
+          		</modelos>
+
+			<grupo>
+            			<modelos>
+                			<modelo ficheiro="wall.3d" />
+          			</modelos>
+        		</grupo>
+
+			<grupo>
+				<translacao X="8" Z="8" />
+				<rotacao angulo="90" eixoY="1" />
+				<cor R="0" G="0" B="255"/>
+            			<modelos>
+                			<modelo ficheiro="wall.3d" />
+          			</modelos>
+        		</grupo>
+
+			<grupo>
+				<translacao X="-8" Z="8" />
+				<rotacao angulo="90" eixoY="1" />
+            			<cor R="0" G="0" B="255"/>
+				<modelos>
+                			<modelo ficheiro="wall.3d" />
+          			</modelos>
+        		</grupo>
+
+			<grupo>
+				<translacao Z="16" />
+				<cor R="0" G="0" B="255"/>
+            			<modelos>
+                			<modelo ficheiro="wall.3d" />
+          			</modelos>
+        		</grupo>
+        	</grupo>
+		<grupo>
+			<translacao Y="2.5" />
+            		<modelos>
+          		</modelos>
+
+			<grupo>
+				<translacao X="8" />
+            			<cor R="0" G="0" B="255"/>
+				<modelos>
+                			<modelo ficheiro="corner.3d" />
+          			</modelos>
+        		</grupo>
+
+			<grupo>
+				<translacao X="-8" />
+				<cor R="0" G="0" B="255"/>
+            			<modelos>
+                			<modelo ficheiro="corner.3d" />
+          			</modelos>
+        		</grupo>
+
+			<grupo>
+				<translacao X="8" Z="16" />
+				<cor R="0" G="0" B="255"/>
+            			<modelos>
+                			<modelo ficheiro="corner.3d" />
+          			</modelos>
+        		</grupo>
+
+			<grupo>
+				<translacao X="-8" Z="16" />
+				<cor R="0" G="0" B="255"/>
+            			<modelos>
+                			<modelo ficheiro="corner.3d" />
+          			</modelos>
+        		</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="8" Y="10" Z="16" />
+			<cor R="0" G="0" B="255"/>
+			<modelos>
+				<modelo ficheiro="flagpole.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao X="10" Y="14" Z="16" />
+			<cor R="255" G="0" B="0"/>
+			<modelos>
+				<modelo ficheiro="flag.3d" />
+			</modelos>
+		</grupo>
+    	</grupo>
+	<grupo>
+		<escala X="0.1" Y="0.1" Z="0.1" />
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao X="50" Y="5" Z="125" />
+
+			<modelos>
+			</modelos>
+			<grupo>
+				<translacao Y="1" />
+				<cor R="255" G="122" B="216"/>
+				<modelos>
+					<modelo ficheiro="torso.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				<cor R="233" G="191" B="154"/>
+				<modelos>
+					<modelo ficheiro="head.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+        			<translacao Y="1" />
+				<cor R="233" G="191" B="154"/>
+        			<grupo>
+	            			<translacao X="2" />
+        	    			<modelos>
+                				<modelo ficheiro="limbs.3d" />
+            				</modelos>
+	        		</grupo>
+				<grupo>
+        				<translacao X="-2" />
+            				<modelos>
+                				<modelo ficheiro="limbs.3d" />
+	            			</modelos>
+       				</grupo>
+				<modelos>
+				</modelos>
+	    
+			</grupo>
+			<grupo>
+        			<translacao Y="-3" />
+				<cor R="36" G="45" B="171"/>
+        			<grupo>
+	            			<translacao X="-0.5" />
+        	    			<modelos>
+                				<modelo ficheiro="limbs.3d" />
+          				</modelos>
+	        		</grupo>	
+				<grupo>
+            				<translacao X="0.5" />
+            				<modelos>
+                				<modelo ficheiro="limbs.3d" />
+          				</modelos>
+        			</grupo>
+				<modelos>
+				</modelos>
+    			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="86" Y="5" Z="120" />
+
+			<modelos>
+			</modelos>
+			<grupo>
+				<translacao Y="1" />
+				<cor R="255" G="122" B="216"/>
+				<modelos>
+					<modelo ficheiro="torso.3d" />
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				<cor R="233" G="191" B="154"/>
+				<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+		
+	</grupo>
+	<grupo>
+		<translacao X="42" Y="5" Z="100" />
+		
+
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao Y="1" />
+			<cor R="255" G="122" B="216"/>
+			<modelos>
+				<modelo ficheiro="torso.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+			<cor R="233" G="191" B="154"/>
+			<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+	</grupo>
+	<grupo>
+		<translacao X="30" Y="5" Z="115" />
+	
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao Y="1" />
+			<cor R="255" G="122" B="216"/>
+			<modelos>
+				<modelo ficheiro="torso.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+			<cor R="233" G="191" B="154"/>
+			<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+	</grupo>
+	<grupo>
+		<translacao X="-48" Y="5" Z="125" />
+	
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao Y="1" />
+			<cor R="255" G="122" B="216"/>
+			<modelos>
+				<modelo ficheiro="torso.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+			<cor R="233" G="191" B="154"/>
+			<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+	</grupo>
+	<grupo>
+		<translacao X="-26" Y="5" Z="120" />
+
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao Y="1" />
+			<cor R="255" G="122" B="216"/>
+			<modelos>
+				<modelo ficheiro="torso.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+			<cor R="233" G="191" B="154"/>
+			<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+	</grupo>
+	<grupo>
+		<translacao X="-14" Y="5" Z="90" />
+
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao Y="1" />
+			<cor R="255" G="122" B="216"/>
+			<modelos>
+				<modelo ficheiro="torso.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+			<cor R="233" G="191" B="154"/>
+			<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+	</grupo>
+	<grupo>
+		<translacao X="-33" Y="5" Z="110" />
+
+		<modelos>
+		</modelos>
+		<grupo>
+			<translacao Y="1" />
+			<cor R="255" G="122" B="216"/>
+			<modelos>
+				<modelo ficheiro="torso.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+			<cor R="233" G="191" B="154"/>
+			<modelos>
+				<modelo ficheiro="head.3d" />
+			</modelos>
+		</grupo>
+		<grupo>
+        		<translacao Y="1" />
+			<cor R="233" G="191" B="154"/>
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+            			</modelos>
+       			</grupo>
+			<modelos>
+			</modelos>
+	    
+		</grupo>
+		<grupo>
+        		<translacao Y="-3" />
+			<cor R="36" G="45" B="171"/>
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="limbs.3d" />
+          			</modelos>
+        		</grupo>
+			<modelos>
+			</modelos>
+    		</grupo>
+	</grupo>
+</cena>
+
