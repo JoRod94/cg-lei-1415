@@ -14,14 +14,14 @@
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
-	<grupo>		
+	<grupo>
 		<translacao X="33"/>
 		<cor R="255" G="250" B="205"/>
 		<modelos>
 			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
-	<grupo>		
+	<grupo>
 		<translacao X="37"/>
 		<cor B="205"/>
 		<modelos>
@@ -49,7 +49,7 @@
 		<cor R="160" G="102" B="60"/>
 		<translacao X="62"/>
 		<modelos>
-		<modelo ficheiro="sphere.3d" />
+			<modelo ficheiro="sphere.3d" />
 		</modelos>
 	</grupo>
 	<grupo>

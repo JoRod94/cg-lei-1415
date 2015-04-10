@@ -162,7 +162,7 @@ void draw_group(group g) {
 	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
 		draw_group(g->subgroups[i]);
 	}
-	
+
     glPopMatrix();
 }
 
@@ -207,13 +207,12 @@ static bool valid_group(tinyxml2::XMLElement* group) {
     tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
 	tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
 
-
     return (
             (models == NULL || models->NextSiblingElement(_XML_MODELS) == NULL) &&
             (translation == NULL || translation->NextSiblingElement(_XML_TRANSLATION) == NULL) &&
             (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
             (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL) &&
-			(color == NULL || scale->NextSiblingElement(_XML_COLOR) == NULL)
+			(color == NULL || color->NextSiblingElement(_XML_COLOR) == NULL)
            );
 }
 
@@ -280,6 +279,9 @@ vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
 	return v;
 }
 
+// birecursive functions, necessary header declaration
+bool parseGroup(tinyxml2::XMLElement* g, group *ret);
+
 bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
@@ -294,7 +296,7 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
 	while(subgroup != NULL) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
-			if (__parse_group(subgroup, &maybe_sub)) {
+			if (parseGroup(subgroup, &maybe_sub)) {
 				sg.push_back(maybe_sub);
 			}
 			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
