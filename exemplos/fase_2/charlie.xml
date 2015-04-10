@@ -1,46 +1,50 @@
 ﻿<cena>
 	<grupo>
-		<translação Y="1" />
+		<translacao Y="1" />
 		<modelos>
 			<modelo ficheiro="torso.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
-		<translação Y="4" />
+		<translacao Y="4" />
 		<modelos>
 			<modelo ficheiro="head.3d" />
 		</modelos>
 	</grupo>
 	<grupo>
-        	<translação Y="1" />
+        	<translacao Y="1" />
         	<grupo>
-            		<translação X="2" />
+            		<translacao X="2" />
             		<modelos>
                 		<modelo ficheiro="limbs.3d" />
             		</modelos>
         	</grupo>
 		<grupo>
-        		<translação X="-2" />
+        		<translacao X="-2" />
             		<modelos>
                 		<modelo ficheiro="limbs.3d" />
             		</modelos>
        		</grupo>
+		<modelos>
+		</modelos>
 	    
 	</grupo>
 	<grupo>
-        	<translação Y="-3" />
+        	<translacao Y="-3" />
         	<grupo>
-            		<translação X="-0.5" />
+            		<translacao X="-0.5" />
             		<modelos>
                 		<modelo ficheiro="limbs.3d" />
           		</modelos>
         	</grupo>
 		<grupo>
-            		<translação X="0.5" />
+            		<translacao X="0.5" />
             		<modelos>
                 		<modelo ficheiro="limbs.3d" />
           		</modelos>
         	</grupo>
+		<modelos>
+		</modelos>
     	</grupo>
 </cena>
 
