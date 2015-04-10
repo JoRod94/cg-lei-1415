@@ -44,6 +44,7 @@
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
+#define DEFAULT_CAM_RADIUS  10.0f
 
 using namespace std;
 
@@ -66,7 +67,7 @@ bool freeCamera = false;
 bool keyHolds[256];
 float alpha = 0, freeAlpha = 0;
 float beta = 0, freeBeta = 0;
-float radius = 1;
+float radius = DEFAULT_CAM_RADIUS;
 float px = 0.0f;
 float py = 0.0f;
 float pz = 0.0f;
@@ -81,7 +82,7 @@ void set_camera(float a, float b, float r) {
 	if (!camera_set) {
 		alpha = a;
 		beta = b;
-		radius = r || 1;
+        radius = r < 1 ? DEFAULT_CAM_RADIUS : r;
 		camera_set = true;
 	}
 }
@@ -233,7 +234,7 @@ static bool valid_group(tinyxml2::XMLElement* group) {
 static vector<string> group_points(tinyxml2::XMLElement* group) {
     vector<string> points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
-	
+
 	if (models) {
 		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
