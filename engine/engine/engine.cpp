@@ -58,9 +58,9 @@ vector<group> groups;
 map<string, vector<point>> files;
 
 //Menu variables
-
 GLenum mode = GL_FILL;
-bool shouldDrawGrid = false;
+int gridSize = 50;
+bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, drawXY, drawZY
 
 //Camera variables
 bool freeCamera = false;
@@ -85,6 +85,11 @@ void set_camera(float a, float b, float r) {
         radius = r < 1 ? DEFAULT_CAM_RADIUS : r;
 		camera_set = true;
 	}
+}
+
+void gridBoolInit(){
+	for (int i = 0; i<4 ; i++)
+		gridBools[i] = false;
 }
 
 void keyHoldsInit(){
@@ -114,7 +119,7 @@ void keyActions(){
 		}
 	}
 	else{
-		if (keyHolds['z'])
+		if (keyHolds['z'] && radius > 1)
 			radius--;
 		if (keyHolds['x'])
 			radius++;
@@ -122,19 +127,46 @@ void keyActions(){
 }
 
 void drawGrid(){
-	if (shouldDrawGrid){
+	if (gridBools[0]){
 		glColor3ub(0, 255, 0);
+		if (gridBools[1]){
+			for (float i = -gridSize; i <= gridSize; i += 1){
+				glBegin(GL_LINES);
 
-		for (float i = -50; i <= 50; i += 1){
-			glBegin(GL_LINES);
+				glVertex3f(-gridSize, 0, i);
+				glVertex3f(gridSize, 0, i);
 
-			glVertex3f(-50, 0, i);
-			glVertex3f(50, 0, i);
+				glVertex3f(i, 0, -gridSize);
+				glVertex3f(i, 0, gridSize);
 
-			glVertex3f(i, 0, -50);
-			glVertex3f(i, 0, 50);
+				glEnd();
+			}
+		}
+		if (gridBools[2]){
+			for (float i = -gridSize; i <= gridSize; i += 1){
+				glBegin(GL_LINES);
 
-			glEnd();
+				glVertex3f(-gridSize, i, 0);
+				glVertex3f(gridSize, i, 0);
+
+				glVertex3f(i, -gridSize, 0);
+				glVertex3f(i, gridSize, 0);
+
+				glEnd();
+			}
+		}
+		if (gridBools[3]){
+			for (float i = -gridSize; i <= gridSize; i += 1){
+				glBegin(GL_LINES);
+
+				glVertex3f(0, -gridSize, i);
+				glVertex3f(0, gridSize, i);
+
+				glVertex3f(0, i, -gridSize);
+				glVertex3f(0, i, gridSize);
+
+				glEnd();
+			}
 		}
 	}
 }
@@ -426,6 +458,12 @@ void renderScene(void) {
 
 
 void keyBoardInput(unsigned char key, int x, int y){
+	if (gridBools[0]){
+		if (key == 'c')
+			gridSize += gridSize;
+		if (key == 'v')
+			gridSize -= gridSize / 2;
+	}
 	if (key == 'f')
 		freeCamera = !freeCamera;
 	else if (key == 'r'){
@@ -521,13 +559,24 @@ void polygonModeHandler(int id_op){
 }
 
 void gridModeHandler(int id_op){
-	switch (id_op){
-		case 1:
-			shouldDrawGrid = false;
-			break;
+	if (id_op == 1){
+		gridBoolInit();
+		gridSize = 50;
+		std::cout << "Passa";
+	}
+	else{
+		switch (id_op){
 		case 2:
-			shouldDrawGrid = true;
+			gridBools[1] = true;
 			break;
+		case 3:
+			gridBools[2] = true;
+			break;
+		case 4:
+			gridBools[3] = true;
+			break;
+		}
+		gridBools[0] = true;
 	}
 }
 
@@ -544,6 +593,8 @@ void createMenu(){
 	gridMode = glutCreateMenu(gridModeHandler);
 	glutAddMenuEntry("No Grid", 1);
 	glutAddMenuEntry("X-Z Grid", 2);
+	glutAddMenuEntry("X-Y Grid", 3);
+	glutAddMenuEntry("Z-Y Grid", 4);
 
 	mainMenu = glutCreateMenu(mainMenuHandler);
 	glutAddSubMenu("Polygon Mode", polygonMode);
