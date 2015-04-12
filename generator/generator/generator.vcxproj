@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>C:\Users\João\Documents\GitHub\cg-lei-1415\generator\generator;C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\generator\generator;C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\generator;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei2.0\cg-lei-1415\generator\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\generator\generator;C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\generator\generator;C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\generator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei2.0\cg-lei-1415\generator\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\generator\generator;C:\Users\AnaLuísa\Desktop\CG\cg_lei\cg-lei-1415\generator\generator;C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\toolkits\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
