@@ -62,6 +62,10 @@ GLenum mode = GL_FILL;
 float gridSize = 50, gridScale = 1;
 bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, drawXY, drawZY
 
+//Time variables
+int globalTime = 0;
+int lastRender = 0, renderStep = 7;
+
 //Camera variables
 bool freeCamera = false;
 bool keyHolds[256];
@@ -69,10 +73,11 @@ float defAlpha = 0, defBeta = 0, defRadius = DEFAULT_CAM_RADIUS;
 float alpha = 0, freeAlpha = 0;
 float beta = 0, freeBeta = 0;
 float radius = DEFAULT_CAM_RADIUS;
+float freeCamSpeed = 0.5;
 float px = 0.0f;
 float py = 0.0f;
 float pz = 0.0f;
-float rx = 0.0f;
+float rx = 1.0f;
 float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
@@ -87,11 +92,6 @@ void set_camera(float a, float b, float r) {
 	radius = defRadius;
 }
 
-void gridBoolInit(){
-	for (int i = 0; i<4 ; i++)
-		gridBools[i] = false;
-}
-
 void keyHoldsInit(){
 	for (int i = 0; i < 256; i++)
 		keyHolds[i] = false;
@@ -100,22 +100,22 @@ void keyHoldsInit(){
 void keyActions(){
 	if (freeCamera){
 		if (keyHolds['w']){
-			pz += rz*0.03;
-			px += rx*0.03;
-			py += ry*0.03;
+			pz += rz*freeCamSpeed;
+			px += rx*freeCamSpeed;
+			py += ry*freeCamSpeed;
 		}
 		if (keyHolds['s']){
-			pz -= rz*0.03;
-			px -= rx*0.03;
-			py -= ry*0.03;
+			pz -= rz*freeCamSpeed;
+			px -= rx*freeCamSpeed;
+			py -= ry*freeCamSpeed;
 		}
 		if (keyHolds['d']){
-			pz += rx*0.03;
-			px -= rz*0.03;
+			pz += rx*freeCamSpeed;
+			px -= rz*freeCamSpeed;
 		}
 		if (keyHolds['a']){
-			pz -= rx*0.03;
-			px += rz*0.03;
+			pz -= rx*freeCamSpeed;
+			px += rz*freeCamSpeed;
 		}
 	}
 	else{
@@ -124,6 +124,11 @@ void keyActions(){
 		if (keyHolds['x'])
 			radius++;
 	}
+}
+
+void gridBoolInit(){
+	for (int i = 0; i<4; i++)
+		gridBools[i] = false;
 }
 
 void drawGrid(){
@@ -459,6 +464,14 @@ void renderScene(void) {
 	glutSwapBuffers();
 }
 
+void renderTimer(){
+	globalTime = glutGet(GLUT_ELAPSED_TIME);
+	if (globalTime - lastRender > renderStep ){
+		lastRender = globalTime;
+		glutPostRedisplay();
+	}
+}
+
 
 void keyBoardInput(unsigned char key, int x, int y){
 	if (gridBools[0]){
@@ -466,7 +479,7 @@ void keyBoardInput(unsigned char key, int x, int y){
 			gridSize += gridSize;
 			gridScale += gridScale;
 		}
-		if (key == 'v'){
+		if (key == 'v' && gridSize > 1){
 			gridSize -= gridSize / 2;
 			gridScale -= gridScale / 2;
 		}
@@ -489,13 +502,10 @@ void keyBoardInput(unsigned char key, int x, int y){
 	}
 	else
 		keyHolds[key] = true;
-
-	glutPostRedisplay();
 }
 
 void keyUp(unsigned char key, int x, int y){
 	keyHolds[key] = false;
-	glutPostRedisplay();
 }
 
 // Mouse button callback
@@ -513,7 +523,6 @@ void mousePress(int button, int state, int x, int y) {
 			xOri = x;
 			yOri = y;
 		}
-		glutPostRedisplay();
 	}
 }
 
@@ -546,7 +555,6 @@ void mouseMotion(int x, int y) {
 	}
 	xOri = x;
 	yOri = y;
-	glutPostRedisplay();
 }
 
 
@@ -646,7 +654,7 @@ int main(int argc, char **argv)
 
 	// registo de funções
 	glutDisplayFunc(renderScene);
-	glutIdleFunc(renderScene);
+	glutIdleFunc(renderTimer);
 	glutReshapeFunc(changeSize);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
