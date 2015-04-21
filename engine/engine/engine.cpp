@@ -1,6 +1,6 @@
 // engine.cpp : Defines the entry point for the console application.
 //
-
+#pragma comment(lib,"glew32.lib")
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <map>
+#include <glew/glew.h>
 #include "point.h"
 #include "tinyxml2.h"
 #include <GL/glut.h>
@@ -65,6 +66,11 @@ bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, dr
 //Time variables
 int globalTime = 0;
 int lastRender = 0, renderStep = 7;
+
+//VBO variables
+float *vertexB;
+unsigned int *indices;
+GLuint buffers[1];
 
 //Camera variables
 bool freeCamera = false;
@@ -197,6 +203,24 @@ void draw_points(vector<point> vp){
 	}
 
 	glEnd();
+}
+
+void fill_vbo(){
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	//preencher vertexB e indices
+
+	glGenBuffers(1, buffers);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, /*tamanho do array em bytes*/, vertexB, GL_STATIC_DRAW);
+
+	free(vertexB);
+}
+
+void draw_vbo(){
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glDrawElements(GL_TRIANGLES, /*nº de coordenadas*/,GL_UNSIGNED_INT,indices);
 }
 
 void draw_group(group g) {
@@ -667,6 +691,8 @@ int main(int argc, char **argv)
 	glutMotionFunc(mouseMotion);
 	glutKeyboardFunc(keyBoardInput);
 	glutKeyboardUpFunc(keyUp);
+
+	glewInit();
 
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);

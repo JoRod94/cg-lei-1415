@@ -14,13 +14,17 @@
 using namespace std;
 
 vector<point> points;
+vector<int> indices;
 
 void create_file(const char* filename){
-	unsigned long int size = points.size();
+	unsigned long int pSize = points.size(), iSize = indices.size();
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
-	newFile.write((char *)&size, sizeof(size));
-	newFile.write((char *)&points[0], size*sizeof(point));
+	newFile.write((char *)&pSize, sizeof(pSize));
+	newFile.write((char *)&points[0], pSize*sizeof(point));
+	newFile.write((char *)&iSize, sizeof(iSize));
+	newFile.write((char *)&indices[0], iSize*sizeof(int));
+	
 }
 
 
@@ -204,7 +208,7 @@ void create_parallelepiped(float length, float width, float height, float slices
 
 }
 
-void pointRotator(float slices, float layers){
+/*void pointRotator(float slices, float layers){
 	float alpha = 0.0f, beta = (float)M_PI;
 	float aInc = (2.0f * (float)M_PI) / slices;
 
@@ -220,8 +224,32 @@ void pointRotator(float slices, float layers){
 		}
 		alpha += aInc;
 	}
-}
+}*/
 
+
+//repete ainda na ultima rotação os pontos
+void pointRotator(float slices, float layers){
+	float aInc = (2.0f * (float)M_PI) / slices, alpha = aInc;
+	int ind = 0;
+
+	for (int i = 0; i < slices; i++){
+		for (int j = 0; j < layers; j++){
+			ind = (layers+1)*i + j;
+
+			points.push_back(point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha)));
+
+			indices.push_back(ind);
+			indices.push_back(ind + layers + 1);
+			indices.push_back(ind + layers + 2);
+
+			indices.push_back(ind + layers + 2);
+			indices.push_back(ind + 1);
+			indices.push_back(ind);
+		}
+		points.push_back(point(points[layers].x * sin(alpha), points[layers].y, points[layers].x * cos(alpha)));
+		alpha += aInc;
+	}
+}
 void create_sphere(float radius, float slices, float layers){
 	float beta = (float)M_PI;
 	float bInc = (float)M_PI / layers;
