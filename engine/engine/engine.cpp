@@ -8,9 +8,8 @@
 #include <vector>
 #include <sstream>
 #include <map>
-#include <glew/glew.h>
+#include <glew.h>
 #include "point.h"
-#include "fileInfo.h"
 #include "tinyxml2.h"
 #include <GL/glut.h>
 #include <regex>
@@ -56,8 +55,14 @@ typedef struct s_group {
     vector<struct s_group *> subgroups;
 } *group;
 
+typedef struct s_figure {
+	float* vertex;
+	int* indices;
+	int n_coords;
+} *figure;
+
 vector<group> groups;
-map<string, fileInfo> files;
+map<string, figure> files;
 
 //Menu variables
 GLenum mode = GL_FILL;
@@ -89,6 +94,10 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
+
+figure new_figure() {
+	return (figure)malloc(sizeof(struct s_figure));
+}
 
 void set_camera(float a, float b, float r) {
 	defAlpha = (a * M_PI) / 180;
@@ -196,13 +205,13 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 }
 
 
-void draw_vbo(fileInfo fi){
+void draw_vbo(figure fi){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[/*number of buffer*/]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 	glDrawElements(GL_TRIANGLES, /*nCoords de fileInfo*/, GL_UNSIGNED_INT, indices);
 }
 
-void fill_vbo(fileInfo fi){
+void fill_vbo(figure fi){
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	//não sei se é preciso encher mais arrays ou se basta usar o que já vem do ficheiro
@@ -229,8 +238,7 @@ void draw_group(group g) {
 
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
-        		map<string, fileInfo>::iterator p = files.find(g->points[i]);
-				//AQUI
+        map<string, figure>::iterator p = files.find(g->points[i]);
 		if (p != files.end()) {
 			draw_vbo(p->second);
 		}
@@ -253,12 +261,13 @@ void renderPoints() {
 
 void read_bin(string filename){
 	unsigned long int arraySize;
-	vector<point> points;
+	unsigned long int indicesSize;
+	figure f = new_figure();
 
-	map<string, vector<point>>::iterator file = files.find(filename);
+	map<string, figure>::iterator file = files.find(filename);
 
 	if (file != files.end()) {
-		points = file->second;
+		f = file->second;
 		cout << "MODEL FILE ALREADY READ: " << filename << endl;
 		return;
 	}
@@ -270,11 +279,12 @@ void read_bin(string filename){
 	}
 
 	i.read((char *)&arraySize, sizeof(arraySize));
+	i.read((char *)&(f->vertex) , arraySize*sizeof(float));
 
-	points.resize(arraySize);
-	i.read((char *)&points[0], arraySize*sizeof(point));
-
-	files[filename] = points;
+	i.read((char *)&indicesSize, sizeof(arraySize));
+	i.read((char *)&(f->indices), arraySize*sizeof(float));
+	
+	files[filename] = f;
 }
 
 static bool valid_group(tinyxml2::XMLElement* group) {
