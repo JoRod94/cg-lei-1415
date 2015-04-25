@@ -1,6 +1,10 @@
 #ifndef _TRANSLATE_H
 #define _TRANSLATE_H
 #include "transformation.h"
+#include <iostream>
+#include "point.h"
+
+using namespace std;
 
 
 #pragma
@@ -8,9 +12,12 @@ class Translation : public Transformation
 {
 public:
 	float x, z, y;
+	long time;
+	vector<point> points;
 
-	Translation(float x, float y, float z) : x(x), y(y), z(z) {};
-	Translation() : x(0), y(0), z(0) {};
+	Translation(long time, float x, float y, float z) : time(time), x(x), y(y), z(z) {};
+	Translation(float x, float y, float z) : time(0), x(x), y(y), z(z) {};
+	Translation() : time(0), x(0), y(0), z(0) {};
 
 	virtual void apply();
 };

@@ -5,6 +5,7 @@
 
 
 void Rotation::apply(){
+	// TODO: Update this to the timed version
 	glRotatef(angle, x, y, z);
 }
 

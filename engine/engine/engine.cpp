@@ -32,6 +32,7 @@
 #define _XML_COLOR			"cor"
 #define _XML_ROTATION       "rotacao"
 #define _XML_SCALE          "escala"
+#define _XML_POINT			"ponto"
 #define _XML_X              "X"
 #define _XML_Y              "Y"
 #define _XML_Z              "Z"
@@ -42,6 +43,7 @@
 #define _XML_X_AXIS         "eixoX"
 #define _XML_Y_AXIS         "eixoY"
 #define _XML_Z_AXIS         "eixoZ"
+#define _XML_TIME			"tempo"
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
@@ -64,21 +66,21 @@ typedef struct s_figure {
 vector<group> groups;
 map<string, figure> files;
 
-//Menu variables
+// Menu variables
 GLenum mode = GL_FILL;
 float gridSize = 50, gridScale = 1;
 bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, drawXY, drawZY
 
-//Time variables
+// Time variables
 int globalTime = 0;
 int lastRender = 0, renderStep = 7;
 
-//VBO variables
+// VBO variables
 float *vertexB;
 unsigned int *indices;
 vector<GLuint> buffers;
 
-//Camera variables
+// Camera variables
 bool freeCamera = false;
 bool keyHolds[256];
 float defAlpha = 0, defBeta = 0, defRadius = DEFAULT_CAM_RADIUS;
@@ -336,6 +338,15 @@ static vector<Transformation*> group_colors(tinyxml2::XMLElement* g) {
 	return v;
 }
 
+static void parse_translation(Translation* t, tinyxml2::XMLElement* node) {
+	for (tinyxml2::XMLElement* p = node->FirstChildElement(_XML_POINT); p; p = p->NextSiblingElement(_XML_POINT))
+		t->points.push_back(point(
+									p->FloatAttribute(_XML_X),
+									p->FloatAttribute(_XML_Y),
+									p->FloatAttribute(_XML_Z)
+								));
+}
+
 static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group) {
     vector<Transformation*> vt;
 
@@ -344,6 +355,7 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 
 		if (s == _XML_ROTATION) {
 			vt.push_back(new Rotation(
+				node->FloatAttribute(_XML_TIME),
 				node->FloatAttribute(_XML_ANGLE),
 				node->FloatAttribute(_XML_X_AXIS),
 				node->FloatAttribute(_XML_Y_AXIS),
@@ -351,10 +363,13 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 		}
 
 		else if (s == _XML_TRANSLATION) {
-			vt.push_back(new Translation(
+			Translation* t = new Translation(
+				node->FloatAttribute(_XML_TIME),
 				node->FloatAttribute(_XML_X),
 				node->FloatAttribute(_XML_Y),
-				node->FloatAttribute(_XML_Z)));
+				node->FloatAttribute(_XML_Z));
+			parse_translation(t, node);
+			vt.push_back(t);
 		}
 
 		else if (s == _XML_SCALE) {
