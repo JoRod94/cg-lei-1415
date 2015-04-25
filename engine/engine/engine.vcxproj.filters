@@ -39,6 +39,9 @@
     <ClInclude Include="color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fileInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

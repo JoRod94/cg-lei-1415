@@ -17,14 +17,24 @@ vector<point> points;
 vector<int> indices;
 
 void create_file(const char* filename){
-	unsigned long int pSize = points.size(), iSize = indices.size();
+	unsigned long int pSize = 3*points.size(), iSize = indices.size();
+	float *pCoords = (float*) malloc(pSize * sizeof(float));
+	int *ind = (int*) malloc(iSize * sizeof(int));
+
+	for (int i = 0; i < pSize;){
+		pCoords[i] = points[i++].x;
+		pCoords[i] = points[i++].y;
+		pCoords[i] = points[i++].z;
+	}
+
+	for (int i = 0; i < iSize; i++)
+		ind[i] = 3*indices[i];
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
 	newFile.write((char *)&pSize, sizeof(pSize));
-	newFile.write((char *)&points[0], pSize*sizeof(point));
+	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&iSize, sizeof(iSize));
-	newFile.write((char *)&indices[0], iSize*sizeof(int));
-	
+	newFile.write((char *)&ind[0], iSize*sizeof(int));
 }
 
 
@@ -250,6 +260,7 @@ void pointRotator(float slices, float layers){
 		alpha += aInc;
 	}
 }
+
 void create_sphere(float radius, float slices, float layers){
 	float beta = (float)M_PI;
 	float bInc = (float)M_PI / layers;

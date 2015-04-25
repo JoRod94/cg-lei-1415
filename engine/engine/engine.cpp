@@ -10,6 +10,7 @@
 #include <map>
 #include <glew/glew.h>
 #include "point.h"
+#include "fileInfo.h"
 #include "tinyxml2.h"
 #include <GL/glut.h>
 #include <regex>
@@ -56,7 +57,7 @@ typedef struct s_group {
 } *group;
 
 vector<group> groups;
-map<string, vector<point>> files;
+map<string, fileInfo> files;
 
 //Menu variables
 GLenum mode = GL_FILL;
@@ -70,7 +71,7 @@ int lastRender = 0, renderStep = 7;
 //VBO variables
 float *vertexB;
 unsigned int *indices;
-GLuint buffers[1];
+vector<GLuint> buffers;
 
 //Camera variables
 bool freeCamera = false;
@@ -195,30 +196,26 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 }
 
 
-void draw_points(vector<point> vp){
-	glBegin(GL_TRIANGLES);
-
-	for (unsigned int i = 0; i < vp.size(); i++) {
-		glVertex3f(vp[i].x, vp[i].y, vp[i].z);
-	}
-
-	glEnd();
+void draw_vbo(fileInfo fi){
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[/*number of buffer*/]);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glDrawElements(GL_TRIANGLES, /*nCoords de fileInfo*/, GL_UNSIGNED_INT, indices);
 }
 
-void fill_vbo(){
+void fill_vbo(fileInfo fi){
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	//preencher vertexB e indices
+	//não sei se é preciso encher mais arrays ou se basta usar o que já vem do ficheiro
 
-	glGenBuffers(1, buffers);
+	glGenBuffers(1, buffers[/**/]);
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, /*tamanho do array em bytes*/, vertexB, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, /*tamanho do array em bytes*/, /*vertexB ou pCoords*/, GL_STATIC_DRAW);
 
 	free(vertexB);
 }
 
 void draw_vbo(){
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[/*qual o buffer a desenhar*/]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 	glDrawElements(GL_TRIANGLES, /*nº de coordenadas*/,GL_UNSIGNED_INT,indices);
 }
@@ -232,10 +229,10 @@ void draw_group(group g) {
 
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
-        		map<string, vector<point>>::iterator p = files.find(g->points[i]);
-
+        		map<string, fileInfo>::iterator p = files.find(g->points[i]);
+				//AQUI
 		if (p != files.end()) {
-			draw_points(p->second);
+			draw_vbo(p->second);
 		}
     }
 
