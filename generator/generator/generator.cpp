@@ -14,12 +14,12 @@
 using namespace std;
 
 vector<point> points;
-vector<int> indices;
+vector<long> indices;
 
 void create_file(const char* filename){
 	unsigned long int pSize = 3*points.size(), iSize = indices.size();
 	float *pCoords = (float*) malloc(pSize * sizeof(float));
-	int *ind = (int*) malloc(iSize * sizeof(int));
+	long *ind = (long*) malloc(iSize * sizeof(long));
 
 	for (int i = 0; i < pSize;){
 		pCoords[i] = points[i++].x;
@@ -27,14 +27,14 @@ void create_file(const char* filename){
 		pCoords[i] = points[i++].z;
 	}
 
-	for (int i = 0; i < iSize; i++)
+	for (long i = 0; i < iSize; i++)
 		ind[i] = 3*indices[i];
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
 	newFile.write((char *)&pSize, sizeof(pSize));
 	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&iSize, sizeof(iSize));
-	newFile.write((char *)&ind[0], iSize*sizeof(int));
+	newFile.write((char *)&ind[0], iSize*sizeof(long));
 }
 
 
@@ -240,10 +240,10 @@ void create_parallelepiped(float length, float width, float height, float slices
 //repete ainda na ultima rotação os pontos
 void pointRotator(float slices, float layers){
 	float aInc = (2.0f * (float)M_PI) / slices, alpha = aInc;
-	int ind = 0;
+	long ind = 0;
 
-	for (int i = 0; i < slices; i++){
-		for (int j = 0; j < layers; j++){
+	for (long i = 0; i < slices; i++){
+		for (long j = 0; j < layers; j++){
 			ind = (layers+1)*i + j;
 
 			points.push_back(point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha)));
