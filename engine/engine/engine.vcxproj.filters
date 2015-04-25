@@ -39,7 +39,10 @@
     <ClInclude Include="color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fileInfo.h">
+    <ClInclude Include="..\toolkits\includes\rotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\toolkits\includes\translation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
