@@ -2,13 +2,14 @@
 //
 #pragma comment(lib,"glew32.lib")
 #include "stdafx.h"
+#define _USE_MATH_DEFINES
 #include <iostream>
+#include <glew.h>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <map>
-#include <glew.h>
 #include "point.h"
 #include "tinyxml2.h"
 #include <GL/glut.h>
@@ -18,7 +19,6 @@
 #include "color.h"
 #include "rotation.h"
 #include "scale.h"
-#define _USE_MATH_DEFINES
 #include <math.h>
 
 
@@ -78,7 +78,7 @@ int lastRender = 0, renderStep = 7;
 // VBO variables
 float *vertexB;
 unsigned int *indices;
-vector<GLuint> buffers;
+GLuint *buffers;
 
 // Camera variables
 bool freeCamera = false;
@@ -206,63 +206,49 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 	return g;
 }
 
+//Does not consider group of file
+void draw_vbos(){
+	map<string, figure>::iterator fIt = files.begin();
 
-void draw_vbo(figure fi){
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[/*number of buffer*/]);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
-	glDrawElements(GL_TRIANGLES, /*nCoords de fileInfo*/, GL_UNSIGNED_INT, indices);
-}
-
-void fill_vbo(figure fi){
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	//não sei se é preciso encher mais arrays ou se basta usar o que já vem do ficheiro
-
-	glGenBuffers(1, buffers[/**/]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, /*tamanho do array em bytes*/, /*vertexB ou pCoords*/, GL_STATIC_DRAW);
-
-	free(vertexB);
-}
-
-void draw_vbo(){
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[/*qual o buffer a desenhar*/]);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
-	glDrawElements(GL_TRIANGLES, /*nº de coordenadas*/,GL_UNSIGNED_INT,indices);
-}
-
-void draw_group(group g) {
-	glPushMatrix();
-
-	for (unsigned int i = 0; i < g->transformations.size(); i++) {
-		(g->transformations[i])->apply();
+	for (int i = files.size(); i > 0; i--){
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+		glVertexPointer(3, GL_FLOAT, 0, 0);
+		glDrawElements(GL_TRIANGLES, fIt->second->n_coords, GL_UNSIGNED_INT, fIt->second->indices);
 	}
-
-
-	for (unsigned int i = 0; i < g->points.size(); i++) {
-        map<string, figure>::iterator p = files.find(g->points[i]);
-		if (p != files.end()) {
-			draw_vbo(p->second);
-		}
-    }
-
-	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
-		draw_group(g->subgroups[i]);
-	}
-
-    glPopMatrix();
 }
 
+//
+//void draw_group(group g) {
+//	glPushMatrix();
+//
+//	for (unsigned int i = 0; i < g->transformations.size(); i++) {
+//		(g->transformations[i])->apply();
+//	}
+//
+//
+//	for (unsigned int i = 0; i < g->points.size(); i++) {
+//        map<string, figure>::iterator p = files.find(g->points[i]);
+//		if (p != files.end()) {
+//			draw_vbo(p->second);
+//		}
+//    }
+//
+//	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
+//		draw_group(g->subgroups[i]);
+//	}
+//
+//    glPopMatrix();
+//}
 
-void renderPoints() {
-	for (vector<group>::iterator it = groups.begin();
-		it != groups.end();
-		++it)
-		draw_group(*it);
-}
+
+//void renderPoints() {
+//	for (vector<group>::iterator it = groups.begin();
+//		it != groups.end();
+//		++it)
+//		draw_group(*it);
+//}
 
 void read_bin(string filename){
-	unsigned long int arraySize;
 	unsigned long int indicesSize;
 	figure f = new_figure();
 
@@ -280,13 +266,28 @@ void read_bin(string filename){
 		return;
 	}
 
-	i.read((char *)&arraySize, sizeof(arraySize));
-	i.read((char *)&(f->vertex) , arraySize*sizeof(float));
+	i.read((char *)&(f->n_coords), sizeof(f->n_coords));
+	i.read((char *)&(f->vertex) , f->n_coords*sizeof(float));
 
-	i.read((char *)&indicesSize, sizeof(arraySize));
-	i.read((char *)&(f->indices), arraySize*sizeof(float));
+	i.read((char *)&indicesSize, sizeof(indicesSize));
+	i.read((char *)&(f->indices), indicesSize*sizeof(float));
 	
 	files[filename] = f;
+}
+
+void generate_vbos(){
+	int size = files.size();
+	map<string, figure>::iterator fIt = files.begin();
+	buffers = (GLuint *) malloc(size * (sizeof(GLuint)) );
+
+	glGenBuffers(size, buffers);
+
+	for (int i = 0; fIt != files.end(); fIt++, i++) {
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
+	}
+
+	//free(vertexB);
 }
 
 static bool valid_group(tinyxml2::XMLElement* group) {
@@ -503,7 +504,8 @@ void renderScene(void) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
 
-	renderPoints();
+	//renderPoints();
+	draw_vbos();
 
 	drawGrid();
 
@@ -697,16 +699,10 @@ int main(int argc, char **argv)
 	glutInitWindowSize(800, 800);
 	glutCreateWindow("TP");
 
-
 	// registo de funções
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(renderTimer);
 	glutReshapeFunc(changeSize);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-	// pôr aqui a criação do menu
-	createMenu();
 
 	// Camera stuff
 	glutMouseFunc(mousePress);
@@ -714,11 +710,17 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(keyBoardInput);
 	glutKeyboardUpFunc(keyUp);
 
-	glewInit();
-
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//glew
+	glewInit();
+
+	// pôr aqui a criação do menu
+	createMenu();
 
 	// initialize keyHolds array
 	keyHoldsInit();
