@@ -1,5 +1,4 @@
 // engine.cpp : Defines the entry point for the console application.
-//
 #pragma comment(lib,"glew32.lib")
 #include "stdafx.h"
 #define _USE_MATH_DEFINES
@@ -20,7 +19,6 @@
 #include "rotation.h"
 #include "scale.h"
 #include <math.h>
-
 
 #define _XML_FILE           "ficheiro"
 #define _XML_SCENE          "cena"
