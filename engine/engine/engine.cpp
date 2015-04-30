@@ -247,7 +247,8 @@ void draw_vbos(){
 //}
 
 void read_bin(string filename){
-	unsigned long int indicesSize;
+	//unsigned long int
+	int indicesSize = 0;
 	figure f = new_figure();
 
 	map<string, figure>::iterator file = files.find(filename);
@@ -264,11 +265,18 @@ void read_bin(string filename){
 		return;
 	}
 
-	i.read((char *)&(f->n_coords), sizeof(f->n_coords));
+	i.read((char *)&(f->n_coords), sizeof(int));
+	std::cout << "n_coords a ler: " << f->n_coords << endl;
+	f->vertex = (float *)malloc((f->n_coords)*sizeof(float));
 	i.read((char *)&(f->vertex) , f->n_coords*sizeof(float));
 
-	i.read((char *)&indicesSize, sizeof(indicesSize));
-	i.read((char *)&(f->indices), indicesSize*sizeof(float));
+	std::cout << "1" << endl;
+
+	i.read((char *)&indicesSize, sizeof(int));
+	std::cout << "nIndices a ler: " << indicesSize << endl;
+	f->indices = (int *)malloc(indicesSize*sizeof(int));
+	i.read((char *)&(f->indices), indicesSize*sizeof(int));
+	std::cout << "3" << endl;
 	
 	files[filename] = f;
 }
@@ -312,11 +320,12 @@ static vector<string> group_points(tinyxml2::XMLElement* group) {
 		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
+			cout << "vai ler read bin" << endl;
 			read_bin(filename);
 			points.push_back(filename);
 		}
 	}
-
+	cout << "CENASCOISO saiu" << endl;
     return points;
 }
 
@@ -399,17 +408,17 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
     }
-
     vector<Transformation*> t = group_transformations(g);
 	vector<Transformation*> c = group_colors(g);
     vector<string> pt = group_points(g);
     vector<group> sg;
-
+	
 	t.insert(t.end(), c.begin(), c.end());
 
 	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
 	while(subgroup != NULL) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
+
 
 			if (__parse_group(subgroup, &maybe_sub)) {
 				sg.push_back(maybe_sub);
@@ -433,6 +442,7 @@ void read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
 
+
     tinyxml2::XMLElement* camera = doc.FirstChildElement(_XML_CAMERA);
 	if (camera){
 		set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
@@ -444,7 +454,6 @@ void read_xml(char* xmlName) {
 
     for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
-
 		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
 		{
