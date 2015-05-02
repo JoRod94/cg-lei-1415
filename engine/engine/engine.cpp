@@ -57,8 +57,9 @@ typedef struct s_group {
 
 typedef struct s_figure {
 	float* vertex;
-	int* indices;
-	int n_coords;
+	unsigned int* indices;
+	unsigned int n_ind;
+	unsigned int n_coords;
 } *figure;
 
 vector<group> groups;
@@ -208,10 +209,10 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 void draw_vbos(){
 	map<string, figure>::iterator fIt = files.begin();
 
-	for (int i = files.size(); i > 0; i--){
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+	for (int i = (files.size() - 1); i >= 0; i--){
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
-		glDrawElements(GL_TRIANGLES, fIt->second->n_coords, GL_UNSIGNED_INT, fIt->second->indices);
+		glDrawElements(GL_TRIANGLES, fIt->second->n_ind, GL_UNSIGNED_INT, fIt->second->indices);
 	}
 }
 
@@ -247,8 +248,7 @@ void draw_vbos(){
 //}
 
 void read_bin(string filename){
-	//unsigned long int
-	int indicesSize = 0;
+	// should unsigned long int
 	figure f = new_figure();
 
 	map<string, figure>::iterator file = files.find(filename);
@@ -265,18 +265,15 @@ void read_bin(string filename){
 		return;
 	}
 
-	i.read((char *)&(f->n_coords), sizeof(int));
-	std::cout << "n_coords a ler: " << f->n_coords << endl;
+	i.read((char *)&(f->n_coords), sizeof(unsigned int));
 	f->vertex = (float *)malloc((f->n_coords)*sizeof(float));
-	i.read((char *)&(f->vertex) , f->n_coords*sizeof(float));
+	i.read((char *)&(f->vertex[0]) , f->n_coords*sizeof(float));
 
-	std::cout << "1" << endl;
 
-	i.read((char *)&indicesSize, sizeof(int));
-	std::cout << "nIndices a ler: " << indicesSize << endl;
-	f->indices = (int *)malloc(indicesSize*sizeof(int));
-	i.read((char *)&(f->indices), indicesSize*sizeof(int));
-	std::cout << "3" << endl;
+
+	i.read((char *)&(f->n_ind), sizeof(unsigned int));
+	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
+	i.read((char *)&(f->indices[0]), f->n_ind*sizeof(unsigned int));
 	
 	files[filename] = f;
 }
@@ -286,14 +283,15 @@ void generate_vbos(){
 	map<string, figure>::iterator fIt = files.begin();
 	buffers = (GLuint *) malloc(size * (sizeof(GLuint)) );
 
+
 	glGenBuffers(size, buffers);
 
 	for (int i = 0; fIt != files.end(); fIt++, i++) {
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
 	}
-
-	//free(vertexB);
+	
+	free(vertexB);
 }
 
 static bool valid_group(tinyxml2::XMLElement* group) {
@@ -320,12 +318,10 @@ static vector<string> group_points(tinyxml2::XMLElement* group) {
 		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
-			cout << "vai ler read bin" << endl;
 			read_bin(filename);
 			points.push_back(filename);
 		}
 	}
-	cout << "CENASCOISO saiu" << endl;
     return points;
 }
 
@@ -507,6 +503,7 @@ void renderScene(void) {
 			0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f);
 	}
+
 	glColor3f(1, 0, 0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
@@ -717,20 +714,22 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(keyBoardInput);
 	glutKeyboardUpFunc(keyUp);
 
+	//glew
+	glewInit();
+
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	//glew
-	glewInit();
-
 	// pôr aqui a criação do menu
 	createMenu();
 
 	// initialize keyHolds array
 	keyHoldsInit();
+
+	generate_vbos();
 
 	// entrar no ciclo do GLUT
 	glutMainLoop();

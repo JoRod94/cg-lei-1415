@@ -14,6 +14,8 @@ public:
 
 	bool operator== (const point& p) const;
 
+	bool operator< (const point& p) const;
+
 	void add_to(vector<float> &vec);
 };
 

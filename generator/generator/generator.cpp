@@ -10,34 +10,45 @@
 #include <regex>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <map>
 
 using namespace std;
 
+unsigned int lastInd = 0, cp = 0;
+map<point,unsigned int> pMap;
+vector<point> pOrder;
 vector<point> points;
-vector<int> indices;
+vector<unsigned int> indices;
+
+void put_point(float x, float y, float z){
+	map<point, unsigned int>::iterator it;
+	point p = point(x, y, z);
+
+	if ((it = pMap.find(p)) != pMap.end())
+		indices.push_back(it->second);
+	else{
+		pOrder.push_back(p);
+		pMap[p] = lastInd;
+		indices.push_back(lastInd++);
+	}
+}
 
 void create_file(const char* filename){
-	unsigned int pSize = 3*points.size(), iSize = indices.size();
+	unsigned int pSize = 3*pOrder.size(), iSize = indices.size();
 	float *pCoords = (float*) malloc(pSize * sizeof(float));
-	int *ind = (int*) malloc(iSize * sizeof(int));
-
-	for (int i = 0; i < pSize;){
-		pCoords[i] = points[i++].x;
-		pCoords[i] = points[i++].y;
-		pCoords[i] = points[i++].z;
+	
+	map<point, unsigned int>::iterator it;
+	for (int j = 0, i = 0; j<pOrder.size() ;j++){
+		pCoords[i++] = pOrder[j].x;
+		pCoords[i++] = pOrder[j].y;
+		pCoords[i++] = pOrder[j].z;
 	}
-
-	for (int i = 0; i < iSize; i++)
-		ind[i] = 3*indices[i];
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
 	newFile.write((char *)&pSize, sizeof(pSize));
 	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&iSize, sizeof(iSize));
-	newFile.write((char *)&ind[0], iSize*sizeof(int));
-
-	std::cout << pSize << endl;
-	std::cout << iSize << endl;
+	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
 }
 
 
@@ -221,25 +232,25 @@ void create_parallelepiped(float length, float width, float height, float slices
 
 }
 
-/*void pointRotator(float slices, float layers){
-	float alpha = 0.0f, beta = (float)M_PI;
+void point_rotator(float slices, float layers){
+	float alpha = (float)M_PI/2.0f;
 	float aInc = (2.0f * (float)M_PI) / slices;
 
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
-			points.push_back(point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha)));
-			points.push_back(point(points[j].x * sin(alpha + aInc), points[j].y, points[j].x * cos(alpha + aInc)));
-			points.push_back(point(points[j + 1].x * sin(alpha + aInc), points[j + 1].y, points[j + 1].x * cos(alpha + aInc)));
+			put_point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha));
+			put_point(points[j].x * sin(alpha + aInc), points[j].y, points[j].x * cos(alpha + aInc));
+			put_point(points[j + 1].x * sin(alpha + aInc), points[j + 1].y, points[j + 1].x * cos(alpha + aInc));
 
-			points.push_back(point(points[j + 1].x * sin(alpha + aInc), points[j + 1].y, points[j + 1].x * cos(alpha + aInc)));
-			points.push_back(point(points[j + 1].x * sin(alpha), points[j + 1].y, points[j + 1].x * cos(alpha)));
-			points.push_back(point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha)));
+			put_point(points[j + 1].x * sin(alpha + aInc), points[j + 1].y, points[j + 1].x * cos(alpha + aInc));
+			put_point(points[j + 1].x * sin(alpha), points[j + 1].y, points[j + 1].x * cos(alpha));
+			put_point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha));
 		}
 		alpha += aInc;
 	}
-}*/
+}
 
-void pointRotator(float slices, float layers){
+/*void point_rotator(float slices, float layers){
 	float aInc = (2.0f * (float)M_PI) / slices, alpha = aInc;
 	int ind = 0;
 
@@ -260,16 +271,18 @@ void pointRotator(float slices, float layers){
 		points.push_back(point(points[layers].x * sin(alpha), points[layers].y, points[layers].x * cos(alpha)));
 		alpha += aInc;
 	}
-}
+}*/
 
 void create_sphere(float radius, float slices, float layers){
-	float beta = (float)M_PI;
-	float bInc = (float)M_PI / layers;
+	float beta = 0.0f;
+	float bInc = M_PI / layers;
 
-	for (int i = 0; i < (layers + 1); i++, beta += bInc)
+	for (int i = 0; i < layers; i++, beta += bInc)
 		points.push_back(point(radius * sin(beta), radius * cos(beta), 0));
 
-	pointRotator(slices, layers);
+	points.push_back(point(0,-1, 0));
+
+	point_rotator(slices, layers);
 }
 
 void create_cone(float radius, float height, float slices, float layers){
@@ -280,7 +293,7 @@ void create_cone(float radius, float height, float slices, float layers){
 	for (int i = 0; i < (layers + 1); i++, currR -= rDec, currH += hInc)
 		points.push_back(point(currR, currH, 0));
 
-	pointRotator(slices, layers + 1);
+	point_rotator(slices, layers + 1);
 }
 
 void create_torus(float ir, float or, float slices, float layers){
@@ -290,16 +303,20 @@ void create_torus(float ir, float or, float slices, float layers){
 	for (int i = 0; i < (layers + 1); i++, beta += bInc)
 		points.push_back(point(ir + or * sin(beta), or * cos(beta), 0));
 
-	pointRotator(slices, layers);
+	point_rotator(slices, layers);
 }
 
 void create_ring(float ir, float or, float slices){
 	points.push_back(point(ir, 0, 0));
 	points.push_back(point(ir + (2 * or), 0, 0));
-	points.push_back(point(ir, 0, 0));
-	points.push_back(point(ir + (2 * or), 0, 0));
 
-	pointRotator(slices, 1);
+	point_rotator(slices, 1);
+
+	points.clear();
+
+	points.push_back(point(ir + (2 * or), 0, 0));
+	points.push_back(point(ir, 0, 0));
+	point_rotator(slices, 1);
 }
 
 void create_cylinder(float radius, float height, float slices, float layers){
@@ -311,7 +328,7 @@ void create_cylinder(float radius, float height, float slices, float layers){
 		points.push_back(point(radius, currH, 0));
 	points.push_back(point(0, currH - hInc, 0));
 
-	pointRotator(slices, layers + 2);
+	point_rotator(slices, layers + 2);
 }
 
 int valid_input(int argc, char* argv[]) {
@@ -401,6 +418,7 @@ int main(int argc, char* argv[]) {
 		std::cout << "Command not recognized" << endl;
 		return 0;
 	}
+
 	std::cout << "Writing to file..." << endl;
 	create_file(argv[argc - 1]);
 	std::cout << "Done" << endl;
