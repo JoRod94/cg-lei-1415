@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "point.h"
+#include "patch.h"
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -32,6 +33,208 @@ void put_point(float x, float y, float z){
 		indices.push_back(lastInd++);
 	}
 }
+
+void _put_point(point p){
+	map<point, unsigned int>::iterator it;
+
+	if ((it = pMap.find(p)) != pMap.end())
+		indices.push_back(it->second);
+	else{
+		pOrder.push_back(p);
+		pMap[p] = lastInd;
+		indices.push_back(lastInd++);
+	}
+}
+
+// calculating the linear interpolation of p0, p1, p2 and p3
+// on instance t
+point cubic_bezier(float t, point* p) {
+	point pf;
+
+	pf.x = pow(1 - t, 3) * p[0].x +
+		pow(1 - t, 2) * 3 * t * p[1].x +
+		(1 - t) * 3 * pow(t, 2) * p[2].x +
+		pow(t, 3) * p[3].x;
+
+	pf.y = pow(1 - t, 3) * p[0].y +
+		pow(1 - t, 2) * 3 * t * p[1].y +
+		(1 - t) * 3 * pow(t, 2) * p[2].y +
+		pow(t, 3) * p[3].y;
+
+	pf.z = pow(1 - t, 3) * p[0].z +
+		pow(1 - t, 2) * 3 * t * p[1].z +
+		(1 - t) * 3 * pow(t, 2) * p[2].z +
+		pow(t, 3) * p[3].z;
+
+	return pf;
+}
+
+point cubic_bezier_zz(float t, point* p) {
+	point pf;
+
+	pf.x = pow(1 - t, 3) * p[0].x +
+		pow(1 - t, 2) * 3 * t * p[1].x +
+		(1 - t) * 3 * pow(t, 2) * p[2].x +
+		pow(t, 3) * p[3].x;
+
+	pf.y = pow(1 - t, 3) * p[0].z +
+		pow(1 - t, 2) * 3 * t * p[1].z +
+		(1 - t) * 3 * pow(t, 2) * p[2].z +
+		pow(t, 3) * p[3].z;
+
+	pf.z = pow(1 - t, 3) * p[0].y +
+		pow(1 - t, 2) * 3 * t * p[1].y +
+		(1 - t) * 3 * pow(t, 2) * p[2].y +
+		pow(t, 3) * p[3].y;
+
+	return pf;
+}
+
+point interpolate_yy(float u, float v, Patch p) {
+	int j = 0, w = 0;
+	point u_points[4];
+	point v_points[4];
+
+	for (int i = 0; i < 16; i++) {
+		u_points[j] = p.getPoint(i);
+
+		j = (j + 1) % 4;
+
+		if (j == 0)
+			v_points[w++] = cubic_bezier(u, u_points);
+	}
+
+	return cubic_bezier(v, v_points);
+}
+
+point interpolate_zz(float u, float v, Patch p) {
+	int j = 0, w = 0;
+	point u_points[4];
+	point v_points[4];
+
+	for (int i = 0; i < 16; i++) {
+		v_points[j] = p.getPoint(i);
+
+		j = (j + 1) % 4;
+
+		if (j == 0)
+			u_points[w++] = cubic_bezier_zz(v, v_points);
+	}
+
+	return cubic_bezier(u, u_points);
+}
+
+void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
+	float u = i * inc,
+		v = j * inc,
+		next_u = (i + 1) * inc,
+		next_v = (j + 1) * inc;
+
+	point p0, p1, p2, p3;
+
+	if (z_axis) {
+		p0 = interpolate_zz(u, v, p);
+		p1 = interpolate_zz(next_u, v, p);
+		p2 = interpolate_zz(next_u, next_v, p);
+		p3 = interpolate_zz(u, next_v, p);
+	}
+	else {
+		p0 = interpolate_yy(u, v, p);
+		p1 = interpolate_yy(next_u, v, p);
+		p2 = interpolate_yy(next_u, next_v, p);
+		p3 = interpolate_yy(u, next_v, p);
+	}
+
+	_put_point(p0);
+	_put_point(p1);
+	_put_point(p2);
+
+	_put_point(p2);
+	_put_point(p3);
+	_put_point(p0);
+}
+
+
+void draw_patch(int tesselation, Patch p, bool axis) {
+	float inc = 1.0f / (float)tesselation;
+	float u, v, next_u, next_v;
+
+	for (int i = 0; i < tesselation; i++) {
+		for (int j = 0; j < tesselation; j++)
+			interpolate(i, j, inc, p, axis);
+	}
+}
+
+vector<string> tokenize(string str, char delim, vector<string> &token) {
+	size_t start = str.find_first_not_of(delim);
+	size_t end = start;
+
+	while (start != string::npos) {
+		end = str.find(delim, start);
+		token.push_back(str.substr(start, end - start));
+		start = str.find_first_not_of(delim, end);
+	}
+
+	return token;
+
+}
+
+Patch read_patch(string filename) {
+	ifstream file(filename);
+
+	string line;
+
+	getline(file, line);
+	int nr_patches = stoi(line);
+	Patch p;
+	vector<string> tokens;
+
+	for (int i = 0; i < nr_patches; i++) {
+		getline(file, line);
+		vector<int> indices;
+		tokens.clear();
+		tokenize(line, ',', tokens);
+
+		for (int j = 0; j < tokens.size(); j++) {
+			int x = stoi(tokens[j]);
+			indices.push_back(x);
+		}
+
+		p.indices.push_back(indices);
+	}
+
+	getline(file, line);
+	int nr_points = stoi(line);
+	vector<point> points;
+
+	for (int i = 0; i < nr_points; i++) {
+		getline(file, line);
+		tokens.clear();
+		tokenize(line, ',', tokens);
+		points.push_back(point(
+			stof(tokens[0]),
+			stof(tokens[1]),
+			stof(tokens[2])
+			));
+	}
+	p.points = points;
+
+	return p;
+}
+
+void bezier_surface(int tesselation, string in, string out, bool inverted_axis) {
+	Patch p = read_patch(in);
+
+	int size = p.indices.size();
+
+	for (int i = 0; i < size; i++) {
+		p.next_patch();
+		draw_patch(tesselation, p, inverted_axis);
+	}
+
+	create_file( out.c_str() );
+}
+
 
 void create_file(const char* filename){
 	unsigned int pSize = 3*pOrder.size(), iSize = indices.size();
