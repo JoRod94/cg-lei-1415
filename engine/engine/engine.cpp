@@ -60,12 +60,14 @@ typedef struct s_figure {
 	unsigned int* indices;
 	unsigned int n_ind;
 	unsigned int n_coords;
+	int buffer_nr;
 } *figure;
 
 vector<group> groups;
 map<string, figure> files;
 
 char* xmlName;
+int active_buffer = 0;
 
 // Menu variables
 GLenum mode = GL_FILL;
@@ -207,47 +209,42 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 	return g;
 }
 
-void draw_vbos(){
-
-	int i = 0;
-	for (map<string, figure>::iterator fIt = files.begin(); fIt != files.end(); fIt++) {
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
-		glVertexPointer(3, GL_FLOAT, 0, 0);
-		glDrawElements(GL_TRIANGLES, fIt->second->n_ind, GL_UNSIGNED_INT, fIt->second->indices);
-		i++;
-	}
+void draw_vbo(figure f){
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr]);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 }
 
-//
-//void draw_group(group g) {
-//	glPushMatrix();
-//
-//	for (unsigned int i = 0; i < g->transformations.size(); i++) {
-//		(g->transformations[i])->apply();
-//	}
-//
-//
-//	for (unsigned int i = 0; i < g->points.size(); i++) {
-//        map<string, figure>::iterator p = files.find(g->points[i]);
-//		if (p != files.end()) {
-//			draw_vbo(p->second);
-//		}
-//    }
-//
-//	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
-//		draw_group(g->subgroups[i]);
-//	}
-//
-//    glPopMatrix();
-//}
+
+void draw_group(group g) {
+	glPushMatrix();
+
+	for (unsigned int i = 0; i < g->transformations.size(); i++) {
+		(g->transformations[i])->apply();
+	}
 
 
-//void renderPoints() {
-//	for (vector<group>::iterator it = groups.begin();
-//		it != groups.end();
-//		++it)
-//		draw_group(*it);
-//}
+	for (unsigned int i = 0; i < g->points.size(); i++) {
+        map<string, figure>::iterator p = files.find(g->points[i]);
+		if (p != files.end()) {
+			draw_vbo(p->second);
+		}
+    }
+
+	for (unsigned int i = 0; i < g->subgroups.size(); i++) {
+		draw_group(g->subgroups[i]);
+	}
+
+    glPopMatrix();
+}
+
+
+void renderPoints() {
+	for (vector<group>::iterator it = groups.begin();
+		it != groups.end();
+		++it)
+		draw_group(*it);
+}
 
 void read_bin(string filename){
 	figure f = new_figure();
@@ -255,7 +252,8 @@ void read_bin(string filename){
 	map<string, figure>::iterator file = files.find(filename);
 
 	if (file != files.end()) {
-		f = file->second;
+		// f = file->second;
+		free(f);
 		cout << "MODEL FILE ALREADY READ: " << filename << endl;
 		return;
 	}
@@ -273,6 +271,8 @@ void read_bin(string filename){
 	i.read((char *)&(f->n_ind), sizeof(unsigned int));
 	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
 	i.read((char *)&(f->indices[0]), f->n_ind*sizeof(unsigned int));
+
+	f->buffer_nr = active_buffer++;
 	
 	files[filename] = f;
 }
@@ -427,7 +427,6 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
 
 bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 	vector<Transformation*> colors = colorize(g);
-
 	bool r = __parse_group(g, ret);
 	if (r) {
 		if ((*ret)->transformations.size() == 0)
@@ -512,8 +511,8 @@ void renderScene(void) {
 	glColor3f(1, 0, 0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
-	//renderPoints();
-	draw_vbos();
+	
+	renderPoints();
 
 	drawGrid();
 
@@ -652,9 +651,9 @@ void gridModeHandler(int id_op){
 
 void mainMenuHandler(int id_op) {
 	if (id_op == 3) {
-
 		groups.clear();
 		files.clear();
+		active_buffer = 0;
 		read_xml();
 		generate_vbos();
 		glutPostRedisplay();
