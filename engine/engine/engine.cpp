@@ -208,7 +208,6 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 //Does not consider group of file
 void draw_vbos(){
 	map<string, figure>::iterator fIt = files.begin();
-
 	for (int i = (files.size() - 1); i >= 0; i--){
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -425,15 +424,14 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
 
 bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 	vector<Transformation*> colors = colorize(g);
+
 	bool r = __parse_group(g, ret);
-	
 	if (r) {
 		if ((*ret)->transformations.size() == 0)
 			(*ret)->transformations = colors;
 		else
 			(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
 	}
-
 	return r;
 }
 
@@ -511,7 +509,6 @@ void renderScene(void) {
 	glColor3f(1, 0, 0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, mode);
-
 	//renderPoints();
 	draw_vbos();
 
@@ -697,9 +694,7 @@ int main(int argc, char **argv)
 		cout << "Please enter a valid XML file" << endl;
 		return 0;
 	}
-
 	read_xml(argv[1]);
-
 	// inicialização
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);

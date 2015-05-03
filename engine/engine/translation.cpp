@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <GL/glut.h>
 #include "translation.h"
+#include <iostream>
 
 
 void getCatmullRomPoint(float t, int *indices, float *res, float *der, vector<point> p) {
@@ -48,7 +49,6 @@ void getGlobalCatmullRomPoint(float gt, float *res, float *der, vector<point> p)
 	indices[0] = (index + pointCount - 1) % pointCount;	indices[1] = (indices[0] + 1) % pointCount;
 	indices[2] = (indices[1] + 1) % pointCount; indices[3] = (indices[2] + 1) % pointCount;
 
-	float points[4][3];
 
 	getCatmullRomPoint(t, indices, res, der, p);
 }
@@ -92,7 +92,11 @@ void curveRotation(float *der, float *p, float *up){
 }
 
 void Translation::apply(){
-	
+	cout << "ASOJDAOSJDOASJD" << endl;
+	for (int i = 0; i < points.size(); i++){
+		std::cout << points[i].x << ", " << points[i].y << ", " << points[i].z << std::endl;
+	}
+
 	//Normal Translation
 	if(time == 0)
 		glTranslatef(x, y, z);
