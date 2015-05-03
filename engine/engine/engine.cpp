@@ -730,13 +730,43 @@ int main(int argc, char **argv)
 	// pôr aqui a criação do menu
 	createMenu();
 
+
 	// initialize keyHolds array
 	keyHoldsInit();
 
-	generate_vbos();
+	bool looping = true;
 
-	// entrar no ciclo do GLUT
-	glutMainLoop();
+	while (looping) {
+		generate_vbos();
+
+		// entrar no ciclo do GLUT
+		glutMainLoop();
+
+		bool valid_input = false;
+
+		while (!valid_input) {
+			cout << "Reload XML? [y/n]" << endl;
+			string s_line;
+			getline(cin, s_line);
+			const char* line = s_line.c_str();
+
+			if (s_line.length() > 1)
+				cout << "Invalid input" << endl;
+
+			switch (line[0]) {
+			case 'y' | 'Y':
+				valid_input = true;
+				read_xml(argv[1]);
+				break;
+			case 'n' | 'N':
+				valid_input = true;
+				looping = false;
+				break;
+			default:
+				cout << "Invalid input" << endl;
+			}
+		}
+	}
 
 	return 1;
 }
