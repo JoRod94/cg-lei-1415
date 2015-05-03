@@ -261,27 +261,6 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 
 
 
-
-
-void pointExtender(vector<point> points, float slices, float layers, float length){
-	int size = points.size();
-	float currL = -length / 2, lInc = length / slices;
-
-	for (int i = 0; i < slices; i++){
-		for (int j = 0; j < size - 1; j++){
-			put_point(points[j].x, points[j].y, currL);
-			put_point(points[j].x, points[j].y, currL + lInc);
-			put_point(points[j + 1].x, points[j + 1].y, currL + lInc);
-
-			put_point(points[j + 1].x, points[j + 1].y, currL + lInc);
-			put_point(points[j + 1].x, points[j + 1].y, currL);
-			put_point(points[j].x, points[j].y, currL);
-		}
-		currL += lInc;
-	}
-}
-
-
 void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
 	float incrL = len / slices;
 	float incrH = hei / stacks;
