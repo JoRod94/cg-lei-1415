@@ -65,6 +65,8 @@ typedef struct s_figure {
 vector<group> groups;
 map<string, figure> files;
 
+char* xmlName;
+
 // Menu variables
 GLenum mode = GL_FILL;
 float gridSize = 50, gridScale = 1;
@@ -205,14 +207,13 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 	return g;
 }
 
-//Does not consider group of file
 void draw_vbos(){
-	map<string, figure>::iterator fIt = files.begin();
-
-	for (int i = (files.size() - 1); i >= 0; i--){
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	int i = 0;
+	for (map<string, figure>::iterator fIt = files.begin(); fIt != files.end(); fIt++) {
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 		glDrawElements(GL_TRIANGLES, fIt->second->n_ind, GL_UNSIGNED_INT, fIt->second->indices);
+		i++;
 	}
 }
 
@@ -437,7 +438,7 @@ bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 	return r;
 }
 
-void read_xml(char* xmlName) {
+void read_xml() {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
 
@@ -650,7 +651,16 @@ void gridModeHandler(int id_op){
 	}
 }
 
-void mainMenuHandler(int id_op){}
+void mainMenuHandler(int id_op) {
+	if (id_op == 3) {
+
+		groups.clear();
+		files.clear();
+		read_xml();
+		generate_vbos();
+		glutPostRedisplay();
+	}
+}
 
 void createMenu(){
 	int polygonMode, gridMode, mainMenu;
@@ -669,6 +679,7 @@ void createMenu(){
 	mainMenu = glutCreateMenu(mainMenuHandler);
 	glutAddSubMenu("Polygon Mode", polygonMode);
 	glutAddSubMenu("Grid Mode", gridMode);
+	glutAddMenuEntry("Reload XML", 3);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -698,7 +709,8 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	read_xml(argv[1]);
+	xmlName = argv[1];
+	read_xml();
 
 	// inicialização
 	glutInit(&argc, argv);
@@ -734,39 +746,10 @@ int main(int argc, char **argv)
 	// initialize keyHolds array
 	keyHoldsInit();
 
-	bool looping = true;
+	generate_vbos();
 
-	while (looping) {
-		generate_vbos();
-
-		// entrar no ciclo do GLUT
-		glutMainLoop();
-
-		bool valid_input = false;
-
-		while (!valid_input) {
-			cout << "Reload XML? [y/n]" << endl;
-			string s_line;
-			getline(cin, s_line);
-			const char* line = s_line.c_str();
-
-			if (s_line.length() > 1)
-				cout << "Invalid input" << endl;
-
-			switch (line[0]) {
-			case 'y' | 'Y':
-				valid_input = true;
-				read_xml(argv[1]);
-				break;
-			case 'n' | 'N':
-				valid_input = true;
-				looping = false;
-				break;
-			default:
-				cout << "Invalid input" << endl;
-			}
-		}
-	}
+	// entrar no ciclo do GLUT
+	glutMainLoop();
 
 	return 1;
 }
