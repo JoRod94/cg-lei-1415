@@ -498,6 +498,22 @@ int main(int argc, char* argv[]) {
 		std::cout << "Generating Plane..." << endl;
 		create_plane(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
+	else if (strcmp(argv[1], "bezier") == 0){
+		if (argc != 5){
+			std::cout << "Wrong number of arguments" << endl;
+			return 0;
+		}
+		std::cout << "Generating Plane..." << endl;
+		bezier_surface(stof(argv[2]), argv[3],argv[4], false);
+	}
+	else if (strcmp(argv[1], "ibezier") == 0){
+		if (argc != 5){
+			std::cout << "Wrong number of arguments" << endl;
+			return 0;
+		}
+		std::cout << "Generating Plane..." << endl;
+		bezier_surface(stof(argv[2]), argv[3], argv[4], true);
+	}
 	else if (strcmp(argv[1], "sphere") == 0){
 		if (argc != 6){
 			std::cout << "Wrong number of arguments" << endl;
