@@ -21,6 +21,29 @@ vector<point> pOrder;
 vector<point> points;
 vector<unsigned int> indices;
 
+
+
+void create_file(const char* filename){
+	unsigned int pSize = 3 * pOrder.size(), iSize = indices.size();
+	float *pCoords = (float*)malloc(pSize * sizeof(float));
+
+
+
+	map<point, unsigned int>::iterator it;
+	for (int j = 0, i = 0; j<pOrder.size(); j++){
+		pCoords[i++] = pOrder[j].x;
+		pCoords[i++] = pOrder[j].y;
+		pCoords[i++] = pOrder[j].z;
+	}
+
+	ofstream newFile(string(filename) + ".3d", ios::binary);
+	newFile.write((char *)&pSize, sizeof(pSize));
+	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
+	newFile.write((char *)&iSize, sizeof(iSize));
+	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
+}
+
+
 void put_point(float x, float y, float z){
 	map<point, unsigned int>::iterator it;
 	point p = point(x, y, z);
@@ -236,202 +259,132 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 }
 
 
-void create_file(const char* filename){
-	unsigned int pSize = 3*pOrder.size(), iSize = indices.size();
-	float *pCoords = (float*) malloc(pSize * sizeof(float));
-	
-	map<point, unsigned int>::iterator it;
-	for (int j = 0, i = 0; j<pOrder.size() ;j++){
-		pCoords[i++] = pOrder[j].x;
-		pCoords[i++] = pOrder[j].y;
-		pCoords[i++] = pOrder[j].z;
+
+
+
+void pointExtender(vector<point> points, float slices, float layers, float length){
+	int size = points.size();
+	float currL = -length / 2, lInc = length / slices;
+
+	for (int i = 0; i < slices; i++){
+		for (int j = 0; j < size - 1; j++){
+			put_point(points[j].x, points[j].y, currL);
+			put_point(points[j].x, points[j].y, currL + lInc);
+			put_point(points[j + 1].x, points[j + 1].y, currL + lInc);
+
+			put_point(points[j + 1].x, points[j + 1].y, currL + lInc);
+			put_point(points[j + 1].x, points[j + 1].y, currL);
+			put_point(points[j].x, points[j].y, currL);
+		}
+		currL += lInc;
+	}
+}
+
+
+void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
+	float incrL = len / slices;
+	float incrH = hei / stacks;
+	float incrW = wid / slices;
+	float startingL = -len / 2, l = startingL;
+	float startingH = -hei / 2, h = startingH;
+	float startingW = -wid / 2, w = startingW;
+	int i;
+
+	for (i = 0; i < slices; i++){
+		points.push_back(point(l, h, 0));
+		l += incrL;
+	}
+	for (i = 0; i < stacks; i++){
+		points.push_back(point(l, h, 0));
+		h += incrH;
+	}
+	for (i = 0; i < slices; i++){
+		points.push_back(point(l, h, 0));
+		l -= incrL;
+	}
+	for (i = 0; i < stacks; i++){
+		points.push_back(point(l, h, 0));
+		h -= incrH;
 	}
 
-	ofstream newFile(string(filename) + ".3d", ios::binary);
-	newFile.write((char *)&pSize, sizeof(pSize));
-	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
-	newFile.write((char *)&iSize, sizeof(iSize));
-	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
 }
 
 
+void completeFace(float len, float hei, float position, int slices, int stacks){
+	float incrL = len / slices;
+	float incrH = hei / stacks;
+	float startingL = -len / 2, l = startingL;
+	float startingH = -hei / 2, h = startingH;
 
-/*
-* Function receives float 'size' (width, length or height), and a float 'div' (number of slices or stacks)
-* and returns a vector with the coordinates of all the points according to the given parameters.
-*/
-vector<float> pointArrays(float size, float div){
-	size_t tot = 2 + (div - 1);
-	float incr = -(size / 2);
-	vector<float> pts(tot);
-	for (int i = 0; i < tot; i++){
-		pts[i] = incr;
-		incr += (size / div);
+	for (int j = 0; j < stacks; j++){
+		for (int i = 0; i < slices; i++){
+			if (position < 0){
+				put_point(l, h, position);
+				put_point(l, h + incrH, position);
+				put_point(l + incrL, h + incrH, position);
+				put_point(l, h, position);
+				put_point(l + incrL, h + incrH, position);
+				put_point(l + incrL, h, position);
+			}
+			else{
+				put_point(l, h, position);
+				put_point(l + incrL, h + incrH, position);
+				put_point(l, h + incrH, position);
+
+				put_point(l, h, position);
+				put_point(l + incrL, h, position);
+				put_point(l + incrL, h + incrH, position);
+			}
+			l += incrL;
+		}
+		h += incrH;
+		l = startingL;
 	}
-	return pts;
 }
 
-/*
-* Function planePoints puts together the values of two vectors to create the points.
-* Since the plane is a 2D object, the parameter 'c' completes the points (which are 3D).
-*/
 
-// xOy plane facing forward
 
-void YZFwdPlanePoints(float c, float y1, float y2, float z1, float z2){
-				point p1 (c, y1, z1);
-				point p2 (c, y2, z2);
-				point p3 (c, y1, z2);
-				point p4 (c, y1, z1);
-				point p5 (c, y2, z1);
-				point p6(c, y2, z2);
 
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-			
-		
+void pointExtender(float len, float wid, float hei, int stacks, int slices){
+	int numpts = (stacks + 1)*(slices + 1) - (stacks - 1) * (slices - 1);
+	float incrW = wid / slices;
+	float startingW = -wid / 2;
+	float w = startingW;
+	int j;
+
+	completeFace(len, hei, w, slices, stacks);
+	for (int i = 0; i < slices; i++){
+		for (j = 0; j < numpts - 1; j++){
+			put_point(points[j].x, points[j].y, w);
+			put_point(points[j + 1].x, points[j + 1].y, w);
+			put_point(points[j + 1].x, points[j + 1].y, w + incrW);
+			put_point(points[j].x, points[j].y, w);
+			put_point(points[j + 1].x, points[j + 1].y, w + incrW);
+			put_point(points[j].x, points[j].y, w + incrW);
+
+		}
+		put_point(points[j].x, points[j].y, w);
+		put_point(points[0].x, points[0].y, w);
+		put_point(points[0].x, points[0].y, w + incrW);
+
+		put_point(points[j].x, points[j].y, w);
+		put_point(points[0].x, points[0].y, w + incrW);
+		put_point(points[j].x, points[j].y, w + incrW);
+
+		w += incrW;
 	}
-
-// yOz facing forward
-	void YZBwdPlanePoints(float c, float y1, float y2, float z1, float z2){
-				point p1(c, y1, z1);
-				point p2(c, y1, z2);
-				point p3(c, y2, z2);
-
-				point p4(c, y1, z1);
-				point p5(c, y2, z2);
-				point p6(c, y2, z1);
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-			
+	completeFace(len, hei, w, slices, stacks);
 }
 
 
-void XZBwdPlanePoints(float c, float x1, float x2, float z1, float z2){
-				point p1(x1, c, z1);
-				point p2(x2, c, z2);
-				point p3(x1, c, z2);
-
-				point p4(x1, c, z1);
-				point p5(x2, c, z1);
-				point p6(x2, c, z2);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
+void create_plane(float length, float width, int slices, int stacks){
+	getOuterPoints(length, 0, width, stacks, slices);
+	completeFace(length, width, 0, slices, stacks);
 }
 
-// xOz plane facing forward
-void XZFwdPlanePoints(float c, float x1, float x2, float z1, float z2){
-				point p1(x1, c, z1);
-				point p2(x1, c, z2);
-				point p3(x2, c, z2);
-				point p4(x1, c, z1);
-				point p5(x2, c, z2);
-				point p6(x2, c, z1);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-}
-
-void XYFwdPlanePoints(float c, float x1, float x2, float y1, float y2){
-				point p1(x1, y1, c);
-				point p2(x2, y2, c);
-				point p3(x1, y2, c);
-				point p4(x1, y1, c);
-				point p5(x2, y1, c);
-				point p6(x2, y2, c);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-}
-
-void XYBwdPlanePoints(float c, float x1, float x2, float y1, float y2){
-				point p1(x1, y1, c);
-				point p2(x1, y2, c);
-				point p3(x2, y2, c);
-
-				point p4(x1, y1, c);
-				point p5(x2, y2, c);
-				point p6(x2, y1, c);
-
-
-				points.push_back(p1);
-				points.push_back(p2);
-				points.push_back(p3);
-				points.push_back(p4);
-				points.push_back(p5);
-				points.push_back(p6);
-}
-	
-
-
-/*
-* Creates a plane given its length, width, number of columns and number of rows.
-* The plane will be xOy, with z = 0.
-*/
-
-void create_plane(float length, float width, float columns, float rows){
-	vector<float> r = pointArrays(length, rows);
-	vector<float> c = pointArrays(width, columns);
-	for (int i = 0; i < r.size() - 1; i++)
-		for (int j = 0; j < c.size() - 1; j++)
-			XYFwdPlanePoints(0.0f, r[i], r[i+1], c[j], c[j+1]);
-}
-
-
-/*
- * Creates a parallelepiped given it's length, width, height, number of slices and number of stacks.
- * Function calls the plane
- */
-void create_parallelepiped(float length, float width, float height, float slices, float stacks){
-	vector<point> points;
-	vector<float> lenpts = pointArrays(length, slices);
-	vector<float> widpts = pointArrays(width, slices);
-	vector<float> higpts = pointArrays(height, stacks);
-	
-	// one plane for each side of the parallelepiped
-	for (int i = 0; i < lenpts.size() - 1; i++)
-		for (int j = 0; j < higpts.size() - 1; j++){
-			XYFwdPlanePoints((width / 2), lenpts[i], lenpts[i+1], higpts[j], higpts[j+1]);
-			XYBwdPlanePoints(-(width / 2), lenpts[i], lenpts[i + 1], higpts[j], higpts[j + 1]);
-		}
-
-	for (int i = 0; i < higpts.size() - 1; i++)
-		for (int j = 0; j < widpts.size() -1; j++){
-			YZFwdPlanePoints((length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1]);
-			YZBwdPlanePoints(-(length / 2), higpts[i], higpts[i+1], widpts[j], widpts[j+1]);
-		}
-
-	for (int i = 0; i < lenpts.size() - 1; i++)
-		for (int j = 0; j < widpts.size() - 1; j++){
-			XZFwdPlanePoints((height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1]);
-			XZBwdPlanePoints(-(height / 2), lenpts[i], lenpts[i + 1], widpts[j], widpts[j + 1]);
-		}
-
+void create_parallelepiped(float length, float width, float height, int slices, int stacks){
+	getOuterPoints(length, width, height, stacks, slices);
+	pointExtender(length, width, height, stacks, slices);
 
 }
 
