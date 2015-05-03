@@ -200,7 +200,7 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 
 	g->points = points;
 
-    	g -> subgroups = subgroups;
+    g->subgroups = subgroups;
 
 	return g;
 }
@@ -248,7 +248,6 @@ void draw_vbos(){
 //}
 
 void read_bin(string filename){
-	// should unsigned long int
 	figure f = new_figure();
 
 	map<string, figure>::iterator file = files.find(filename);
@@ -267,9 +266,7 @@ void read_bin(string filename){
 
 	i.read((char *)&(f->n_coords), sizeof(unsigned int));
 	f->vertex = (float *)malloc((f->n_coords)*sizeof(float));
-	i.read((char *)&(f->vertex[0]) , f->n_coords*sizeof(float));
-
-
+	i.read((char *)f->vertex , f->n_coords*sizeof(float));
 
 	i.read((char *)&(f->n_ind), sizeof(unsigned int));
 	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
@@ -290,7 +287,7 @@ void generate_vbos(){
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
 	}
-	
+
 	free(vertexB);
 }
 
@@ -429,8 +426,14 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
 bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
 	vector<Transformation*> colors = colorize(g);
 	bool r = __parse_group(g, ret);
-	if (r)
-		(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
+	
+	if (r) {
+		if ((*ret)->transformations.size() == 0)
+			(*ret)->transformations = colors;
+		else
+			(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
+	}
+
 	return r;
 }
 
@@ -447,6 +450,7 @@ void read_xml(char* xmlName) {
 	}
 
 	group ret = (group)malloc(sizeof(struct s_group));
+
 
     for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {

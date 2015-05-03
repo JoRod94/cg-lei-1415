@@ -24,22 +24,23 @@ vector<unsigned int> indices;
 
 
 void create_file(const char* filename){
-	unsigned int pSize = 3 * pOrder.size(), iSize = indices.size();
+	unsigned int pSize = 3 * pOrder.size(),
+				iSize = indices.size();
 	float *pCoords = (float*)malloc(pSize * sizeof(float));
 
 
 
 	map<point, unsigned int>::iterator it;
-	for (int j = 0, i = 0; j<pOrder.size(); j++){
+	for (int j = 0, i = 0; j<pOrder.size(); j++) {
 		pCoords[i++] = pOrder[j].x;
 		pCoords[i++] = pOrder[j].y;
 		pCoords[i++] = pOrder[j].z;
 	}
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
-	newFile.write((char *)&pSize, sizeof(pSize));
+	newFile.write((char *)&pSize, sizeof(unsigned int));
 	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
-	newFile.write((char *)&iSize, sizeof(iSize));
+	newFile.write((char *)&iSize, sizeof(unsigned int));
 	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
 }
 
