@@ -144,6 +144,7 @@
 			</modelos>
 		</grupo>
 	</grupo>
+    <!-- BULE-COMETA -->
 	<grupo>
 	    <translacao tempo="30" linha="1">
 	        <ponto X="165.2" Y="82.6" Z="0"/>
