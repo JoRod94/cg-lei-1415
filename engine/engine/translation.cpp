@@ -98,7 +98,6 @@ void curveRotation(float *der, float *up){
 }
 
 void Translation::apply(){
-
 	//Normal Translation
 	if(time == 0)
 		glTranslatef(x, y, z);

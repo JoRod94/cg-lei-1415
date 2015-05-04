@@ -293,6 +293,25 @@ void generate_vbos(){
 	free(vertexB);
 }
 
+static bool valid_translation(tinyxml2::XMLElement* t) {
+	bool no_implicit_point = t->Attribute(_XML_X) == NULL &&
+								t->Attribute(_XML_Y) == NULL &&
+								t->Attribute(_XML_Z) == NULL;
+
+	bool no_explicit_point = t->FirstChildElement(_XML_POINT) == NULL;
+
+	bool no_next_translation = t->NextSiblingElement(_XML_TRANSLATION) == NULL;
+	/*
+	cout << "IMPLICIT: X: " << t->Attribute(_XML_X) << " Y: " <<  t->Attribute(_XML_Y) << " Z: " << t->Attribute(_XML_Z) << endl;
+	if (!no_explicit_point)
+		cout << "HAS EXPLICIT POINT" << endl;
+		*/
+
+	// no simultaneous declaration of implicit and explicit points
+	// has to be the only translation in the group
+	return (no_implicit_point != no_explicit_point) && no_next_translation;
+}
+
 static bool valid_group(tinyxml2::XMLElement* group) {
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
     tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
@@ -302,7 +321,7 @@ static bool valid_group(tinyxml2::XMLElement* group) {
 
     return (
             (models == NULL || models->NextSiblingElement(_XML_MODELS) == NULL) &&
-            (translation == NULL || translation->NextSiblingElement(_XML_TRANSLATION) == NULL) &&
+            (translation == NULL || valid_translation(translation)) &&
             (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
             (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL) &&
 			(color == NULL || color->NextSiblingElement(_XML_COLOR) == NULL)
