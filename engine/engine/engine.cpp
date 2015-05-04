@@ -285,8 +285,8 @@ void generate_vbos(){
 
 	glGenBuffers(size, buffers);
 
-	for (int i = 0; fIt != files.end(); fIt++, i++) {
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+	for (int i = 0; fIt != files.end(); fIt++) {
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
 	}
 

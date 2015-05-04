@@ -1,7 +1,18 @@
 <cena>
-	<grupo>
+  <grupo>
         <modelos>
-            <modelo ficheiro="ringInd.3d" />
+            <modelo ficheiro="teapot.3d" />
         </modelos>
+        <grupo>
+            <translacao X="5" />
+            <modelos>
+                <modelo ficheiro="teaspoon.3d"/>
+            </modelos>
+            <grupo>
+                <translacao Z="5" />
+                <modelos>
+                    <modelo ficheiro="teacup.3d"/>
+                </modelos>
+            </grupo>
     </grupo>
 </cena>
