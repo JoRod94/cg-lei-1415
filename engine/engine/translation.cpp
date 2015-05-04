@@ -60,6 +60,7 @@ void getGlobalCatmullRomPoint(float gt, float *res, float *der, vector<point> p)
 }
 
 void renderCatmullRomCurve(float *res, float *der, int pointCount, vector<point> p) {
+	glColor3f(1, 1, 1);
 	float gt = 0.0f;
 	glBegin(GL_LINE_LOOP);
 	while (gt < 1.0f){
