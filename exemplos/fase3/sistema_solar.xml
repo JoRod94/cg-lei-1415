@@ -145,7 +145,7 @@
 		</grupo>
 	</grupo>
 	<grupo>
-	    <translacao tempo="30" linha="0">
+	    <translacao tempo="30" linha="1">
 	        <ponto X="165.2" Y="82.6" Z="0"/>
 	        <ponto X="123.9" Y="61.95" Z="-82.6"/>
 	        <ponto X="0" Y="0" Z="-123.9"/>

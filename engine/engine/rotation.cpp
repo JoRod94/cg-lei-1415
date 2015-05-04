@@ -13,9 +13,8 @@ void Rotation::apply(){
 	if (time == 0)
 		glRotatef(angle, x, y, z);
 	else{
-		float ang = (glutGet(GLUT_ELAPSED_TIME)*90) / (time*1000.0f);
+		float ang = fmod((glutGet(GLUT_ELAPSED_TIME)*360.0f ) / (time*1000.0f), 360.0f);
 		glRotatef(ang, x, y, z);
-		
 	}
 }
 
