@@ -444,13 +444,13 @@ void create_torus(float ir, float or, float slices, float layers){
 
 void create_ring(float ir, float or, float slices){
 	points.push_back(point(ir, 0, 0));
-	points.push_back(point(ir + (2 * or), 0, 0));
+	points.push_back(point(or, 0, 0));
 
 	point_rotator(slices, 1);
 
 	points.clear();
 
-	points.push_back(point(ir + (2 * or), 0, 0));
+	points.push_back(point(or, 0, 0));
 	points.push_back(point(ir, 0, 0));
 	point_rotator(slices, 1);
 }
