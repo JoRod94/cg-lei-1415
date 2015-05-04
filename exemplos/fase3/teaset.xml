@@ -1,0 +1,99 @@
+<camera raio="5"/>
+<cena>
+	<grupo>
+		<cor R="255" G="122" B="216"/>
+		<rotacao angulo="270" eixoX="1" />
+		<modelos>
+			<modelo ficheiro="teapot.3d" />
+		</modelos>
+	</grupo>
+	<grupo>
+		<cor R="255" G="122" B="216"/>
+		<grupo>
+			<translacao X="6.928204" Z="4" />
+			<rotacao angulo="60" eixoY="1" />
+			<modelos>
+				<modelo ficheiro="teacup.3d" />
+			</modelos>
+			<grupo>
+				<rotacao angulo="270" eixoX="1" />
+				<translacao X="1.5"/>
+				<modelos>
+					<modelo ficheiro="teaspoon.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="6.928204" Z="-4" />
+			<rotacao angulo="120" eixoY="1" />
+			<modelos>
+				<modelo ficheiro="teacup.3d" />
+			</modelos>
+			<grupo>
+				<rotacao angulo="270" eixoX="1" />
+				<translacao X="1.5"/>
+				<modelos>
+					<modelo ficheiro="teaspoon.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="0" Z="-8" />
+			<rotacao angulo="180" eixoY="1" />
+			<modelos>
+				<modelo ficheiro="teacup.3d" />
+			</modelos>
+			<grupo>
+				<rotacao angulo="270" eixoX="1" />
+				<translacao X="1.5"/>
+				<modelos>
+					<modelo ficheiro="teaspoon.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-6.928204" Z="-4" />
+			<rotacao angulo="240" eixoY="1" />
+			<modelos>
+				<modelo ficheiro="teacup.3d" />
+			</modelos>
+			<grupo>
+				<rotacao angulo="270" eixoX="1" />
+				<translacao X="1.5"/>
+				<modelos>
+					<modelo ficheiro="teaspoon.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-6.928204" Z="4" />
+			<rotacao angulo="300" eixoY="1" />
+			<modelos>
+				<modelo ficheiro="teacup.3d" />
+			</modelos>
+			<grupo>
+				<rotacao angulo="270" eixoX="1" />
+				<translacao X="1.5"/>
+				<modelos>
+					<modelo ficheiro="teaspoon.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="0" Z="8" />
+			<rotacao angulo="360" eixoY="1" />
+			<modelos>
+				<modelo ficheiro="teacup.3d" />
+			</modelos>
+			<grupo>
+				<rotacao angulo="270" eixoX="1" />
+				<translacao X="1.5"/>
+				<modelos>
+					<modelo ficheiro="teaspoon.3d" />
+				</modelos>
+			</grupo>
+		</grupo>
+		
+	</grupo>
+		
+</cena>
