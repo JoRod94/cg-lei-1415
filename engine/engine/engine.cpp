@@ -285,8 +285,8 @@ void generate_vbos(){
 
 	glGenBuffers(size, buffers);
 
-	for (int i = 0; fIt != files.end(); fIt++, i++) {
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+	for (int i = 0; fIt != files.end(); fIt++) {
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
 	}
 
@@ -294,22 +294,32 @@ void generate_vbos(){
 }
 
 static bool valid_translation(tinyxml2::XMLElement* t) {
+	// check if we have an implicit point declarion in the translation tag
 	bool no_implicit_point = t->Attribute(_XML_X) == NULL &&
 								t->Attribute(_XML_Y) == NULL &&
 								t->Attribute(_XML_Z) == NULL;
 
-	bool no_explicit_point = t->FirstChildElement(_XML_POINT) == NULL;
+	tinyxml2::XMLElement* pt = t->FirstChildElement(_XML_POINT);
 
+	// checking if we have explicit points definition
+	bool no_explicit_points = pt == NULL;
+	
+	// checking if we have a valid nr of points
+	int nr_points = 0;
+	while (pt) {
+		nr_points++;
+		pt = pt->NextSiblingElement(_XML_POINT);
+	}
+	bool valid_points = nr_points >= 4;
+	
+	// this needs to be the only translation
 	bool no_next_translation = t->NextSiblingElement(_XML_TRANSLATION) == NULL;
-	/*
-	cout << "IMPLICIT: X: " << t->Attribute(_XML_X) << " Y: " <<  t->Attribute(_XML_Y) << " Z: " << t->Attribute(_XML_Z) << endl;
-	if (!no_explicit_point)
-		cout << "HAS EXPLICIT POINT" << endl;
-		*/
 
-	// no simultaneous declaration of implicit and explicit points
-	// has to be the only translation in the group
-	return (no_implicit_point != no_explicit_point) && no_next_translation;
+	// != is a logical exclusive or: either we have no implicit (atribute) point definition
+	// or we have explicit point definition (point tag)
+	// then, we can have no points definition, but if we have defined, they must be valid
+	// this translation needs to be the only one as well
+	return (no_implicit_point != no_explicit_points) && (no_explicit_points || valid_points) && no_next_translation;
 }
 
 static bool valid_group(tinyxml2::XMLElement* group) {

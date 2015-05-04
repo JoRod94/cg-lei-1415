@@ -418,13 +418,13 @@ void create_torus(float ir, float or, float slices, float layers){
 
 void create_ring(float ir, float or, float slices){
 	points.push_back(point(ir, 0, 0));
-	points.push_back(point(ir + (2 * or), 0, 0));
+	points.push_back(point(or, 0, 0));
 
 	point_rotator(slices, 1);
 
 	points.clear();
 
-	points.push_back(point(ir + (2 * or), 0, 0));
+	points.push_back(point(or, 0, 0));
 	points.push_back(point(ir, 0, 0));
 	point_rotator(slices, 1);
 }
@@ -441,18 +441,30 @@ void create_cylinder(float radius, float height, float slices, float layers){
 	point_rotator(slices, layers + 2);
 }
 
-int valid_input(int argc, char* argv[]) {
+
+bool valid_bezier(int argc, char* argv[]){
+	int file = 1;
+	regex number("[0-9]*\.?[0-9]+");
+	regex word("[\\\a-zA-Z0-9\-_./]*[a-zA-Z0-9]");
+	
+	file = regex_match(argv[argc - 1], word);
+	
+	return file && regex_match(argv[2], number) && regex_match(argv[3], word);
+
+}
+
+bool valid_input(int argc, char* argv[]) {
 	int nrs = 1;
 	int file = 1;
 	regex number("[0-9]*\.?[0-9]+");
-	regex word("[a-zA-Z0-9\-_\.]*[a-zA-Z0-9]");
+	regex word("[\\\a-zA-Z0-9\-_./]*[a-zA-Z0-9]");
 
 	for (int i = 2; i < argc - 1 && nrs; i++)
 		nrs = regex_match(argv[i], number);
 
 	file = regex_match(argv[argc - 1], word);
 
-	return file && nrs;
+	return (file && nrs) || valid_bezier(argc, argv);
 }
 
 int main(int argc, char* argv[]) {

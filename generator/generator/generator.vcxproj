@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\AnaLuísa\Desktop\CG\cg_lei2.0\cg-lei-1415\generator\toolkits\includes;C:\Users\Tiago\Desktop\trabalhoCG\cg-lei-1415\generator\toolkits\includes;C:\Users\João\Documents\GitHub\cg-lei-1415\generator\toolkits\includes;$(IncludePath)</IncludePath>
+    <IncludePath>..\toolkits\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
