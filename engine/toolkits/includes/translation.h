@@ -23,6 +23,7 @@ public:
 	Translation(long time, bool line) : time(time), x(0), y(0), z(0), line(line) { up[0] = 0; up[1] = 1; up[2] = 0; };
 	Translation() : time(0), x(0), y(0), z(0), line(false) { up[0] = 0; up[1] = 1; up[2] = 0;};
 
+	void toggle_line();
 	virtual void apply();
 };
 

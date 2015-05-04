@@ -63,7 +63,7 @@ void renderCatmullRomCurve(float *res, float *der, int pointCount, vector<point>
 	glColor3f(1, 1, 1);
 	float gt = 0.0f;
 	glBegin(GL_LINE_LOOP);
-	while (gt < 1.0f){
+	while (gt < 1.0f) {
 		getGlobalCatmullRomPoint(gt, res, der, p);
 		glVertex3f(res[0], res[1], res[2]);
 		gt += 0.0001f;
@@ -96,6 +96,10 @@ void curveRotation(float *der, float *up){
 
 	float m[16] = { left[0], left[1], left[2], 0, up[0], up[1], up[2], 0, der[0], der[1], der[2], 0,0.0f,0.0f,0.0f, 1 };
 	glMultMatrixf(m);
+}
+
+void Translation::toggle_line() {
+	line = !line;
 }
 
 void Translation::apply(){

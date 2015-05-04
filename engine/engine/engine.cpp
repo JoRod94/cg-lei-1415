@@ -710,18 +710,32 @@ void gridModeHandler(int id_op){
 }
 
 void mainMenuHandler(int id_op) {
-	if (id_op == 3){
-		showFPS = !showFPS;
-		glutSetWindowTitle("Motor 3D");
+	switch (id_op) {
+	case 3:
+			showFPS = !showFPS;
+			glutSetWindowTitle("Motor 3D");
+			break;
+
+	case 4:
+			for (int i = 0; i < groups.size(); i++) {
+				vector<Transformation*> vt = groups[i]->transformations;
+				for (int j = 0; j < vt.size(); j++) {
+					if (Translation* t = dynamic_cast<Translation*>(vt[j]))
+						t->toggle_line();
+				}
+			}
+			break;
+
+	case 5:
+			groups.clear();
+			files.clear();
+			active_buffer = 0;
+			read_xml();
+			generate_vbos();
+			glutPostRedisplay();
+			break;
 	}
-	if (id_op == 4) {
-		groups.clear();
-		files.clear();
-		active_buffer = 0;
-		read_xml();
-		generate_vbos();
-		glutPostRedisplay();
-	}
+	
 }
 
 void createMenu(){
@@ -742,7 +756,8 @@ void createMenu(){
 	glutAddSubMenu("Polygon Mode", polygonMode);
 	glutAddSubMenu("Grid Mode", gridMode);
 	glutAddMenuEntry("Toggle FPS Counter", 3);
-	glutAddMenuEntry("Reload XML", 4);
+	glutAddMenuEntry("Toggle Curve Lines", 4);
+	glutAddMenuEntry("Reload XML", 5);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
