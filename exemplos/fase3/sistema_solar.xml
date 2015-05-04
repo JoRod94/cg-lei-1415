@@ -1,112 +1,164 @@
 <cena>
+	<!-- SOL -->
 	<grupo>
-
-        <rotacao tempo="3" eixoY="1"/>
 		<escala X="22" Y="22" Z="22"/>
 		<cor R="255" G="165" B="0"/>
 		<modelos>
 			<modelo ficheiro="esferaInd.3d" />
 		</modelos>
 	</grupo>
+	<!-- MERCURIO -->
 	<grupo>
-		<translacao time="10">
-            <ponto X="30"/>
-            <ponto Z="30"/>
-            <ponto X="-30"/>
-            <ponto Z="-30"/>
-            <ponto X="30"/>
-        </translacao>
-		<escala X="0.3" Y="0.3" Z="0.3"/>
-		<cor R="102" G="102" B="102"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
-	</grupo>
-	<grupo>
-		<translacao X="33"/>
-		<cor R="255" G="250" B="205"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
-	</grupo>
-	<grupo>
-		<translacao X="37"/>
-		<cor B="205"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
+		<rotacao tempo="2" eixoY="1"/>
 		<grupo>
-			<translacao X="0.5" Y="1.2" Z="1.5"/>
-			<escala X="0.2" Y="0.2" Z="0.2"/>
-			<cor R="125" G="125" B="125"/>
+			<translacao X="30"/>
+			<rotacao tempo="5" eixoY="1" />
+			<escala X="0.3" Y="0.3" Z="0.3"/>
+			<cor R="102" G="102" B="102"/>
 			<modelos>
-				<modelo ficheiro="esferaInd.3d"/>
+				<modelo ficheiro="esferaInd.3d" />
 			</modelos>
 		</grupo>
 	</grupo>
+	<!-- VENUS -->
 	<grupo>
-		<translacao X="40"/>
-		<escala X="0.5" Y="0.5" Z="0.5"/>
-		<cor R="255" G="69"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
-	</grupo>
-	<grupo>
-		<translacao X="62"/>
-		<escala X="5.5" Y="5.5" Z="5.5"/>
-		<cor R="160" G="102" B="60"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
-	</grupo>
-	<grupo>
-		<translacao X="90"/>
-		<escala X="5.3" Y="5.3" Z="5.3"/>
-		<cor R="222" G="184" B="135"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
+		<rotacao tempo="6" eixoY="1"/>
 		<grupo>
+			<translacao X="33"/>
+			<rotacao tempo="5" eixoY="1" />
+			<cor R="255" G="250" B="205"/>
+			<modelos>
+				<modelo ficheiro="esferaInd.3d" />
+			</modelos>
+		</grupo>
+	</grupo>
+	<!-- TERRA -->
+	<grupo>
+		<rotacao tempo="10" eixoY="1"/>
+		<grupo>
+			<translacao X="37"/>
+			<rotacao tempo="5" eixoY="1" />
+			<cor B="205"/>
+			<modelos>
+				<modelo ficheiro="esferaInd.3d" />
+			</modelos>
+			<!-- LUA -->
+			<grupo>
+				<rotacao tempo="2" eixoY="1" eixoZ="1"/>
+				<grupo>
+					<translacao X="1.5"/>
+					<escala X="0.2" Y="0.2" Z="0.2"/>
+					<cor R="125" G="125" B="125"/>
+					<modelos>
+						<modelo ficheiro="esferaInd.3d"/>
+					</modelos>
+				</grupo>
+			</grupo>
+		</grupo>
+	</grupo>
+	<!-- MARTE -->
+	<grupo>
+		<rotacao tempo="19" eixoY="1"/>
+		<grupo>
+			<translacao X="40"/>
+			<rotacao tempo="5" eixoY="1" />
+			<escala X="0.5" Y="0.5" Z="0.5"/>
+			<cor R="255" G="69"/>
+			<modelos>
+				<modelo ficheiro="esferaInd.3d" />
+			</modelos>
+		</grupo>
+	</grupo>
+	<!-- JUPITER -->
+	<grupo>
+		<rotacao tempo="50" eixoY="1"/>
+		<grupo>
+			<translacao X="62"/>
+			<rotacao tempo="5" eixoY="1" />
+			<escala X="5.5" Y="5.5" Z="5.5"/>
+			<cor R="160" G="102" B="60"/>
+			<modelos>
+				<modelo ficheiro="esferaInd.3d" />
+			</modelos>
+		</grupo>
+	</grupo>
+	<!-- SATURNO -->
+
+	<grupo>
+		<rotacao tempo="70" eixoY="1" />
+		<grupo>
+			<translacao X="90"/>
 			<rotacao angulo="43" eixoX="1" />
-			<escala X="1.4" Y="1.4" Z="1.4" />
-			<cor R="162" G="124" B="85"/>
-			<modelos>
-				<modelo ficheiro="saturnRingInd.3d" />
-			</modelos>
+			<grupo>
+			    <rotacao tempo="5" eixoY="1"/>
+				<escala X="5.3" Y="5.3" Z="5.3"/>
+				<cor R="222" G="184" B="135"/>
+				<modelos>
+					<modelo ficheiro="esferaInd.3d" />
+				</modelos>
+				<grupo>
+					<escala X="1.4" Y="1.4" Z="1.4" />
+					<cor R="162" G="124" B="85"/>
+					<modelos>
+						<modelo ficheiro="saturnRingInd.3d" />
+					</modelos>
+				</grupo>
+			</grupo>
 		</grupo>
 	</grupo>
+
+	<!-- URANO -->
 	<grupo>
-    <translacao tempo="30">
-        <ponto X="118" Y="0" Z="0"/>
-        <ponto X="88.5" Y="0" Z="-59"/>
-        <ponto X="0" Y="0" Z="-88.5"/>
-        <ponto X="-88.5" Y="0" Z="-59"/>
-        <ponto X="-118" Y="0" Z="0"/>
-        <ponto X="-88.5" Y="0" Z="59"/>
-        <ponto X="0" Y="0" Z="88.5"/>
-        <ponto X="88.5" Y="0" Z="59"/>
-    </translacao>
-		<escala X="4.3" Y="4.3" Z="4.3"/>
-		<cor R="70" G="130" B="180"/>
-		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
-		</modelos>
+		<rotacao tempo="90" eixoY="1" />
 		<grupo>
+			<translacao X="118"/>
 			<rotacao angulo="80" eixoX="1" />
-			<escala X="1.3" Y="1.3" Z="1.3" />
-			<cor R="190" G="190" B="190"/>
+			<grupo>
+			    <rotacao tempo="5" eixoY="1"/>
+				<escala X="4.3" Y="4.3" Z="4.3"/>
+				<cor R="70" G="130" B="180"/>
+				<modelos>
+					<modelo ficheiro="esferaInd.3d" />
+				</modelos>
+				<grupo>
+					<escala X="1.3" Y="1.3" Z="1.3" />
+					<cor R="190" G="190" B="190"/>
+					<modelos>
+						<modelo ficheiro="uranusRingInd.3d" />
+					</modelos>
+				</grupo>
+			</grupo>
+		</grupo>
+	</grupo>
+
+	<!-- NEPTUNO -->
+	<grupo>
+		<rotacao tempo="110" eixoY="1" />
+		<grupo>
+			<translacao X="140"/>
+			<rotacao tempo="5" eixoY="1" />
+			<escala X="5" Y="5" Z="5"/>
+			<cor R="65" G="105" B="225"/>
 			<modelos>
-				<modelo ficheiro="uranusRingInd.3d" />
+				<modelo ficheiro="esferaInd.3d" />
 			</modelos>
 		</grupo>
 	</grupo>
 	<grupo>
-		<translacao X="140"/>
-		<escala X="5" Y="5" Z="5"/>
-		<cor R="65" G="105" B="225"/>
+	    <translacao tempo="30" linha="1">
+	        <ponto X="165.2" Y="82.6" Z="0"/>
+	        <ponto X="123.9" Y="61.95" Z="-82.6"/>
+	        <ponto X="0" Y="0" Z="-123.9"/>
+	        <ponto X="-123.9" Y="-61.95" Z="-82.6"/>
+	        <ponto X="-165.2" Y="-82.6" Z="0"/>
+	        <ponto X="-123.9" Y="-61.95" Z="82.6"/>
+	        <ponto X="0" Y="0" Z="123.9"/>
+	        <ponto X="123.9" Y="61.95" Z="82.6"/>
+	    </translacao>
+	    <rotacao angulo="-90" eixoY="1"/>
+		<cor R="255" G="255" B="255"/>
 		<modelos>
-			<modelo ficheiro="esferaInd.3d" />
+			<modelo ficheiro="ibezier.3d" />
 		</modelos>
 	</grupo>
 </cena>

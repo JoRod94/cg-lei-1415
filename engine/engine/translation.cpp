@@ -106,7 +106,7 @@ void Translation::apply(){
 		float res[3];
 		float der[3];
 
-		renderCatmullRomCurve(res, der, points.size(), points);
+		if(line) renderCatmullRomCurve(res, der, points.size(), points);
 
 		getGlobalCatmullRomPoint(t, res, der, points);
 

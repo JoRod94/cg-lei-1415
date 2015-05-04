@@ -42,6 +42,7 @@
 #define _XML_Y_AXIS         "eixoY"
 #define _XML_Z_AXIS         "eixoZ"
 #define _XML_TIME			"tempo"
+#define _XML_LINE			"linha"
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
@@ -414,7 +415,8 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
 				node->FloatAttribute(_XML_TIME),
 				node->FloatAttribute(_XML_X),
 				node->FloatAttribute(_XML_Y),
-				node->FloatAttribute(_XML_Z));
+				node->FloatAttribute(_XML_Z),
+				node->BoolAttribute(_XML_LINE));
 			parse_translation(t, node);
 			vt.push_back(t);
 		}
@@ -480,8 +482,6 @@ bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
 			for (int i = 0; i < colors.size(); i++) {
 				ret->transformations.push_back(colors[i]);
 			}
-			// ret->transformations.resize(ret->transformations.size() + colors.size());
-			// ret->transformations.insert(ret->transformations.end(), colors.begin(), colors.end());
 		}
 	}
 	return r;
@@ -580,8 +580,6 @@ void renderTimer(){
 	if (showFPS && (globalTime - lastShowFPS > fpsStep)) {
 		char s[64];
 		fps = frame*1000.0 / (globalTime - lastShowFPS);
-		//cout << frame << endl;
-		//cout << (globalTime - lastShowFPS) << endl;
 		lastShowFPS = globalTime;
 		frame = 0.0f;
 		sprintf_s(s, "FPS: %f", fps);
