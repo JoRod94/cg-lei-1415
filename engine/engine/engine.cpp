@@ -452,7 +452,8 @@ bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
     vector<string> pt = group_points(g);
     vector<group> sg;
 	
-	t.insert(t.end(), c.begin(), c.end());
+	for (int i = 0; i < c.size(); i++)
+		t.push_back(c[i]);
 
 	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
 	while(subgroup != NULL) {
@@ -572,7 +573,6 @@ void renderTimer(){
 
 	if (globalTime - lastRender > renderStep ){
 		frame++;
-		cout << "T: " << (globalTime - lastRender) << endl << frame << endl;
 		lastRender = globalTime;
 		glutPostRedisplay();
 	}
