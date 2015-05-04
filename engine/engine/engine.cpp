@@ -212,6 +212,18 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 	return g;
 }
 
+group new_empty_group() {
+	group g = (group)calloc(1, sizeof(struct s_group));
+
+	g->transformations = vector<Transformation*>();
+
+	g->points = vector<string>();
+
+	g->subgroups = vector<group>();
+
+	return g;
+}
+
 void draw_vbo(figure f){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -430,7 +442,7 @@ vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
 	return v;
 }
 
-bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
+bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
@@ -447,24 +459,29 @@ bool __parse_group(tinyxml2::XMLElement* g, group *ret) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
 
-			if (__parse_group(subgroup, &maybe_sub)) {
+			if (__parse_group(subgroup, maybe_sub)) {
 				sg.push_back(maybe_sub);
 			}
 			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
        }
 
-    *ret = new_group(t, pt, sg);
+    ret = new_group(t, pt, sg);
     return true;
 }
 
-bool parseGroup(tinyxml2::XMLElement* g, group *ret) {
+bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
 	vector<Transformation*> colors = colorize(g);
 	bool r = __parse_group(g, ret);
 	if (r) {
-		if ((*ret)->transformations.size() == 0)
-			(*ret)->transformations = colors;
-		else
-			(*ret)->transformations.insert((*ret)->transformations.end(), colors.begin(), colors.end());
+		if (ret->transformations.size() == 0)
+			ret->transformations = colors;
+		else {
+			for (int i = 0; i < colors.size(); i++) {
+				ret->transformations.push_back(colors[i]);
+			}
+			// ret->transformations.resize(ret->transformations.size() + colors.size());
+			// ret->transformations.insert(ret->transformations.end(), colors.begin(), colors.end());
+		}
 	}
 	return r;
 }
@@ -481,15 +498,14 @@ void read_xml() {
 			camera->FloatAttribute(_XML_CAM_RADIUS));
 	}
 
-	group ret = (group)malloc(sizeof(struct s_group));
-
+	group ret = new_empty_group();
 
     for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
 		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
 				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
 		{
-			if ( parseGroup(g, &ret) ) {
+			if ( parseGroup(g, ret) ) {
 				groups.push_back(ret);
 			}
 		}
