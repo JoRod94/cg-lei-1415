@@ -73,9 +73,12 @@ int active_buffer = 0;
 GLenum mode = GL_FILL;
 float gridSize = 50, gridScale = 1;
 bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, drawXY, drawZY
+float fps = 0.0f;
+bool showFPS = false;
 
 // Time variables
 int globalTime = 0;
+int lastShowFPS = 0, fpsStep = 1000, frame = 0;
 int lastRender = 0, renderStep = 7;
 
 // VBO variables
@@ -550,9 +553,23 @@ void renderScene(void) {
 
 void renderTimer(){
 	globalTime = glutGet(GLUT_ELAPSED_TIME);
+
 	if (globalTime - lastRender > renderStep ){
+		frame++;
+		cout << "T: " << (globalTime - lastRender) << endl << frame << endl;
 		lastRender = globalTime;
 		glutPostRedisplay();
+	}
+
+	if (showFPS && (globalTime - lastShowFPS > fpsStep)) {
+		char s[64];
+		fps = frame*1000.0 / (globalTime - lastShowFPS);
+		//cout << frame << endl;
+		//cout << (globalTime - lastShowFPS) << endl;
+		lastShowFPS = globalTime;
+		frame = 0.0f;
+		sprintf_s(s, "FPS: %f", fps);
+		glutSetWindowTitle(s);
 	}
 }
 
@@ -679,7 +696,11 @@ void gridModeHandler(int id_op){
 }
 
 void mainMenuHandler(int id_op) {
-	if (id_op == 3) {
+	if (id_op == 3){
+		showFPS = !showFPS;
+		glutSetWindowTitle("Motor 3D");
+	}
+	if (id_op == 4) {
 		groups.clear();
 		files.clear();
 		active_buffer = 0;
@@ -706,7 +727,8 @@ void createMenu(){
 	mainMenu = glutCreateMenu(mainMenuHandler);
 	glutAddSubMenu("Polygon Mode", polygonMode);
 	glutAddSubMenu("Grid Mode", gridMode);
-	glutAddMenuEntry("Reload XML", 3);
+	glutAddMenuEntry("Toggle FPS Counter", 3);
+	glutAddMenuEntry("Reload XML", 4);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -721,8 +743,7 @@ int valid_xml(char* filename) {
 	return name && exists;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
 	if (argc < 2){
 		cout << "Not enough arguments" << endl;
 		return 0;
@@ -745,7 +766,7 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 800);
-	glutCreateWindow("TP");
+	glutCreateWindow("Motor 3D");
 
 	// registo de funções
 	glutDisplayFunc(renderScene);
