@@ -1,5 +1,3 @@
-// generator.cpp : Defines the entry point for the console application.
-
 #include "stdafx.h"
 #include "point.h"
 #include "patch.h"
@@ -15,11 +13,11 @@
 
 using namespace std;
 
-unsigned int lastInd = 0, cp = 0;
-map<point,unsigned int> pMap;
-vector<point> pOrder;
-vector<point> points;
-vector<unsigned int> indices;
+unsigned int lastInd = 0;
+vector<point> points;				//model template
+map<point,unsigned int> pMap;		//point-index dictionary
+vector<point> pOrder;				//model points
+vector<unsigned int> indices;		//model point indices
 
 
 
@@ -27,7 +25,6 @@ void create_file(const char* filename){
 	unsigned int pSize = 3 * pOrder.size(),
 				iSize = indices.size();
 	float *pCoords = (float*)malloc(pSize * sizeof(float));
-
 
 
 	map<point, unsigned int>::iterator it;
@@ -365,9 +362,9 @@ void create_plane(float length, float width, int slices, int stacks){
 void create_parallelepiped(float length, float width, float height, int slices, int stacks){
 	getOuterPoints(length, width, height, stacks, slices);
 	pointExtender(length, width, height, stacks, slices);
-
 }
 
+//Rotates model template to create complete model
 void point_rotator(float slices, float layers){
 	float alpha = (float)M_PI/2.0f;
 	float aInc = (2.0f * (float)M_PI) / slices;
@@ -385,29 +382,6 @@ void point_rotator(float slices, float layers){
 		alpha += aInc;
 	}
 }
-
-/*void point_rotator(float slices, float layers){
-	float aInc = (2.0f * (float)M_PI) / slices, alpha = aInc;
-	int ind = 0;
-
-	for (int i = 0; i < slices; i++){
-		for (int j = 0; j < layers; j++){
-			ind = (layers+1)*i + j;
-
-			points.push_back(point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha)));
-
-			indices.push_back(ind);
-			indices.push_back(ind + layers + 1);
-			indices.push_back(ind + layers + 2);
-
-			indices.push_back(ind + layers + 2);
-			indices.push_back(ind + 1);
-			indices.push_back(ind);
-		}
-		points.push_back(point(points[layers].x * sin(alpha), points[layers].y, points[layers].x * cos(alpha)));
-		alpha += aInc;
-	}
-}*/
 
 void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
