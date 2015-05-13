@@ -18,20 +18,25 @@ vector<point> points;				//model template
 map<point,unsigned int> pMap;		//point-index dictionary
 vector<point> pOrder;				//model points
 vector<unsigned int> indices;		//model point indices
+vector<point> nOrder;				//model normals
 
-
+//put_point default parameters
+void put_point(int vInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
 
 void create_file(const char* filename){
-	unsigned int pSize = 3 * pOrder.size(),
-				iSize = indices.size();
+	unsigned int pSize = 3 * pOrder.size();
+	unsigned int iSize = indices.size();
 	float *pCoords = (float*)malloc(pSize * sizeof(float));
+	float *nCoords = (float*)malloc(pSize * sizeof(float));
 
 
-	map<point, unsigned int>::iterator it;
 	for (int j = 0, i = 0; j<pOrder.size(); j++) {
-		pCoords[i++] = pOrder[j].x;
-		pCoords[i++] = pOrder[j].y;
-		pCoords[i++] = pOrder[j].z;
+		pCoords[i] = pOrder[j].x;
+		nCoords[i++] = nOrder[j].x;
+		pCoords[i] = pOrder[j].y;
+		nCoords[i++] = nOrder[j].y;
+		pCoords[i] = pOrder[j].z;
+		nCoords[i++] = nOrder[j].z;
 	}
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
@@ -39,17 +44,31 @@ void create_file(const char* filename){
 	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&iSize, sizeof(unsigned int));
 	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
+	newFile.write((char *)&nCoords[0], pSize*sizeof(float));
 }
 
+point rotate_point(point p, float angle){
+	p.x = p.x * sin(angle);
+	p.z = p.z * cos(angle);
+	return p;
+}
 
-void put_point(float x, float y, float z){
+void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
 	map<point, unsigned int>::iterator it;
 	point p = point(x, y, z);
+	point n = point(nOrder[vInd].x, nOrder[vInd].y, nOrder[vInd].x);
+
+	if (rotate_point){
+		p = rotate_point(p, angle);
+		n = rotate_point(n, angle);
+	}
+
 
 	if ((it = pMap.find(p)) != pMap.end())
 		indices.push_back(it->second);
 	else{
 		pOrder.push_back(p);
+		nOrder.push_back(n);
 		pMap[p] = lastInd;
 		indices.push_back(lastInd++);
 	}
@@ -296,21 +315,21 @@ void completeFace(float len, float hei, float position, int slices, int stacks){
 	for (int j = 0; j < stacks; j++){
 		for (int i = 0; i < slices; i++){
 			if (position < 0){
-				put_point(l, h, position);
-				put_point(l, h + incrH, position);
-				put_point(l + incrL, h + incrH, position);
-				put_point(l, h, position);
-				put_point(l + incrL, h + incrH, position);
-				put_point(l + incrL, h, position);
+				put_point(i, l, h, position);
+				put_point(i, l, h + incrH, position);
+				put_point(i, l + incrL, h + incrH, position);
+				put_point(i, l, h, position);
+				put_point(i, l + incrL, h + incrH, position);
+				put_point(i, l + incrL, h, position);
 			}
 			else{
-				put_point(l, h, position);
-				put_point(l + incrL, h + incrH, position);
-				put_point(l, h + incrH, position);
+				put_point(i, l, h, position);
+				put_point(i, l + incrL, h + incrH, position);
+				put_point(i, l, h + incrH, position);
 
-				put_point(l, h, position);
-				put_point(l + incrL, h, position);
-				put_point(l + incrL, h + incrH, position);
+				put_point(i, l, h, position);
+				put_point(i, l + incrL, h, position);
+				put_point(i, l + incrL, h + incrH, position);
 			}
 			l += incrL;
 		}
@@ -332,21 +351,22 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 	completeFace(len, hei, w, slices, stacks);
 	for (int i = 0; i < slices; i++){
 		for (j = 0; j < numpts - 1; j++){
-			put_point(points[j].x, points[j].y, w);
-			put_point(points[j + 1].x, points[j + 1].y, w);
-			put_point(points[j + 1].x, points[j + 1].y, w + incrW);
-			put_point(points[j].x, points[j].y, w);
-			put_point(points[j + 1].x, points[j + 1].y, w + incrW);
-			put_point(points[j].x, points[j].y, w + incrW);
+			put_point(i, points[j].x, points[j].y, w);
+			put_point(i, points[j + 1].x, points[j + 1].y, w);
+			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
+
+			put_point(i, points[j].x, points[j].y, w);
+			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
+			put_point(i, points[j].x, points[j].y, w + incrW);
 
 		}
-		put_point(points[j].x, points[j].y, w);
-		put_point(points[0].x, points[0].y, w);
-		put_point(points[0].x, points[0].y, w + incrW);
+		put_point(i, points[j].x, points[j].y, w);
+		put_point(i, points[0].x, points[0].y, w);
+		put_point(i, points[0].x, points[0].y, w + incrW);
 
-		put_point(points[j].x, points[j].y, w);
-		put_point(points[0].x, points[0].y, w + incrW);
-		put_point(points[j].x, points[j].y, w + incrW);
+		put_point(i, points[j].x, points[j].y, w);
+		put_point(i, points[0].x, points[0].y, w + incrW);
+		put_point(i, points[j].x, points[j].y, w + incrW);
 
 		w += incrW;
 	}
@@ -371,13 +391,13 @@ void point_rotator(float slices, float layers){
 
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
-			put_point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha));
-			put_point(points[j].x * sin(alpha + aInc), points[j].y, points[j].x * cos(alpha + aInc));
-			put_point(points[j + 1].x * sin(alpha + aInc), points[j + 1].y, points[j + 1].x * cos(alpha + aInc));
+			put_point(j, points[j].x, points[j].y, points[j].x, alpha, true);
+			put_point(j, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
+			put_point(j, points[j].x, points[j].y, points[j].x, (alpha + aInc), true);
 
-			put_point(points[j + 1].x * sin(alpha + aInc), points[j + 1].y, points[j + 1].x * cos(alpha + aInc));
-			put_point(points[j + 1].x * sin(alpha), points[j + 1].y, points[j + 1].x * cos(alpha));
-			put_point(points[j].x * sin(alpha), points[j].y, points[j].x * cos(alpha));
+			put_point(j, points[j].x, points[j].y, points[j].x, (alpha + aInc), true); 
+			put_point(j, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
+			put_point(j, points[j + 1].x, points[j + 1].y, points[j + 1].x, (alpha + aInc), true);
 		}
 		alpha += aInc;
 	}
@@ -387,10 +407,13 @@ void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = M_PI / layers;
 
-	for (int i = 0; i < layers; i++, beta += bInc)
+	for (int i = 0; i < layers; i++, beta += bInc){
 		points.push_back(point(radius * sin(beta), radius * cos(beta), 0));
+		nOrder.push_back(point(sin(beta), cos(beta), 0));
+	}
 
-	points.push_back(point(0,-1, 0));
+	points.push_back(point(0,-radius, 0));
+	nOrder.push_back(point(0,-1,0));
 
 	point_rotator(slices, layers);
 }
@@ -439,6 +462,39 @@ void create_cylinder(float radius, float height, float slices, float layers){
 	points.push_back(point(0, currH - hInc, 0));
 
 	point_rotator(slices, layers + 2);
+}
+
+void rand_displace(int aSize, int lastSize, float rD, float rA){
+	cout << "entra" << endl;
+	for (int i = lastSize; i < aSize; i++){
+		pOrder[i].x = rD * sin(rA);
+		pOrder[i].z = rD * cos(rA);
+
+		cout << pOrder[i].x << endl;
+		cout << pOrder[i].z << endl;
+	}
+}
+
+void create_asteroids(float ir, float or, float nrAsteroids, float radius, float slices, float layers){
+	float randDistance, randAngle;
+	int lastSize = 0;
+
+	srand(1);
+
+	for (int i = 0; i < nrAsteroids; i++){
+		create_sphere(radius, slices, layers);
+
+		randDistance = ir + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (or - ir)));
+		randAngle = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*M_PI)));
+		cout << randDistance << endl;
+		cout << randAngle << endl;
+		//rand_disform();
+
+		rand_displace((pOrder.size() - lastSize), lastSize,randDistance,randAngle);
+		cout << "asdasdsad"<<pOrder.size() << endl;
+
+		pMap.clear();
+	}
 }
 
 
@@ -551,6 +607,18 @@ int main(int argc, char* argv[]) {
 		}
 		std::cout << "Generating Ring..." << endl;
 		create_ring(stof(argv[2]), stof(argv[3]), stof(argv[4]));
+	}
+	else if (strcmp(argv[1], "asteroids") == 0){
+		if (argc != 9){
+			std::cout << "Wrong number of arguments" << endl;
+			return 0;
+		}
+		if (stof(argv[2]) > stof(argv[3])){
+			std::cout << "Inner radius must be smaller than outer radius" << endl;
+			return 0;
+		}
+		std::cout << "Generating Asteroids..." << endl;
+		create_asteroids(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]), stof(argv[7]));
 	}
 	else{
 		std::cout << "Command not recognized" << endl;

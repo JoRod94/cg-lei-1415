@@ -559,7 +559,7 @@ void renderScene(void) {
 
 	glColor3f(1, 0, 0);
 
-	glPolygonMode(GL_FRONT_AND_BACK, mode);
+	glPolygonMode(GL_FRONT, mode);
 	
 	renderPoints();
 
@@ -799,8 +799,9 @@ int main(int argc, char **argv){
 	// alguns settings para OpenGL
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT, GL_FILL);
 
 	// pôr aqui a criação do menu
 	createMenu();
