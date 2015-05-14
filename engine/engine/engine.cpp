@@ -56,8 +56,12 @@ typedef struct s_group {
     vector<struct s_group *> subgroups;
 } *group;
 
+// VBO variables
+GLuint *buffers;
+
 typedef struct s_figure {
 	float* vertex;
+	float* normal;
 	unsigned int* indices;
 	unsigned int n_ind;
 	unsigned int n_coords;
@@ -70,6 +74,10 @@ map<string, figure> files;
 char* xmlName;
 int active_buffer = 0;
 
+//Lighting variables
+GLfloat amb[3] = { 0.2, 0.2, 0.2 };
+GLfloat diff[3] = { 1.0, 1.0, 1.0 };
+
 // Menu variables
 GLenum mode = GL_FILL;
 float gridSize = 50, gridScale = 1;
@@ -81,11 +89,6 @@ bool showFPS = false;
 int globalTime = 0;
 int lastShowFPS = 0, fpsStep = 1000, frame = 0;
 int lastRender = 0, renderStep = 7;
-
-// VBO variables
-float *vertexB;
-unsigned int *indices;
-GLuint *buffers;
 
 // Camera variables
 bool freeCamera = false;
@@ -228,6 +231,10 @@ group new_empty_group() {
 void draw_vbo(figure f){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr+1]);
+	glNormalPointer(GL_FLOAT, 0, 0);
+
 	glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 }
 
@@ -288,13 +295,16 @@ void read_bin(string filename){
 	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
 	i.read((char *)&(f->indices[0]), f->n_ind*sizeof(unsigned int));
 
+	f->normal = (float *)malloc((f->n_coords)*sizeof(float));
+	i.read((char *)f->normal , f->n_coords*sizeof(float));
+
 	f->buffer_nr = active_buffer++;
 	
 	files[filename] = f;
 }
 
 void generate_vbos(){
-	int size = files.size();
+	int size = 2 * files.size();
 	map<string, figure>::iterator fIt = files.begin();
 	buffers = (GLuint *) malloc(size * (sizeof(GLuint)) );
 
@@ -304,9 +314,12 @@ void generate_vbos(){
 	for (int i = 0; fIt != files.end(); fIt++) {
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
-	}
 
-	free(vertexB);
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->buffer_nr]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->normal, GL_STATIC_DRAW);
+
+		//libertar memória
+	}
 }
 
 static bool valid_translation(tinyxml2::XMLElement* t) {
@@ -559,7 +572,7 @@ void renderScene(void) {
 
 	glColor3f(1, 0, 0);
 
-	glPolygonMode(GL_FRONT_AND_BACK, mode);
+	glPolygonMode(GL_FRONT, mode);
 	
 	renderPoints();
 
@@ -772,6 +785,33 @@ int valid_xml(char* filename) {
 	return name && exists;
 }
 
+void initGL(){
+	// some OpenGL settings
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glPolygonMode(GL_FRONT, GL_FILL);
+
+	// lights
+	glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff);
+
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
+
+	// pôr aqui a criação do menu
+	createMenu();
+
+	// initialize keyHolds array
+	keyHoldsInit();
+
+	//VBOs
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	generate_vbos();
+}
+
 int main(int argc, char **argv){
 	if (argc < 2){
 		cout << "Not enough arguments" << endl;
@@ -811,20 +851,8 @@ int main(int argc, char **argv){
 	//glew
 	glewInit();
 
-	// alguns settings para OpenGL
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	// pôr aqui a criação do menu
-	createMenu();
-
-
-	// initialize keyHolds array
-	keyHoldsInit();
-
-	generate_vbos();
+	//gl
+	initGL();
 
 	// entrar no ciclo do GLUT
 	glutMainLoop();
