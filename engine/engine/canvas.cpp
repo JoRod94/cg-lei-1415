@@ -1,7 +1,15 @@
+#include "stdafx.h"
+#include <vector>
+#include "transformation.h"
 #include "canvas.h"
 
-scene new_scene() {
-    return (scene)malloc(sizeof(struct s_scene));
+using namespace std;
+
+scene new_scene(vector<group> groups, vector<light> lights) {
+    scene s = (scene)malloc(sizeof(struct s_scene));
+	s->groups = groups;
+	s->lights = lights;
+	return s;
 }
 
 light new_empty_light() {
@@ -23,7 +31,7 @@ group new_empty_group() {
     return (group)malloc(sizeof(struct s_group));
 }
 
-group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups) {
+group new_group(vector<Transformation*> transformations, vector<pair<string, Color>> points, vector<group> subgroups) {
 	group g = (group)calloc(1, sizeof(struct s_group));
 
 	g->transformations = transformations;
@@ -38,5 +46,3 @@ group new_group(vector<Transformation*> transformations, vector<string> points, 
 figure new_figure() {
     return (figure)malloc(sizeof(struct s_figure));
 }
-
-

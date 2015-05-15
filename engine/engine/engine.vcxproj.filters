@@ -45,6 +45,15 @@
     <ClInclude Include="..\toolkits\includes\translation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\toolkits\includes\canvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\toolkits\includes\xml_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,6 +81,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xml_reader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="canvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

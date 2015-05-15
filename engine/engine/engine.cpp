@@ -4,13 +4,12 @@
 #define _USE_MATH_DEFINES
 #include <iostream>
 #include <glew.h>
-#include <fstream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <sstream>
 #include <map>
-#include "point.h"
-#include "tinyxml2.h"
+#include <math.h>
 #include <GL/glut.h>
 #include <regex>
 #include "transformation.h"
@@ -19,35 +18,20 @@
 #include "rotation.h"
 #include "scale.h"
 #include "xml_reader.h"
-#include <math.h>
+#include "canvas.h"
+#include "point.h"
 
 #define DEFAULT_CAM_RADIUS	10.0f
 
 using namespace std;
 
-typedef struct s_group {
-    vector<Transformation*> transformations;
-    vector<string> points;
-    vector<struct s_group *> subgroups;
-} *group;
-
 // VBO variables
 GLuint *buffers;
 
-typedef struct s_figure {
-	float* vertex;
-	float* normal;
-	unsigned int* indices;
-	unsigned int n_ind;
-	unsigned int n_coords;
-	int buffer_nr;
-} *figure;
-
-vector<group> groups;
+vector<scene> scenes;
 map<string, figure> files;
 
 char* xmlName;
-int active_buffer = 0;
 
 //Lighting variables
 GLfloat amb[3] = { 0.2, 0.2, 0.2 };
@@ -186,7 +170,6 @@ static void draw_vbo(figure f){
 	glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 }
 
-
 static void draw_group(group g) {
 	glPushMatrix();
 
@@ -194,9 +177,10 @@ static void draw_group(group g) {
 		(g->transformations[i])->apply();
 	}
 
-
 	for (unsigned int i = 0; i < g->points.size(); i++) {
-        map<string, figure>::iterator p = files.find(g->points[i]);
+        map<string, figure>::iterator p = files.find(g->points[i].first);
+		/*if (g->points[i].second)*/ // check if exists, may not be right
+			// g->points[i].second.apply(); // applying material colors, not sure if it should be here
 		if (p != files.end()) {
 			draw_vbo(p->second);
 		}
@@ -210,11 +194,24 @@ static void draw_group(group g) {
 }
 
 
-static void renderPoints() {
+static void renderPoints(vector<group> groups) {
 	for (vector<group>::iterator it = groups.begin();
 		it != groups.end();
 		++it)
 		draw_group(*it);
+}
+
+static void renderLights(vector<light> lights) {
+	// do stuff
+}
+
+static void renderScenes() {
+	for (vector<scene>::iterator it = scenes.begin();
+		it != scenes.end();
+		++it) {
+		renderPoints( (*it)->groups );
+		renderLights( (*it)->lights );
+	}
 }
 
 static void generate_vbos(){
@@ -284,7 +281,7 @@ static void renderScene(void) {
 
 	glPolygonMode(GL_FRONT, mode);
 
-	renderPoints();
+	renderScenes();
 
 	drawGrid();
 
@@ -440,20 +437,21 @@ static void mainMenuHandler(int id_op) {
 			break;
 
 	case 4:
-			for (int i = 0; i < groups.size(); i++) {
-				vector<Transformation*> vt = groups[i]->transformations;
-				for (int j = 0; j < vt.size(); j++) {
-					if (Translation* t = dynamic_cast<Translation*>(vt[j]))
-						t->toggle_line();
+			for (int i = 0; i < scenes.size(); i++) {
+				vector<group> groups = scenes[i]->groups;
+				for (int j = 0; j < groups.size(); j++) {
+					vector<Transformation*> vt = groups[j]->transformations;
+					for (int w = 0; w < vt.size(); w++) {
+						if (Translation* t = dynamic_cast<Translation*>(vt[w]))
+							t->toggle_line();
+					}
 				}
 			}
+			
 			break;
 
 	case 5:
-			groups.clear();
-			files.clear();
-			active_buffer = 0;
-			read_xml();
+			reset_and_read_xml(xmlName);
 			generate_vbos();
 			glutPostRedisplay();
 			break;
@@ -538,7 +536,7 @@ int main(int argc, char **argv){
 
 
 	xmlName = argv[1];
-	pair< vector<scene>, map<string,figure> > read_values = read_xml();
+	pair< vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
     scenes = read_values.first;
     files = read_values.second;
 

@@ -1,13 +1,23 @@
+#include "stdafx.h"
 #include <vector>
 #include <string>
-#include <pair>
+#include <iostream>
+#include <fstream>
+#include <map>
 #include "transformation.h"
 #include "color.h"
+#include "translation.h"
+#include "scale.h"
+#include "rotation.h"
 #include "canvas.h"
+#include "tinyxml2.h"
+#include "xml_reader.h"
+#include "engine.h"
 
 using namespace std;
 
 map<string, figure> files;
+int active_buffer = 0;
 
 void read_bin(string filename){
 	figure f = new_figure();
@@ -221,7 +231,7 @@ bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
 }
 
 bool valid_light(tinyxml2::XMLElement* l) {
-    char* val = l->Attribute(_XML_LIGHT_TYPE)->Value();
+	const char* val = l->Attribute(_XML_LIGHT_TYPE);
     return val != NULL && (strcmp(val, _XML_LIGHT_POINT) == 0 || strcmp(val, _XML_LIGHT_VECTOR) == 0);
 }
 
@@ -231,11 +241,11 @@ bool parse_light(tinyxml2::XMLElement* ls, light &ret) {
         return false;
     }
 
-    int type = strcmp( ret->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? LIGHT_POINT : LIGHT_VECTOR;
+    int type = strcmp( ls->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? LIGHT_POINT : LIGHT_VECTOR;
     ret = new_light(type,
-            ret->FloatAttribute(_XML_LIGHT_X),
-            ret->FloatAttribute(_XML_LIGHT_Y),
-            ret->FloatAttribute(_XML_LIGHT_Z) );
+            ls->FloatAttribute(_XML_LIGHT_X),
+            ls->FloatAttribute(_XML_LIGHT_Y),
+            ls->FloatAttribute(_XML_LIGHT_Z) );
 
     return true;
 }
@@ -255,7 +265,7 @@ scene parse_scene(tinyxml2::XMLElement* scene) {
 
     for (tinyxml2::XMLElement* ls = scene->FirstChildElement(_XML_LIGHTS);
             ls != NULL; ls = ls->NextSiblingElement(_XML_LIGHTS))
-        for(tinyxml2::XMLElement* l = ls->FirstChildElements(_XML_LIGHT);
+        for(tinyxml2::XMLElement* l = ls->FirstChildElement(_XML_LIGHT);
                 l != NULL; l = l->NextSiblingElement(_XML_LIGHT))
             if( parse_light(l, ret_l) )
                 lights.push_back(ret_l);
@@ -263,7 +273,7 @@ scene parse_scene(tinyxml2::XMLElement* scene) {
     return new_scene(groups, lights);
 }
 
-pair< vector<scene>, map<string, figure> > > read_xml() {
+pair< vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
 
@@ -284,5 +294,8 @@ pair< vector<scene>, map<string, figure> > > read_xml() {
     return make_pair(scenes, files);
 }
 
-
-
+pair< vector<scene>, map<string, figure> > reset_and_read_xml(char* xmlName) {
+	files.clear();
+	active_buffer = 0;
+	return read_xml(xmlName);
+}

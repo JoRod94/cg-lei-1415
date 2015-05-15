@@ -1,6 +1,8 @@
 #ifndef _XML_READER_H
 #define _XML_READER_H
 
+#include "canvas.h"
+
 #define _XML_FILE           "ficheiro"
 #define _XML_SCENE          "cena"
 #define _XML_CAMERA			"camera"
@@ -26,13 +28,18 @@
 #define _XML_LINE			"linha"
 #define _XML_LIGHTS			"luzes"
 #define _XML_LIGHT			"luz"
-#define _XML_POINT			"POINT"
-#define _XML_VECTOR			"VECTOR"
 #define _XML_LIGHT_X		"posX"
-#define _YML_LIGHT_Y		"posY"
-#define _ZML_LIGHT_Z		"posZ"
+#define _XML_LIGHT_Y		"posY"
+#define _XML_LIGHT_Z		"posZ"
+#define _XML_LIGHT_VECTOR	"VECTOR"
+#define _XML_LIGHT_POINT	"POINT"
+#define _XML_LIGHT_TYPE		"tipo"
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
+
+pair< std::vector<scene>, std::map<std::string, figure> > read_xml(char* xmlName);
+
+pair< std::vector<scene>, std::map<std::string, figure> > reset_and_read_xml(char* xmlName);
 
 #endif
