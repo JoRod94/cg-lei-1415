@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <utility>
 #include "transformation.h"
 #include "color.h"
 #include "translation.h"
@@ -272,7 +273,7 @@ scene parse_scene(tinyxml2::XMLElement* scene) {
     return new_scene(groups, lights);
 }
 
-pair< vector<scene>, map<string, figure> > read_xml(char* xmlName) {
+pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
 
@@ -293,7 +294,7 @@ pair< vector<scene>, map<string, figure> > read_xml(char* xmlName) {
     return make_pair(scenes, files);
 }
 
-pair< vector<scene>, map<string, figure> > reset_and_read_xml(char* xmlName) {
+pair<vector<scene>, map<string, figure> > reset_and_read_xml(char* xmlName) {
 	files.clear();
 	active_buffer = 0;
 	return read_xml(xmlName);

@@ -2,6 +2,7 @@
 #define _XML_READER_H
 
 #include "canvas.h"
+#include <utility>
 
 #define _XML_FILE           "ficheiro"
 #define _XML_SCENE          "cena"
@@ -38,8 +39,10 @@
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
 
-pair< std::vector<scene>, std::map<std::string, figure> > read_xml(char* xmlName);
+using namespace std;
 
-pair< std::vector<scene>, std::map<std::string, figure> > reset_and_read_xml(char* xmlName);
+pair<vector<scene>, map<string, figure> > read_xml(char* xmlName);
+
+pair<vector<scene>, map<string, figure> > reset_and_read_xml(char* xmlName);
 
 #endif

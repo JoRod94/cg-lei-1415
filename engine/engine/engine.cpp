@@ -12,6 +12,7 @@
 #include <math.h>
 #include <GL/glut.h>
 #include <regex>
+#include <utility>
 #include "transformation.h"
 #include "translation.h"
 #include "color.h"
@@ -536,7 +537,7 @@ int main(int argc, char **argv){
 
 
 	xmlName = argv[1];
-	pair< vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
+	pair<vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
     scenes = read_values.first;
     files = read_values.second;
 
