@@ -82,10 +82,6 @@ float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
 
-figure new_figure() {
-	return (figure)malloc(sizeof(struct s_figure));
-}
-
 void set_camera(float a, float b, float r) {
 	defAlpha = (a * M_PI) / 180;
 	defBeta = (b * M_PI) / 180;
@@ -95,33 +91,34 @@ void set_camera(float a, float b, float r) {
 	radius = defRadius;
 }
 
-void keyHoldsInit(){
+static void keyHoldsInit(){
 	for (int i = 0; i < 256; i++)
 		keyHolds[i] = false;
 }
 
-void keyActions(){
+static void keyActions(){
 	if (freeCamera){
-		if (keyHolds['w']){
+		if (keyHolds['w']) {
 			pz += rz*freeCamSpeed;
 			px += rx*freeCamSpeed;
 			py += ry*freeCamSpeed;
 		}
-		if (keyHolds['s']){
+		if (keyHolds['s']) {
 			pz -= rz*freeCamSpeed;
 			px -= rx*freeCamSpeed;
 			py -= ry*freeCamSpeed;
 		}
-		if (keyHolds['d']){
+		if (keyHolds['d']) {
 			pz += rx*freeCamSpeed;
 			px -= rz*freeCamSpeed;
 		}
-		if (keyHolds['a']){
+		if (keyHolds['a']) {
 			pz -= rx*freeCamSpeed;
 			px += rz*freeCamSpeed;
 		}
 	}
-	else{
+
+    else {
 		if (keyHolds['z'] && radius > 1)
 			radius--;
 		if (keyHolds['x'])
@@ -129,12 +126,12 @@ void keyActions(){
 	}
 }
 
-void gridBoolInit(){
+static void gridBoolInit(){
 	for (int i = 0; i<4; i++)
 		gridBools[i] = false;
 }
 
-void drawGrid(){
+static void drawGrid(){
 	if (gridBools[0]){
 		glColor3ub(0, 255, 0);
 		if (gridBools[1]){
@@ -179,31 +176,7 @@ void drawGrid(){
 	}
 }
 
-group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups) {
-	group g = (group)calloc(1, sizeof(struct s_group));
-
-	g->transformations = transformations;
-
-	g->points = points;
-
-    g->subgroups = subgroups;
-
-	return g;
-}
-
-group new_empty_group() {
-	group g = (group)calloc(1, sizeof(struct s_group));
-
-	g->transformations = vector<Transformation*>();
-
-	g->points = vector<string>();
-
-	g->subgroups = vector<group>();
-
-	return g;
-}
-
-void draw_vbo(figure f){
+static void draw_vbo(figure f){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 
@@ -214,7 +187,7 @@ void draw_vbo(figure f){
 }
 
 
-void draw_group(group g) {
+static void draw_group(group g) {
 	glPushMatrix();
 
 	for (unsigned int i = 0; i < g->transformations.size(); i++) {
@@ -237,48 +210,14 @@ void draw_group(group g) {
 }
 
 
-void renderPoints() {
+static void renderPoints() {
 	for (vector<group>::iterator it = groups.begin();
 		it != groups.end();
 		++it)
 		draw_group(*it);
 }
 
-void read_bin(string filename){
-	figure f = new_figure();
-
-	map<string, figure>::iterator file = files.find(filename);
-
-	if (file != files.end()) {
-		// f = file->second;
-		free(f);
-		cout << "MODEL FILE ALREADY READ: " << filename << endl;
-		return;
-	}
-
-	ifstream i(filename, ios::binary);
-	if (!i) {
-		cout << "INEXISTENT FILE" << endl;
-		return;
-	}
-
-	i.read((char *)&(f->n_coords), sizeof(unsigned int));
-	f->vertex = (float *)malloc((f->n_coords)*sizeof(float));
-	i.read((char *)f->vertex , f->n_coords*sizeof(float));
-
-	i.read((char *)&(f->n_ind), sizeof(unsigned int));
-	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
-	i.read((char *)&(f->indices[0]), f->n_ind*sizeof(unsigned int));
-
-	f->normal = (float *)malloc((f->n_coords)*sizeof(float));
-	i.read((char *)f->normal , f->n_coords*sizeof(float));
-
-	f->buffer_nr = active_buffer++;
-	
-	files[filename] = f;
-}
-
-void generate_vbos(){
+static void generate_vbos(){
 	int size = 2 * files.size();
 	map<string, figure>::iterator fIt = files.begin();
 	buffers = (GLuint *) malloc(size * (sizeof(GLuint)) );
@@ -297,211 +236,7 @@ void generate_vbos(){
 	}
 }
 
-static bool valid_translation(tinyxml2::XMLElement* t) {
-	// check if we have an implicit point declarion in the translation tag
-	bool no_implicit_point = t->Attribute(_XML_X) == NULL &&
-								t->Attribute(_XML_Y) == NULL &&
-								t->Attribute(_XML_Z) == NULL;
-
-	tinyxml2::XMLElement* pt = t->FirstChildElement(_XML_POINT);
-
-	// checking if we have explicit points definition
-	bool no_explicit_points = pt == NULL;
-	
-	// checking if we have a valid nr of points
-	int nr_points = 0;
-	while (pt) {
-		nr_points++;
-		pt = pt->NextSiblingElement(_XML_POINT);
-	}
-	bool valid_points = nr_points >= 4;
-	
-	// this needs to be the only translation
-	bool no_next_translation = t->NextSiblingElement(_XML_TRANSLATION) == NULL;
-
-	// != is a logical exclusive or: either we have no implicit (atribute) point definition
-	// or we have explicit point definition (point tag)
-	// then, we can have no points definition, but if we have defined, they must be valid
-	// this translation needs to be the only one as well
-	return (no_implicit_point != no_explicit_points) && (no_explicit_points || valid_points) && no_next_translation;
-}
-
-static bool valid_group(tinyxml2::XMLElement* group) {
-    tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
-    tinyxml2::XMLElement* translation = group->FirstChildElement(_XML_TRANSLATION);
-    tinyxml2::XMLElement* rotation = group->FirstChildElement(_XML_ROTATION);
-    tinyxml2::XMLElement* scale = group->FirstChildElement(_XML_SCALE);
-	tinyxml2::XMLElement* color = group->FirstChildElement(_XML_COLOR);
-
-    return (
-            (models == NULL || models->NextSiblingElement(_XML_MODELS) == NULL) &&
-            (translation == NULL || valid_translation(translation)) &&
-            (rotation == NULL || rotation->NextSiblingElement(_XML_ROTATION) == NULL) &&
-            (scale == NULL || scale->NextSiblingElement(_XML_SCALE) == NULL) &&
-			(color == NULL || color->NextSiblingElement(_XML_COLOR) == NULL)
-           );
-}
-
-static vector<string> group_points(tinyxml2::XMLElement* group) {
-    vector<string> points;
-    tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
-
-	if (models) {
-		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
-			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
-			string filename = model->Attribute(_XML_FILE);
-			read_bin(filename);
-			points.push_back(filename);
-		}
-	}
-    return points;
-}
-
-static vector<Transformation*> group_colors(tinyxml2::XMLElement* g) {
-	vector<Transformation*> v;
-	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
-
-	while (color != NULL) {
-		v.push_back(new Color(
-			color->FloatAttribute(_XML_R),
-			color->FloatAttribute(_XML_G),
-			color->FloatAttribute(_XML_B)
-			));
-
-		color = color->NextSiblingElement(_XML_COLOR);
-	}
-
-	return v;
-}
-
-static void parse_translation(Translation* t, tinyxml2::XMLElement* node) {
-	for (tinyxml2::XMLElement* p = node->FirstChildElement(_XML_POINT); p; p = p->NextSiblingElement(_XML_POINT))
-		t->points.push_back(point(
-									p->FloatAttribute(_XML_X),
-									p->FloatAttribute(_XML_Y),
-									p->FloatAttribute(_XML_Z)
-								));
-}
-
-static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group) {
-    vector<Transformation*> vt;
-
-	for (tinyxml2::XMLElement* node = group->FirstChildElement(); node; node = node->NextSiblingElement()) {
-		string s = node->Value();
-
-		if (s == _XML_ROTATION) {
-			vt.push_back(new Rotation(
-				node->FloatAttribute(_XML_TIME),
-				node->FloatAttribute(_XML_ANGLE),
-				node->FloatAttribute(_XML_X_AXIS),
-				node->FloatAttribute(_XML_Y_AXIS),
-				node->FloatAttribute(_XML_Z_AXIS)));
-		}
-
-		else if (s == _XML_TRANSLATION) {
-			Translation* t = new Translation(
-				node->FloatAttribute(_XML_TIME),
-				node->FloatAttribute(_XML_X),
-				node->FloatAttribute(_XML_Y),
-				node->FloatAttribute(_XML_Z),
-				node->BoolAttribute(_XML_LINE));
-			parse_translation(t, node);
-			vt.push_back(t);
-		}
-
-		else if (s == _XML_SCALE) {
-			vt.push_back(new Scale(
-				node->FloatAttribute(_XML_X),
-				node->FloatAttribute(_XML_Y),
-				node->FloatAttribute(_XML_Z)));
-		}
-	}
-
-    return vt;
-}
-
-vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
-	vector<Transformation*> v;
-
-	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
-	if (color == NULL)
-		v.push_back(new Color(255, 255, 255));
-	else
-		v = group_colors(g);
-
-	return v;
-}
-
-bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
-    if(! valid_group(g)) {
-        cout << "Invalid group found. Ignoring..." << endl;
-        return false;
-    }
-    vector<Transformation*> t = group_transformations(g);
-	vector<Transformation*> c = group_colors(g);
-    vector<string> pt = group_points(g);
-    vector<group> sg;
-	
-	for (int i = 0; i < c.size(); i++)
-		t.push_back(c[i]);
-
-	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
-	while(subgroup != NULL) {
-			group maybe_sub = (group)malloc(sizeof(struct s_group));
-
-
-			if (__parse_group(subgroup, maybe_sub)) {
-				sg.push_back(maybe_sub);
-			}
-			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
-       }
-
-    ret = new_group(t, pt, sg);
-    return true;
-}
-
-bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
-	vector<Transformation*> colors = colorize(g);
-	bool r = __parse_group(g, ret);
-	if (r) {
-		if (ret->transformations.size() == 0)
-			ret->transformations = colors;
-		else {
-			for (int i = 0; i < colors.size(); i++) {
-				ret->transformations.push_back(colors[i]);
-			}
-		}
-	}
-	return r;
-}
-
-void read_xml() {
-	tinyxml2::XMLDocument doc;
-	doc.LoadFile(xmlName);
-
-
-    tinyxml2::XMLElement* camera = doc.FirstChildElement(_XML_CAMERA);
-	if (camera){
-		set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
-			camera->FloatAttribute(_XML_CAM_BETA),
-			camera->FloatAttribute(_XML_CAM_RADIUS));
-	}
-
-	group ret = new_empty_group();
-
-    for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
-			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE)) {
-		for (tinyxml2::XMLElement* g = scene->FirstChildElement(_XML_GROUP);
-				g != NULL; g = g->NextSiblingElement(_XML_GROUP))
-		{
-			if ( parseGroup(g, ret) ) {
-				groups.push_back(ret);
-			}
-		}
-	}
-}
-
-void changeSize(int w, int h) {
+static void changeSize(int w, int h) {
 
 	// Prevent a divide by zero, when window is too short
 	// (you cant make a window with zero width).
@@ -526,7 +261,7 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void renderScene(void) {
+static void renderScene(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -548,7 +283,7 @@ void renderScene(void) {
 	glColor3f(1, 0, 0);
 
 	glPolygonMode(GL_FRONT, mode);
-	
+
 	renderPoints();
 
 	drawGrid();
@@ -556,7 +291,7 @@ void renderScene(void) {
 	glutSwapBuffers();
 }
 
-void renderTimer(){
+static void renderTimer(){
 	globalTime = glutGet(GLUT_ELAPSED_TIME);
 
 	if (globalTime - lastRender > renderStep ){
@@ -576,7 +311,7 @@ void renderTimer(){
 }
 
 
-void keyBoardInput(unsigned char key, int x, int y){
+static void keyBoardInput(unsigned char key, int x, int y){
 	if (gridBools[0]){
 		if (key == 'c'){
 			gridSize += gridSize;
@@ -607,12 +342,12 @@ void keyBoardInput(unsigned char key, int x, int y){
 		keyHolds[key] = true;
 }
 
-void keyUp(unsigned char key, int x, int y){
+static void keyUp(unsigned char key, int x, int y){
 	keyHolds[key] = false;
 }
 
 // Mouse button callback
-void mousePress(int button, int state, int x, int y) {
+static void mousePress(int button, int state, int x, int y) {
 
 	// Camera only moves while the left mouse button is pressed
 	if (button == GLUT_LEFT_BUTTON) {
@@ -631,7 +366,7 @@ void mousePress(int button, int state, int x, int y) {
 
 
 // Motion while mouse button is pressed
-void mouseMotion(int x, int y) {
+static void mouseMotion(int x, int y) {
 
 	if (xOri >= 0) {
 		int xDiff = x - xOri;
@@ -661,7 +396,7 @@ void mouseMotion(int x, int y) {
 }
 
 
-void polygonModeHandler(int id_op){
+static void polygonModeHandler(int id_op){
 	switch (id_op){
 	case 1:
 		mode = GL_LINE;
@@ -676,7 +411,7 @@ void polygonModeHandler(int id_op){
 	glutPostRedisplay();
 }
 
-void gridModeHandler(int id_op){
+static void gridModeHandler(int id_op){
 	if (id_op == 1){
 		gridBoolInit();
 		gridSize = 50;
@@ -697,7 +432,7 @@ void gridModeHandler(int id_op){
 	}
 }
 
-void mainMenuHandler(int id_op) {
+static void mainMenuHandler(int id_op) {
 	switch (id_op) {
 	case 3:
 			showFPS = !showFPS;
@@ -723,10 +458,10 @@ void mainMenuHandler(int id_op) {
 			glutPostRedisplay();
 			break;
 	}
-	
+
 }
 
-void createMenu(){
+static void createMenu(){
 	int polygonMode, gridMode, mainMenu;
 
 	polygonMode = glutCreateMenu(polygonModeHandler);
@@ -750,7 +485,7 @@ void createMenu(){
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
-int valid_xml(char* filename) {
+static int valid_xml(char* filename) {
 	int name = regex_match(filename, regex(".*\.xml"));
 
 	ifstream f(filename);
@@ -760,7 +495,7 @@ int valid_xml(char* filename) {
 	return name && exists;
 }
 
-void initGL(){
+static void initGL(){
 	// some OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -803,7 +538,9 @@ int main(int argc, char **argv){
 
 
 	xmlName = argv[1];
-	read_xml();
+	pair< vector<scene>, map<string,figure> > read_values = read_xml();
+    scenes = read_values.first;
+    files = read_values.second;
 
 	// inicialização
 	glutInit(&argc, argv);
