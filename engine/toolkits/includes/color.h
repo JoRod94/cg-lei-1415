@@ -13,7 +13,4 @@ public:
 	virtual void apply();
 };
 
-
-
-
 #endif

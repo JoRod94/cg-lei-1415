@@ -86,17 +86,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\toolkits\includes\canvas.h" />
+    <ClInclude Include="..\toolkits\includes\color.h" />
+    <ClInclude Include="..\toolkits\includes\engine.h" />
     <ClInclude Include="..\toolkits\includes\point.h" />
     <ClInclude Include="..\toolkits\includes\rotation.h" />
+    <ClInclude Include="..\toolkits\includes\scale.h" />
+    <ClInclude Include="..\toolkits\includes\stdafx.h" />
+    <ClInclude Include="..\toolkits\includes\targetver.h" />
+    <ClInclude Include="..\toolkits\includes\tinyxml2.h" />
     <ClInclude Include="..\toolkits\includes\transformation.h" />
     <ClInclude Include="..\toolkits\includes\translation.h" />
     <ClInclude Include="..\toolkits\includes\xml_reader.h" />
-    <ClInclude Include="color.h" />
-    <ClInclude Include="engine.h" />
-    <ClInclude Include="scale.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.cpp" />

@@ -9,7 +9,6 @@
 #include "translation.h"
 #include "scale.h"
 #include "rotation.h"
-#include "canvas.h"
 #include "tinyxml2.h"
 #include "xml_reader.h"
 #include "engine.h"

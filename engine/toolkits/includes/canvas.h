@@ -51,4 +51,3 @@ group new_group(std::vector<Transformation*> transformations, std::vector<std::s
 figure new_figure();
 
 #endif
-

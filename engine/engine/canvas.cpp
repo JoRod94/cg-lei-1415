@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include <vector>
-#include "transformation.h"
 #include "canvas.h"
 
 using namespace std;
