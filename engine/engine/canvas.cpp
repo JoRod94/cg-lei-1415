@@ -15,7 +15,7 @@ light new_empty_light() {
     return (light)malloc(sizeof(struct s_light));
 }
 
-light new_light(int type, int x, int y, int z) {
+light new_light(LightType type, int x, int y, int z) {
     light l = new_empty_light();
 
     l->type = type;
@@ -30,7 +30,7 @@ group new_empty_group() {
     return (group)calloc(1, sizeof(s_group));
 }
 
-group new_group(vector< Transformation* > transformations, vector< pair<string, Color> > points, vector<group> subgroups) {
+group new_group(vector<Transformation*> transformations, vector<pair<string, Color> > points, vector<group> subgroups) {
 	group g = new_empty_group();
 
 	g->transformations = transformations;

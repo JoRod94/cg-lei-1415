@@ -13,18 +13,19 @@
 #include "tinyxml2.h"
 #include "xml_reader.h"
 #include "engine.h"
+#include "canvas.h"
 
 using namespace std;
 
-map<string, figure> files;
+map<string, figure> m_files;
 int active_buffer = 0;
 
 void read_bin(string filename){
 	figure f = new_figure();
 
-	map<string, figure>::iterator file = files.find(filename);
+	map<string, figure>::iterator file = m_files.find(filename);
 
-	if (file != files.end()) {
+	if (file != m_files.end()) {
 		free(f);
 		cout << "MODEL FILE ALREADY READ: " << filename << endl;
 		return;
@@ -49,7 +50,7 @@ void read_bin(string filename){
 
 	f->buffer_nr = active_buffer++;
 
-	files[filename] = f;
+	m_files[filename] = f;
 }
 
 static bool valid_translation(tinyxml2::XMLElement* t) {
@@ -97,8 +98,21 @@ static bool valid_group(tinyxml2::XMLElement* group) {
            );
 }
 
-static vector<string> group_points(tinyxml2::XMLElement* group) {
-    vector<string> points;
+static Color get_model_colors(tinyxml2::XMLElement* model) {
+	string diffR = model->Attribute(_XML_DIFF_R);
+	string diffG = model->Attribute(_XML_DIFF_G);
+	string diffB = model->Attribute(_XML_DIFF_B);
+	// check if any exists
+	// if none exists, return null
+	// if one exists, the others default to zero
+	// and we create a new color with the material flag on
+	if ( !( diffR.empty() && diffG.empty() && diffB.empty() ) )
+		return Color(); // return Color(stof(diffR), stof(diffG), stof(diffB), true);
+	return Color();
+}
+
+static vector<pair<string, Color> > group_points(tinyxml2::XMLElement* group) {
+    vector<pair<string, Color> > points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
 
 	if (models) {
@@ -106,7 +120,8 @@ static vector<string> group_points(tinyxml2::XMLElement* group) {
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
 			read_bin(filename);
-			points.push_back(filename);
+			Color c = get_model_colors(model);
+			points.push_back(make_pair(filename, c));
 		}
 	}
     return points;
@@ -194,7 +209,7 @@ bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
     }
     vector<Transformation*> t = group_transformations(g);
 	vector<Transformation*> c = group_colors(g);
-    vector<string> pt = group_points(g);
+    vector<pair<string, Color> > pt = group_points(g);
     vector<group> sg;
 
 	for (int i = 0; i < c.size(); i++)
@@ -241,7 +256,7 @@ bool parse_light(tinyxml2::XMLElement* ls, light &ret) {
         return false;
     }
 
-    int type = strcmp( ls->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? LIGHT_POINT : LIGHT_VECTOR;
+    LightType type = strcmp( ls->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? LIGHT_POINT : LIGHT_VECTOR;
     ret = new_light(type,
             ls->FloatAttribute(_XML_LIGHT_X),
             ls->FloatAttribute(_XML_LIGHT_Y),
@@ -291,11 +306,11 @@ pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
         scenes.push_back( parse_scene(scene) );
 
-    return make_pair(scenes, files);
+    return make_pair(scenes, m_files);
 }
 
 pair<vector<scene>, map<string, figure> > reset_and_read_xml(char* xmlName) {
-	files.clear();
+	m_files.clear();
 	active_buffer = 0;
 	return read_xml(xmlName);
 }

@@ -7,17 +7,17 @@
 #include <string>
 #include <utility>
 
-#define LIGHT_VECTOR    0
-#define LIGHT_POINT     1
-
 using namespace std;
 
+enum LightType { LIGHT_POINT, LIGHT_VECTOR };
+
 typedef struct s_light {
-   int type;
+   LightType type;
    int x;
    int y;
    int z;
 } *light;
+
 typedef struct s_figure {
 	float* vertex;
 	float* normal;
@@ -32,6 +32,7 @@ typedef struct s_group {
 	vector<pair<string, Color> > points;
 	vector<struct s_group *> subgroups;
 } *group;
+
 typedef struct s_scene {
     vector<light> lights;
     vector<group> groups;
@@ -41,11 +42,11 @@ scene new_scene(vector<group> groups, vector<light> lights);
 
 light new_empty_light();
 
-light new_light(int type, int x, int y, int z);
+light new_light(LightType type, int x, int y, int z);
 
 group new_empty_group();
 
-group new_group(vector<Transformation*> transformations, vector<string> points, vector<group> subgroups);
+group new_group(vector<Transformation*> transformations, vector<pair<string, Color> > points, vector<group> subgroups);
 
 figure new_figure();
 
