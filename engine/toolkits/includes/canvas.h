@@ -24,7 +24,8 @@ typedef struct s_figure {
 	unsigned int* indices;
 	unsigned int n_ind;
 	unsigned int n_coords;
-	int buffer_nr;
+	int vertex_buffer_nr;
+	int normal_buffer_nr;
 } *figure;
 
 typedef struct s_group {

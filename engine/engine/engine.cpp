@@ -162,10 +162,10 @@ static void drawGrid(){
 }
 
 static void draw_vbo(figure f){
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->vertex_buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->buffer_nr+1]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->normal_buffer_nr]);
 	glNormalPointer(GL_FLOAT, 0, 0);
 
 	glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
@@ -224,10 +224,10 @@ static void generate_vbos(){
 	glGenBuffers(size, buffers);
 
 	for (int i = 0; fIt != files.end(); fIt++) {
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->buffer_nr]);
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->vertex_buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->vertex, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->buffer_nr]);
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->normal_buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->normal, GL_STATIC_DRAW);
 
 		//libertar memória
@@ -283,7 +283,6 @@ static void renderScene(void) {
 	glPolygonMode(GL_FRONT, mode);
 
 	renderScenes();
-
 	drawGrid();
 
 	glutSwapBuffers();
@@ -491,7 +490,8 @@ static int valid_xml(char* filename) {
 	int exists = f.good();
 	f.close();
 
-	return name && exists;
+	if (name && exists)
+		return name;
 }
 
 static void initGL(){
@@ -501,13 +501,6 @@ static void initGL(){
 	glCullFace(GL_BACK);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glPolygonMode(GL_FRONT, GL_FILL);
-
-	// lights
-	glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff);
-
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
 
 	// pôr aqui a criação do menu
 	createMenu();

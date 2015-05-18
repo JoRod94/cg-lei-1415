@@ -48,7 +48,8 @@ void read_bin(string filename){
 	f->normal = (float *)malloc((f->n_coords)*sizeof(float));
 	i.read((char *)f->normal , f->n_coords*sizeof(float));
 
-	f->buffer_nr = active_buffer++;
+	f->vertex_buffer_nr = active_buffer++;
+	f->normal_buffer_nr = active_buffer++;
 
 	m_files[filename] = f;
 }
@@ -108,7 +109,7 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	// and we create a new color with the material flag on
 	if ( !( diffR.empty() && diffG.empty() && diffB.empty() ) )
 		return new Color(); // return new Color(stof(diffR), stof(diffG), stof(diffB), true);
-	return new Color();
+	return nullptr;
 }
 
 static vector<pair<string, Color*> > group_points(tinyxml2::XMLElement* group) {
@@ -302,10 +303,11 @@ pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 			camera->FloatAttribute(_XML_CAM_RADIUS));
 	}
 
-    for (tinyxml2::XMLElement* scene = doc.FirstChildElement(_XML_SCENE);
-			scene != NULL; scene = scene->NextSiblingElement(_XML_SCENE))
-        scenes.push_back( parse_scene(scene) );
-
+	for (tinyxml2::XMLElement* s = doc.FirstChildElement(_XML_SCENE);
+		s != NULL; s = s->NextSiblingElement(_XML_SCENE)){
+		cout << "entra" << endl;
+		scenes.push_back(parse_scene(s));
+	}
     return make_pair(scenes, m_files);
 }
 
