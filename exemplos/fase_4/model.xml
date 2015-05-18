@@ -1,0 +1,10 @@
+<cena>
+	<luzes>
+		<luz tipo="POINT" posX="0" posY="10" posZ="0" />
+	</luzes>
+  	<grupo>
+        <modelos>
+            <modelo ficheiro="..\Release\sphereLig.3d" diffR="0.8" diffG="0.8" diffB="0.15" />
+        </modelos>
+    </grupo>
+</cena>
