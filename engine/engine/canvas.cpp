@@ -30,7 +30,7 @@ group new_empty_group() {
     return (group)calloc(1, sizeof(s_group));
 }
 
-group new_group(vector<Transformation*> transformations, vector<pair<string, Color> > points, vector<group> subgroups) {
+group new_group(vector<Transformation*> transformations, vector<pair<string, Color*> > points, vector<group> subgroups) {
 	group g = new_empty_group();
 
 	g->transformations = transformations;

@@ -29,7 +29,7 @@ typedef struct s_figure {
 
 typedef struct s_group {
 	vector<Transformation*> transformations;
-	vector<pair<string, Color> > points;
+	vector<pair<string, Color*> > points;
 	vector<struct s_group *> subgroups;
 } *group;
 
@@ -46,7 +46,7 @@ light new_light(LightType type, int x, int y, int z);
 
 group new_empty_group();
 
-group new_group(vector<Transformation*> transformations, vector<pair<string, Color> > points, vector<group> subgroups);
+group new_group(vector<Transformation*> transformations, vector<pair<string, Color*> > points, vector<group> subgroups);
 
 figure new_figure();
 

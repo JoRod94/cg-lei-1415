@@ -98,7 +98,7 @@ static bool valid_group(tinyxml2::XMLElement* group) {
            );
 }
 
-static Color get_model_colors(tinyxml2::XMLElement* model) {
+static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	string diffR = model->Attribute(_XML_DIFF_R);
 	string diffG = model->Attribute(_XML_DIFF_G);
 	string diffB = model->Attribute(_XML_DIFF_B);
@@ -107,12 +107,12 @@ static Color get_model_colors(tinyxml2::XMLElement* model) {
 	// if one exists, the others default to zero
 	// and we create a new color with the material flag on
 	if ( !( diffR.empty() && diffG.empty() && diffB.empty() ) )
-		return Color(); // return Color(stof(diffR), stof(diffG), stof(diffB), true);
-	return Color();
+		return new Color(); // return new Color(stof(diffR), stof(diffG), stof(diffB), true);
+	return new Color();
 }
 
-static vector<pair<string, Color> > group_points(tinyxml2::XMLElement* group) {
-    vector<pair<string, Color> > points;
+static vector<pair<string, Color*> > group_points(tinyxml2::XMLElement* group) {
+    vector<pair<string, Color*> > points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
 
 	if (models) {
@@ -120,7 +120,7 @@ static vector<pair<string, Color> > group_points(tinyxml2::XMLElement* group) {
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
 			read_bin(filename);
-			Color c = get_model_colors(model);
+			Color* c = get_model_colors(model);
 			points.push_back(make_pair(filename, c));
 		}
 	}
@@ -209,7 +209,7 @@ bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
     }
     vector<Transformation*> t = group_transformations(g);
 	vector<Transformation*> c = group_colors(g);
-    vector<pair<string, Color> > pt = group_points(g);
+    vector<pair<string, Color*> > pt = group_points(g);
     vector<group> sg;
 
 	for (int i = 0; i < c.size(); i++)
