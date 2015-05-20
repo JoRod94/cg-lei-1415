@@ -5,7 +5,7 @@
 using namespace std;
 
 scene new_scene(vector<group> groups, vector<light> lights) {
-    scene s = (scene)malloc(sizeof(s_scene));
+    scene s = (scene)calloc(1,sizeof(s_scene));
 	s->groups = groups;
 	s->lights = lights;
 	return s;

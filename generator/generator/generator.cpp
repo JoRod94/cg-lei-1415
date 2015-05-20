@@ -15,6 +15,7 @@ using namespace std;
 
 unsigned int lastInd = 0;
 vector<point> points;				//model template
+vector<point> normals;
 map<point,unsigned int> pMap;		//point-index dictionary
 vector<point> pOrder;				//model points
 vector<unsigned int> indices;		//model point indices
@@ -56,9 +57,9 @@ point rotate_point(point p, float angle){
 void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
 	map<point, unsigned int>::iterator it;
 	point p = point(x, y, z);
-	point n = point(nOrder[vInd].x, nOrder[vInd].y, nOrder[vInd].x);
+	point n = point(normals[vInd].x, normals[vInd].y, normals[vInd].x);
 
-	if (rotate_point){
+	if (rotate){
 		p = rotate_point(p, angle);
 		n = rotate_point(n, angle);
 	}
@@ -71,7 +72,9 @@ void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
 		nOrder.push_back(n);
 		pMap[p] = lastInd;
 		indices.push_back(lastInd++);
+		cout << ">>> " << n.x << " " << n.y << " " << n.z << " " << endl;
 	}
+
 }
 
 void _put_point(point p){
@@ -392,15 +395,16 @@ void point_rotator(float slices, float layers){
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
 			put_point(j, points[j].x, points[j].y, points[j].x, alpha, true);
-			put_point(j, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
+			put_point(j+1, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
 			put_point(j, points[j].x, points[j].y, points[j].x, (alpha + aInc), true);
 
 			put_point(j, points[j].x, points[j].y, points[j].x, (alpha + aInc), true); 
-			put_point(j, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
-			put_point(j, points[j + 1].x, points[j + 1].y, points[j + 1].x, (alpha + aInc), true);
+			put_point(j+1, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
+			put_point(j+1, points[j + 1].x, points[j + 1].y, points[j + 1].x, (alpha + aInc), true);
 		}
 		alpha += aInc;
 	}
+
 }
 
 void create_sphere(float radius, float slices, float layers){
@@ -409,63 +413,79 @@ void create_sphere(float radius, float slices, float layers){
 
 	for (int i = 0; i < layers; i++, beta += bInc){
 		points.push_back(point(radius * sin(beta), radius * cos(beta), 0));
-		nOrder.push_back(point(sin(beta), cos(beta), 0));
+		normals.push_back(point(sin(beta), cos(beta), 0));
 	}
 
 	points.push_back(point(0,-radius, 0));
-	nOrder.push_back(point(0,-1,0));
+	normals.push_back(point(0,-1,0));
 
 	point_rotator(slices, layers);
 }
 
 void create_cone(float radius, float height, float slices, float layers){
-	float currR = radius, currH = 0.0f;
-	float rDec = radius / layers, hInc = height / layers;
+	float currR = 0.0f, currH = height;
+	float rInc = radius / layers, hDec = height / layers;
+	float normalAngle = (atan(height/radius) * (180/M_PI));
+
+	for (int i = 0; i < (layers + 1); i++, currR += rInc, currH -= hDec){
+		points.push_back(point(currR, currH, 0));
+		normals.push_back(point(cos(normalAngle), sin(normalAngle), 0));
+	}
 
 	points.push_back(point(0, 0, 0));
-	for (int i = 0; i < (layers + 1); i++, currR -= rDec, currH += hInc)
-		points.push_back(point(currR, currH, 0));
+	normals.push_back(point(0, -1, 0));
 
 	point_rotator(slices, layers + 1);
 }
 
-void create_torus(float ir, float or, float slices, float layers){
+void create_torus(float or, float ir, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = (2 * (float)M_PI) / layers;
 
-	for (int i = 0; i < (layers + 1); i++, beta += bInc)
-		points.push_back(point(ir + or * sin(beta), or * cos(beta), 0));
+	for (int i = 0; i < (layers + 1); i++, beta += bInc){
+		points.push_back(point((or + ir) * sin(beta), ir * cos(beta), 0));
+		normals.push_back(point(sin(beta),cos(beta),0));
+	}
 
 	point_rotator(slices, layers);
 }
 
-void create_ring(float ir, float or, float slices){
+void create_ring(float or, float ir, float slices){
 	points.push_back(point(ir, 0, 0));
+	normals.push_back(point(0,1,0));
 	points.push_back(point(or, 0, 0));
+	normals.push_back(point(0, 1, 0));
 
 	point_rotator(slices, 1);
 
 	points.clear();
+	normals.clear();
 
-	points.push_back(point(or, 0, 0));
-	points.push_back(point(ir, 0, 0));
+	points.push_back(point(or+0.001, 0, or+0.001));
+	normals.push_back(point(0, -1, 0));
+	points.push_back(point(ir+0.001, 0, ir+0.001));
+	normals.push_back(point(0, -1, 0));
+
 	point_rotator(slices, 1);
 }
 
 void create_cylinder(float radius, float height, float slices, float layers){
-	float currH = -height / 2;
-	float hInc = height / layers;
+	float currH = height / 2;
+	float hDec = height / layers;
 
 	points.push_back(point(0, currH, 0));
-	for (int i = 0; i < (layers + 1); i++, currH += hInc)
+	normals.push_back(point(0, 1, 0));
+	for (int i = 0; i < (layers + 1); i++, currH -= hDec){
 		points.push_back(point(radius, currH, 0));
-	points.push_back(point(0, currH - hInc, 0));
+		normals.push_back(point(1,0,0));
+	}
+	points.push_back(point(0, currH - hDec, 0));
+	normals.push_back(point(0, -1, 0));
 
 	point_rotator(slices, layers + 2);
 }
 
 void rand_displace(int aSize, int lastSize, float rD, float rA){
-	cout << "entra" << endl;
 	for (int i = lastSize; i < aSize; i++){
 		pOrder[i].x = rD * sin(rA);
 		pOrder[i].z = rD * cos(rA);
@@ -601,7 +621,7 @@ int main(int argc, char* argv[]) {
 			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		if (stof(argv[2]) > stof(argv[3]) ){
+		if (stof(argv[2]) < stof(argv[3]) ){
 			std::cout << "Inner radius must be smaller than outer radius" << endl;
 			return 0;
 		}

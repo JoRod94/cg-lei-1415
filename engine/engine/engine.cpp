@@ -162,6 +162,15 @@ static void drawGrid(){
 }
 
 static void draw_vbo(figure f){
+
+	//uncomment to see normals
+	//glBegin(GL_LINES);
+	//for (int i = 0; i < f->n_coords; i += 3){
+	//	glVertex3f(f->vertex[i], f->vertex[i + 1], f->vertex[i + 2]);
+	//	glVertex3f(f->vertex[i] + f->normal[i], f->vertex[i + 1] + f->normal[i + 1], f->vertex[i + 2] + f->normal[i + 3]);
+	//}
+	//glEnd();
+
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->vertex_buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 
@@ -180,8 +189,8 @@ static void draw_group(group g) {
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
         map<string, figure>::iterator p = files.find(g->points[i].first);
-		/*if (g->points[i].second)*/ // check if exists, may not be right
-			// g->points[i].second.apply(); // applying material colors, not sure if it should be here
+		if (g->points[i].second != nullptr)
+			g->points[i].second->apply();
 		if (p != files.end()) {
 			draw_vbo(p->second);
 		}
@@ -192,18 +201,21 @@ static void draw_group(group g) {
 	}
 
     glPopMatrix();
+
 }
 
 
 static void renderPoints(vector<group> groups) {
 	for (vector<group>::iterator it = groups.begin();
 		it != groups.end();
-		++it)
+		++it){
 		draw_group(*it);
+	//	glColor3f(1.0, 1.0, 1.0);
+	}
 }
 
 static void renderLights(vector<light> lights) {
-	// do stuff
+	
 }
 
 static void renderScenes() {
@@ -261,6 +273,7 @@ static void changeSize(int w, int h) {
 
 static void renderScene(void) {
 
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -277,8 +290,8 @@ static void renderScene(void) {
 			0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f);
 	}
-
-	glColor3f(1, 0, 0);
+	float pos[4] = { 1.0, 1.0, 1.0, 0.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 	glPolygonMode(GL_FRONT, mode);
 
@@ -511,6 +524,13 @@ static void initGL(){
 	//VBOs
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
+
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
+
 	generate_vbos();
 }
 

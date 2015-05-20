@@ -108,7 +108,7 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	// if one exists, the others default to zero
 	// and we create a new color with the material flag on
 	if ( !( diffR.empty() && diffG.empty() && diffB.empty() ) )
-		return new Color(); // return new Color(stof(diffR), stof(diffG), stof(diffB), true);
+		return new Color(stof(diffR), stof(diffG), stof(diffB), true);
 	return nullptr;
 }
 
@@ -286,7 +286,7 @@ scene parse_scene(tinyxml2::XMLElement* scene) {
             if( parse_light(l, ret_l) )
                 lights.push_back(ret_l);
 
-    return new_scene(groups, lights);
+     return new_scene(groups, lights);
 }
 
 pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
@@ -304,10 +304,9 @@ pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 	}
 
 	for (tinyxml2::XMLElement* s = doc.FirstChildElement(_XML_SCENE);
-		s != NULL; s = s->NextSiblingElement(_XML_SCENE)){
-		cout << "entra" << endl;
+		s != NULL; s = s->NextSiblingElement(_XML_SCENE))
 		scenes.push_back(parse_scene(s));
-	}
+
     return make_pair(scenes, m_files);
 }
 
