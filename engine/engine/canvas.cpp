@@ -26,6 +26,7 @@ light new_light(GLenum lId, float x, float y, float z, float type) {
 	l->pos[1] = y;
 	l->pos[2] = z;
 	l->pos[3] = type;
+	l->lId = lId;
     return l;
 }
 

@@ -261,7 +261,7 @@ bool parse_light(tinyxml2::XMLElement* ls, light &ret) {
 	const char* s_type = ls->Attribute(_XML_LIGHT_TYPE);
     float type = strcmp(s_type, _XML_LIGHT_POINT ) == 0 ? 1.0f : 0.0f;
 	ret = new_light(
-		GL_LIGHT0,
+		GL_LIGHT0 + currLight++,
 		ls->FloatAttribute(_XML_LIGHT_X),
 		ls->FloatAttribute(_XML_LIGHT_Y),
 		ls->FloatAttribute(_XML_LIGHT_Z),

@@ -217,21 +217,21 @@ static void renderPoints(vector<group> groups) {
 		it != groups.end();
 		++it){
 		draw_group(*it);
-	//	glColor3f(1.0, 1.0, 1.0);
 	}
 }
 
 static void renderLights(vector<light> lights) {
-	for (int i = 0; i < lights.size(); i++)
+	for (int i = 0; i < lights.size(); i++){
 		glLightfv(lights[i]->lId, GL_POSITION, lights[i]->pos);
+	}
 }
 
 static void renderScenes() {
 	vector<scene>::iterator i = scenes.begin();
 
 	while (i != scenes.end()) {
-		renderLights( (*i)->lights );
-		renderPoints( (*i)->groups );
+		renderLights((*i)->lights);
+		renderPoints((*i)->groups);
 		i++;
 	}
 }
@@ -256,23 +256,16 @@ static void generate_vbos(){
 }
 
 void create_lights() {
+	int size;
+	vector<light> vl;
 	for (int i = 0; i < scenes.size(); i++) {
-		int size = scenes[i]->lights.size();
+		vl = scenes[i]->lights;
+		size = vl.size();
 		for (int j = 0; j < size; j++){
-			glLightfv(GL_LIGHT0 + j, GL_AMBIENT, amb);
-			glLightfv(GL_LIGHT0 + j, GL_DIFFUSE, diff);
-			glEnable(GL_LIGHT0 + j);
-			/*cout << "Enabled: "
-				<< endl
-				<< "Type: "
-				<< scenes[i]->lights[j]->pos[3]
-				<< "X: "
-				<< scenes[i]->lights[j]->pos[0]
-				<< "Y: "
-				<< scenes[i]->lights[j]->pos[1]
-				<< "Z: "
-				<< scenes[i]->lights[j]->pos[2]
-				<< "ID: " << scenes[i]->lights[j]->lId << endl;*/
+			glLightfv(vl[j]->lId, GL_AMBIENT, amb);
+			glLightfv(vl[j]->lId, GL_DIFFUSE, diff);
+			glEnable(vl[j]->lId);
+
 		}
 	}
 
