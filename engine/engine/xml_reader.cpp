@@ -233,7 +233,7 @@ bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
 }
 
 bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
-	vector<Transformation*> colors = colorize(g);
+	vector<Transformation*> colors;// = colorize(g);
 	bool r = __parse_group(g, ret);
 	if (r) {
 		if (ret->transformations.size() == 0)
@@ -258,7 +258,8 @@ bool parse_light(tinyxml2::XMLElement* ls, light &ret) {
         return false;
     }
 
-    float type = strcmp( ls->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? 1.0f : 0.0f;
+	const char* s_type = ls->Attribute(_XML_LIGHT_TYPE);
+    float type = strcmp(s_type, _XML_LIGHT_POINT ) == 0 ? 1.0f : 0.0f;
 	ret = new_light(
 		GL_LIGHT0,
 		ls->FloatAttribute(_XML_LIGHT_X),

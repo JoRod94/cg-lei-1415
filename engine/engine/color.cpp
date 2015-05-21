@@ -10,7 +10,5 @@ void Color::apply(){
 		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cInfo);
 	else
 		glColor3ub(cInfo[0], cInfo[1], cInfo[2]);
-
-	cout << cInfo[0] << " " << cInfo[1] << " " << cInfo[2] << endl;
 }
 

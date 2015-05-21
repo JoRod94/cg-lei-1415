@@ -117,8 +117,14 @@ static void gridBoolInit(){
 }
 
 static void drawGrid(){
-	if (gridBools[0]){
+	if (glIsEnabled(GL_LIGHTING)) {
+		float green[4] = { 0.0f, 255.0f, 0.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+	}
+	else
 		glColor3ub(0, 255, 0);
+
+	if (gridBools[0]){
 		if (gridBools[1]){
 			for (float i = -gridSize; i <= gridSize; i += gridScale){
 				glBegin(GL_LINES);
@@ -224,8 +230,8 @@ static void renderScenes() {
 	vector<scene>::iterator i = scenes.begin();
 
 	while (i != scenes.end()) {
-		renderPoints( (*i)->groups );
 		renderLights( (*i)->lights );
+		renderPoints( (*i)->groups );
 		i++;
 	}
 }
@@ -250,13 +256,29 @@ static void generate_vbos(){
 }
 
 void create_lights() {
-	for (int i = 0; i < scenes.size(); i++)
-		for (int j = 0, size = scenes[i]->lights.size(); j < size; j++){
-			glLightfv(GL_LIGHT0+j, GL_AMBIENT, amb);
-			glLightfv(GL_LIGHT0+j, GL_DIFFUSE, diff);
-			glEnable(GL_LIGHT0+j);
+	for (int i = 0; i < scenes.size(); i++) {
+		int size = scenes[i]->lights.size();
+		for (int j = 0; j < size; j++){
+			glLightfv(GL_LIGHT0 + j, GL_AMBIENT, amb);
+			glLightfv(GL_LIGHT0 + j, GL_DIFFUSE, diff);
+			glEnable(GL_LIGHT0 + j);
+			/*cout << "Enabled: "
+				<< endl
+				<< "Type: "
+				<< scenes[i]->lights[j]->pos[3]
+				<< "X: "
+				<< scenes[i]->lights[j]->pos[0]
+				<< "Y: "
+				<< scenes[i]->lights[j]->pos[1]
+				<< "Z: "
+				<< scenes[i]->lights[j]->pos[2]
+				<< "ID: " << scenes[i]->lights[j]->lId << endl;*/
 		}
+	}
 
+		/*glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, diff);
+		glEnable(GL_LIGHT1);*/
 	glEnable(GL_LIGHTING);
 }
 
@@ -304,7 +326,7 @@ static void renderScene(void) {
 			0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f);
 	}
-	
+
 
 	glPolygonMode(GL_FRONT, mode);
 
