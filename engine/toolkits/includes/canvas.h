@@ -27,12 +27,12 @@ typedef struct s_figure {
 
 typedef struct s_group {
 	vector<Transformation*> transformations;
-	vector<pair<string, Color*> >* points;
+	vector<pair<string, Color*> > points;
 	vector<struct s_group *> subgroups;
 } *group;
 
 typedef struct s_scene {
-    vector<light>* lights;
+    vector<light> lights;
     vector<group> groups;
 } *scene;
 
@@ -40,7 +40,7 @@ scene new_scene(vector<group> groups, vector<light> lights);
 
 light new_empty_light();
 
-light new_light(GLenum lId, float* pos);
+light new_light(GLenum lId, float x, float y, float z, float type);
 
 group new_empty_group();
 

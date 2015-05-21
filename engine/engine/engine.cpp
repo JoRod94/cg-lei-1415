@@ -187,9 +187,9 @@ static void draw_group(group g) {
 		(g->transformations[i])->apply();
 	}
 
-	for (unsigned int i = 0; i < g->points->size(); i++) {
-		map<string, figure>::iterator p = files.find((*(g->points))[i].first);
-		Color* c = (*(g->points))[i].second;
+	for (unsigned int i = 0; i < g->points.size(); i++) {
+		map<string, figure>::iterator p = files.find((g->points)[i].first);
+		Color* c = (g->points)[i].second;
 		if (c != nullptr)
 			c->apply();
 		if (p != files.end()) {
@@ -215,17 +215,20 @@ static void renderPoints(vector<group> groups) {
 	}
 }
 
-static void renderLights(vector<light>* lights) {
-	for (int i = lights->size(); i > 0; i--)
-		glLightfv((*lights)[i]->lId, GL_POSITION, (*lights)[i]->pos);
+static void renderLights(vector<light> lights) {
+	for (int i = 0; i < lights.size(); i++)
+		glLightfv(lights[i]->lId, GL_POSITION, lights[i]->pos);
 }
 
 static void renderScenes() {
-	for (vector<scene>::iterator it = scenes.begin();
-		it != scenes.end();
-		++it) {
-		renderLights((*it)->lights);
-		renderPoints( (*it)->groups );
+	vector<scene>::iterator i = scenes.begin();
+
+	vector<light> vl;
+	vl.push_back(new_light(GL_LIGHT0, 1, 2, 1, 1));
+	while (i != scenes.end()) {
+		renderPoints( (*i)->groups );
+		renderLights( vl );
+		i++;
 	}
 }
 
@@ -248,11 +251,9 @@ static void generate_vbos(){
 	}
 }
 
-#define GETLIGHT(j) GL_LIGHT#j
-
 void create_lights() {
 	for (int i = 0; i < scenes.size(); i++)
-		for (int j = 0, size = scenes[i]->lights->size(); j < size; j++){
+		for (int j = 0, size = scenes[i]->lights.size(); j < size; j++){
 			glLightfv(GL_LIGHT0+j, GL_AMBIENT, amb);
 			glLightfv(GL_LIGHT0+j, GL_DIFFUSE, diff);
 			glEnable(GL_LIGHT0+j);
