@@ -491,6 +491,33 @@ static void gridModeHandler(int id_op){
 	}
 }
 
+static void reset_engine() {
+	glDisable(GL_LIGHTING);
+
+	for (int i = 0; i < scenes.size(); i++) {
+		vector<light> vl = scenes[i]->lights;
+		int size = vl.size();
+		for (int j = 0; j < size; j++){
+			glDisable(vl[j]->lId);
+		}
+	}
+
+	scenes.clear();
+	files.clear();
+}
+
+static void reload_engine() {
+	pair<vector<scene>, map<string, figure> > read_values = reset_and_read_xml(xmlName);
+
+	scenes = read_values.first;
+	files = read_values.second;
+
+	create_lights();
+	generate_vbos();
+
+	glutPostRedisplay();
+}
+
 static void mainMenuHandler(int id_op) {
 	switch (id_op) {
 	case 3:
@@ -513,9 +540,8 @@ static void mainMenuHandler(int id_op) {
 			break;
 
 	case 5:
-			reset_and_read_xml(xmlName);
-			generate_vbos();
-			glutPostRedisplay();
+			reset_engine();
+			reload_engine();
 			break;
 	}
 
