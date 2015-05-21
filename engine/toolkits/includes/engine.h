@@ -2,5 +2,6 @@
 #define _ENGINE_H
 
 void set_camera(float x, float y, float z);
+void change_color();
 
 #endif

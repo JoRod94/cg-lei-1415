@@ -67,6 +67,8 @@ float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
 
+bool changed_color = false; // wether or not we have changed the color in a drawing iteration
+
 void set_camera(float a, float b, float r) {
 	defAlpha = (a * M_PI) / 180;
 	defBeta = (b * M_PI) / 180;
@@ -79,6 +81,24 @@ void set_camera(float a, float b, float r) {
 static void keyHoldsInit(){
 	for (int i = 0; i < 256; i++)
 		keyHolds[i] = false;
+}
+
+static void reset_color() {
+	if (!changed_color)
+		return;
+
+	if (glIsEnabled(GL_LIGHTING)) {
+		float wht[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wht);
+	}
+	else
+		glColor3f(1.0f, 1.0f, 1.0f);
+
+	changed_color = false;
+}
+
+void change_color() {
+	changed_color = true;
 }
 
 static void keyActions(){
@@ -117,14 +137,15 @@ static void gridBoolInit(){
 }
 
 static void drawGrid(){
-	if (glIsEnabled(GL_LIGHTING)) {
-		float green[4] = { 0.0f, 255.0f, 0.0f, 1.0f };
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
-	}
-	else
-		glColor3ub(0, 255, 0);
-
 	if (gridBools[0]){
+		
+		if (glIsEnabled(GL_LIGHTING)) {
+			float green[4] = { 0.0f, 255.0f, 0.0f, 1.0f };
+			glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+		}
+		else
+			glColor3ub(0, 255, 0);
+
 		if (gridBools[1]){
 			for (float i = -gridSize; i <= gridSize; i += gridScale){
 				glBegin(GL_LINES);
@@ -208,7 +229,7 @@ static void draw_group(group g) {
 	}
 
     glPopMatrix();
-
+	
 }
 
 
@@ -216,6 +237,7 @@ static void renderPoints(vector<group> groups) {
 	for (vector<group>::iterator it = groups.begin();
 		it != groups.end();
 		++it){
+		reset_color();
 		draw_group(*it);
 	}
 }
@@ -258,6 +280,7 @@ static void generate_vbos(){
 void create_lights() {
 	int size;
 	vector<light> vl;
+	bool enabled = false;
 	for (int i = 0; i < scenes.size(); i++) {
 		vl = scenes[i]->lights;
 		size = vl.size();
@@ -265,14 +288,12 @@ void create_lights() {
 			glLightfv(vl[j]->lId, GL_AMBIENT, amb);
 			glLightfv(vl[j]->lId, GL_DIFFUSE, diff);
 			glEnable(vl[j]->lId);
-
+			if(!enabled) enabled = true;
 		}
 	}
 
-		/*glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, diff);
-		glEnable(GL_LIGHT1);*/
-	glEnable(GL_LIGHTING);
+	if(enabled)
+		glEnable(GL_LIGHTING);
 }
 
 static void changeSize(int w, int h) {

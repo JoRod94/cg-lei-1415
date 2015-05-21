@@ -101,14 +101,14 @@ static bool valid_group(tinyxml2::XMLElement* group) {
 }
 
 static Color* get_model_colors(tinyxml2::XMLElement* model) {
-	string diffR = model->Attribute(_XML_DIFF_R);
-	string diffG = model->Attribute(_XML_DIFF_G);
-	string diffB = model->Attribute(_XML_DIFF_B);
+	const char* diffR = model->Attribute(_XML_DIFF_R);
+	const char* diffG = model->Attribute(_XML_DIFF_G);
+	const char* diffB = model->Attribute(_XML_DIFF_B);
 	// check if any exists
 	// if none exists, return null
 	// if one exists, the others default to zero
 	// and we create a new color with the material flag on
-	if ( !( diffR.empty() && diffG.empty() && diffB.empty() ) )
+	if ( diffR && diffG && diffB )
 		return new Color(stof(diffR), stof(diffG), stof(diffB), true);
 	return nullptr;
 }
@@ -204,7 +204,7 @@ vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
 	return v;
 }
 
-bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
+bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
         return false;
@@ -222,7 +222,7 @@ bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
 			group maybe_sub = (group)malloc(sizeof(struct s_group));
 
 
-			if (__parse_group(subgroup, maybe_sub)) {
+			if (parseGroup(subgroup, maybe_sub)) {
 				sg.push_back(maybe_sub);
 			}
 			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
@@ -230,21 +230,6 @@ bool __parse_group(tinyxml2::XMLElement* g, group &ret) {
 
     ret = new_group(t, pt, sg);
     return true;
-}
-
-bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
-	vector<Transformation*> colors;// = colorize(g);
-	bool r = __parse_group(g, ret);
-	if (r) {
-		if (ret->transformations.size() == 0)
-			ret->transformations = colors;
-		else {
-			for (int i = 0; i < colors.size(); i++) {
-				ret->transformations.push_back(colors[i]);
-			}
-		}
-	}
-	return r;
 }
 
 bool valid_light(tinyxml2::XMLElement* l) {
