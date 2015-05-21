@@ -223,11 +223,9 @@ static void renderLights(vector<light> lights) {
 static void renderScenes() {
 	vector<scene>::iterator i = scenes.begin();
 
-	vector<light> vl;
-	vl.push_back(new_light(GL_LIGHT0, 1, 2, 1, 1));
 	while (i != scenes.end()) {
 		renderPoints( (*i)->groups );
-		renderLights( vl );
+		renderLights( (*i)->lights );
 		i++;
 	}
 }
