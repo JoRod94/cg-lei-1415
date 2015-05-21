@@ -187,10 +187,11 @@ static void draw_group(group g) {
 		(g->transformations[i])->apply();
 	}
 
-	for (unsigned int i = 0; i < g->points.size(); i++) {
-        map<string, figure>::iterator p = files.find(g->points[i].first);
-		if (g->points[i].second != nullptr)
-			g->points[i].second->apply();
+	for (unsigned int i = 0; i < g->points->size(); i++) {
+		map<string, figure>::iterator p = files.find((*(g->points))[i].first);
+		Color* c = (*(g->points))[i].second;
+		if (c != nullptr)
+			c->apply();
 		if (p != files.end()) {
 			draw_vbo(p->second);
 		}
@@ -214,16 +215,17 @@ static void renderPoints(vector<group> groups) {
 	}
 }
 
-static void renderLights(vector<light> lights) {
-	
+static void renderLights(vector<light>* lights) {
+	for (int i = lights->size(); i > 0; i--)
+		glLightfv((*lights)[i]->lId, GL_POSITION, (*lights)[i]->pos);
 }
 
 static void renderScenes() {
 	for (vector<scene>::iterator it = scenes.begin();
 		it != scenes.end();
 		++it) {
+		renderLights((*it)->lights);
 		renderPoints( (*it)->groups );
-		renderLights( (*it)->lights );
 	}
 }
 
@@ -244,6 +246,19 @@ static void generate_vbos(){
 
 		//libertar memória
 	}
+}
+
+#define GETLIGHT(j) GL_LIGHT#j
+
+void create_lights() {
+	for (int i = 0; i < scenes.size(); i++)
+		for (int j = 0, size = scenes[i]->lights->size(); j < size; j++){
+			glLightfv(GL_LIGHT0+j, GL_AMBIENT, amb);
+			glLightfv(GL_LIGHT0+j, GL_DIFFUSE, diff);
+			glEnable(GL_LIGHT0+j);
+		}
+
+	glEnable(GL_LIGHTING);
 }
 
 static void changeSize(int w, int h) {
@@ -290,13 +305,12 @@ static void renderScene(void) {
 			0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f);
 	}
-	float pos[4] = { 1.0, 1.0, 1.0, 0.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, pos);
+	
 
 	glPolygonMode(GL_FRONT, mode);
 
-	renderScenes();
 	drawGrid();
+	renderScenes();
 
 	glutSwapBuffers();
 }
@@ -512,7 +526,6 @@ static void initGL(){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glPolygonMode(GL_FRONT, GL_FILL);
 
 	// pôr aqui a criação do menu
@@ -525,11 +538,7 @@ static void initGL(){
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
+	create_lights();
 
 	generate_vbos();
 }

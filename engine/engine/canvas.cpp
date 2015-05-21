@@ -7,27 +7,25 @@ using namespace std;
 scene new_scene(vector<group> groups, vector<light> lights) {
     scene s = (scene)calloc(1,sizeof(s_scene));
 	s->groups = groups;
-	s->lights = lights;
+	s->lights = new vector<light>(lights);
 	return s;
 }
 
 light new_empty_light() {
-    return (light)malloc(sizeof(struct s_light));
+    return (light)malloc( sizeof(struct s_light));
 }
 
-light new_light(LightType type, int x, int y, int z) {
+light new_light(GLenum lId, float* pos) {
     light l = new_empty_light();
+	l->pos = (float*)calloc(4,sizeof(float));
 
-    l->type = type;
-    l->x = x;
-    l->y = y;
-    l->z = z;
-
+    l->lId = lId;
+    memcpy(l->pos,pos,4*sizeof(float));
     return l;
 }
 
 group new_empty_group() {
-    return (group)calloc(1, sizeof(s_group));
+    return (group)calloc(sizeof(s_group), 1);
 }
 
 group new_group(vector<Transformation*> transformations, vector<pair<string, Color*> > points, vector<group> subgroups) {
@@ -35,7 +33,7 @@ group new_group(vector<Transformation*> transformations, vector<pair<string, Col
 
 	g->transformations = transformations;
 
-	g->points = points;
+	g->points = new vector<pair<string, Color*> >(points);
 
     g->subgroups = subgroups;
 

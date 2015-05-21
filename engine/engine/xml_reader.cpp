@@ -19,6 +19,7 @@ using namespace std;
 
 map<string, figure> m_files;
 int active_buffer = 0;
+int currLight = 0;
 
 void read_bin(string filename){
 	figure f = new_figure();
@@ -257,11 +258,10 @@ bool parse_light(tinyxml2::XMLElement* ls, light &ret) {
         return false;
     }
 
-    LightType type = strcmp( ls->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? LIGHT_POINT : LIGHT_VECTOR;
-    ret = new_light(type,
-            ls->FloatAttribute(_XML_LIGHT_X),
-            ls->FloatAttribute(_XML_LIGHT_Y),
-            ls->FloatAttribute(_XML_LIGHT_Z) );
+    float type = strcmp( ls->Attribute(_XML_LIGHT_TYPE), _XML_LIGHT_POINT ) == 0 ? 1.0f : 0.0f;
+	float pos[4] = { ls->FloatAttribute(_XML_LIGHT_X), ls->FloatAttribute(_XML_LIGHT_Y), ls->FloatAttribute(_XML_LIGHT_Z), type };
+    
+	ret = new_light((GL_LIGHT0 + currLight++), pos);
 
     return true;
 }

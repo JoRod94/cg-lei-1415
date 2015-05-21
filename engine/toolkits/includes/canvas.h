@@ -6,16 +6,13 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <GL/glut.h>
 
 using namespace std;
 
-enum LightType { LIGHT_POINT, LIGHT_VECTOR };
-
 typedef struct s_light {
-   LightType type;
-   int x;
-   int y;
-   int z;
+	GLenum lId;
+	float* pos;
 } *light;
 
 typedef struct s_figure {
@@ -30,12 +27,12 @@ typedef struct s_figure {
 
 typedef struct s_group {
 	vector<Transformation*> transformations;
-	vector<pair<string, Color*> > points;
+	vector<pair<string, Color*> >* points;
 	vector<struct s_group *> subgroups;
 } *group;
 
 typedef struct s_scene {
-    vector<light> lights;
+    vector<light>* lights;
     vector<group> groups;
 } *scene;
 
@@ -43,7 +40,7 @@ scene new_scene(vector<group> groups, vector<light> lights);
 
 light new_empty_light();
 
-light new_light(LightType type, int x, int y, int z);
+light new_light(GLenum lId, float* pos);
 
 group new_empty_group();
 
