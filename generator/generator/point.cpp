@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "point.h"
-
-
 #include <vector>
 
 using namespace std;

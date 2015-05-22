@@ -188,15 +188,22 @@ static void drawGrid(){
 	}
 }
 
+float norm(float d1,float d2)
+{
+	return (d1 <0 && d2 <0)?-(d1*d2):d1*d2;
+}
+
 static void draw_vbo(figure f){
 
 	//uncomment to see normals
-	//glBegin(GL_LINES);
-	//for (int i = 0; i < f->n_coords; i += 3){
-	//	glVertex3f(f->vertex[i], f->vertex[i + 1], f->vertex[i + 2]);
-	//	glVertex3f(f->vertex[i] + f->normal[i], f->vertex[i + 1] + f->normal[i + 1], f->vertex[i + 2] + f->normal[i + 3]);
-	//}
-	//glEnd();
+	/*glBegin(GL_LINES);
+	for (int i = 0; i < f->n_coords; i += 3){
+		glVertex3f(f->vertex[i], f->vertex[i + 1], f->vertex[i + 2]);
+		glVertex3f(	f->vertex[i] + norm(f->vertex[i],f->normal[i]),
+			f->vertex[i + 1] + norm(f->vertex[i + 1], f->normal[i + 1]),
+			f->vertex[i + 2] + norm(f->vertex[i+2], f->normal[i+2]));
+	}
+	glEnd();*/
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->vertex_buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);

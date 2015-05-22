@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "point.h"
 #include "patch.h"
+#include "vec3.h"
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -10,34 +11,46 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <map>
+#include "vertex.h"
 
 using namespace std;
 
+
 unsigned int lastInd = 0;
-vector<point> points;				//model template
-vector<point> normals;
-map<point,unsigned int> pMap;		//point-index dictionary
+vector<vertex> verts;				//model template
+vector<point> points;				//deprecated
+vector<point> normals;				//deprecated
+
+map<vertex, unsigned int> vMap;		//vertex-index dictionary
+map<point,unsigned int> pMap;		//deprecated
+
 vector<point> pOrder;				//model points
 vector<unsigned int> indices;		//model point indices
-vector<point> nOrder;				//model normals
+vector<vec3> nOrder;				//model normals -> now a vector
 
 //put_point default parameters
 void put_point(int vInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
+//put_vertex default parameters
+void put_vertex(vertex v, float angle, bool rotate);
+
 
 void create_file(const char* filename){
 	unsigned int pSize = 3 * pOrder.size();
 	unsigned int iSize = indices.size();
 	float *pCoords = (float*)malloc(pSize * sizeof(float));
-	float *nCoords = (float*)malloc(pSize * sizeof(float));
+	float *nCoords = (float*)malloc(2 * pSize * sizeof(float));
 
 
-	for (int j = 0, i = 0; j<pOrder.size(); j++) {
-		pCoords[i] = pOrder[j].x;
-		nCoords[i++] = nOrder[j].x;
-		pCoords[i] = pOrder[j].y;
-		nCoords[i++] = nOrder[j].y;
-		pCoords[i] = pOrder[j].z;
-		nCoords[i++] = nOrder[j].z;
+	for (int j = 0, i = 0, k = 0; j<pOrder.size(); j++) {
+		pCoords[i++] = pOrder[j].x;
+		nCoords[k++] = nOrder[j].x;
+		nCoords[k++] = nOrder[j].x;
+		pCoords[i++] = pOrder[j].y;
+		nCoords[k++] = nOrder[j].y;
+		nCoords[k++] = nOrder[j].y;
+		pCoords[i++] = pOrder[j].z;
+		nCoords[k++] = nOrder[j].z;
+		nCoords[k++] = nOrder[j].z;
 	}
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
@@ -45,7 +58,7 @@ void create_file(const char* filename){
 	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&iSize, sizeof(unsigned int));
 	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
-	newFile.write((char *)&nCoords[0], pSize*sizeof(float));
+	newFile.write((char *)&nCoords[0], 2*pSize*sizeof(float));
 }
 
 point rotate_point(point p, float angle){
@@ -54,25 +67,42 @@ point rotate_point(point p, float angle){
 	return p;
 }
 
-void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
-	map<point, unsigned int>::iterator it;
-	point p = point(x, y, z);
-	point n = point(normals[vInd].x, normals[vInd].y, normals[vInd].x);
+//void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
+//	map<point, unsigned int>::iterator it;
+//	point p = point(x, y, z);
+//	point n = point(normals[vInd].x, normals[vInd].y, normals[vInd].x);
+//
+//	if (rotate){
+//		p = rotate_point(p, angle);
+//		n = rotate_point(n, angle);
+//	}
+//
+//
+//	if ((it = pMap.find(p)) != pMap.end())
+//		indices.push_back(it->second);
+//	else{
+//		pOrder.push_back(p);
+//		nOrder.push_back(n);
+//		pMap[p] = lastInd;
+//		indices.push_back(lastInd++);
+//		cout << ">>> " << n.x << " " << n.y << " " << n.z << " " << endl;
+//	}
+//
+//}
 
-	if (rotate){
-		p = rotate_point(p, angle);
-		n = rotate_point(n, angle);
-	}
+void put_vertex(vertex v, float angle, bool rotate){
+	map<vertex, unsigned int>::iterator it;
 
+	if (rotate)
+		v.rotate(angle);
 
-	if ((it = pMap.find(p)) != pMap.end())
+	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
 	else{
-		pOrder.push_back(p);
-		nOrder.push_back(n);
-		pMap[p] = lastInd;
+		pOrder.push_back(v.p);
+		nOrder.push_back(v.n);
+		vMap[v] = lastInd;
 		indices.push_back(lastInd++);
-		cout << ">>> " << n.x << " " << n.y << " " << n.z << " " << endl;
 	}
 
 }
@@ -280,127 +310,127 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 
 
 
-void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
-	float incrL = len / slices;
-	float incrH = hei / stacks;
-	float incrW = wid / slices;
-	float startingL = -len / 2, l = startingL;
-	float startingH = -hei / 2, h = startingH;
-	float startingW = -wid / 2, w = startingW;
-	int i;
-
-	for (i = 0; i < slices; i++){
-		points.push_back(point(l, h, 0));
-		l += incrL;
-	}
-	for (i = 0; i < stacks; i++){
-		points.push_back(point(l, h, 0));
-		h += incrH;
-	}
-	for (i = 0; i < slices; i++){
-		points.push_back(point(l, h, 0));
-		l -= incrL;
-	}
-	for (i = 0; i < stacks; i++){
-		points.push_back(point(l, h, 0));
-		h -= incrH;
-	}
-
-}
-
-
-void completeFace(float len, float hei, float position, int slices, int stacks){
-	float incrL = len / slices;
-	float incrH = hei / stacks;
-	float startingL = -len / 2, l = startingL;
-	float startingH = -hei / 2, h = startingH;
-
-	for (int j = 0; j < stacks; j++){
-		for (int i = 0; i < slices; i++){
-			if (position < 0){
-				put_point(i, l, h, position);
-				put_point(i, l, h + incrH, position);
-				put_point(i, l + incrL, h + incrH, position);
-				put_point(i, l, h, position);
-				put_point(i, l + incrL, h + incrH, position);
-				put_point(i, l + incrL, h, position);
-			}
-			else{
-				put_point(i, l, h, position);
-				put_point(i, l + incrL, h + incrH, position);
-				put_point(i, l, h + incrH, position);
-
-				put_point(i, l, h, position);
-				put_point(i, l + incrL, h, position);
-				put_point(i, l + incrL, h + incrH, position);
-			}
-			l += incrL;
-		}
-		h += incrH;
-		l = startingL;
-	}
-}
-
-
-
-
-void pointExtender(float len, float wid, float hei, int stacks, int slices){
-	int numpts = (stacks + 1)*(slices + 1) - (stacks - 1) * (slices - 1);
-	float incrW = wid / slices;
-	float startingW = -wid / 2;
-	float w = startingW;
-	int j;
-
-	completeFace(len, hei, w, slices, stacks);
-	for (int i = 0; i < slices; i++){
-		for (j = 0; j < numpts - 1; j++){
-			put_point(i, points[j].x, points[j].y, w);
-			put_point(i, points[j + 1].x, points[j + 1].y, w);
-			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
-
-			put_point(i, points[j].x, points[j].y, w);
-			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
-			put_point(i, points[j].x, points[j].y, w + incrW);
-
-		}
-		put_point(i, points[j].x, points[j].y, w);
-		put_point(i, points[0].x, points[0].y, w);
-		put_point(i, points[0].x, points[0].y, w + incrW);
-
-		put_point(i, points[j].x, points[j].y, w);
-		put_point(i, points[0].x, points[0].y, w + incrW);
-		put_point(i, points[j].x, points[j].y, w + incrW);
-
-		w += incrW;
-	}
-	completeFace(len, hei, w, slices, stacks);
-}
-
-
-void create_plane(float length, float width, int slices, int stacks){
-	getOuterPoints(length, 0, width, stacks, slices);
-	completeFace(length, width, 0, slices, stacks);
-}
-
-void create_parallelepiped(float length, float width, float height, int slices, int stacks){
-	getOuterPoints(length, width, height, stacks, slices);
-	pointExtender(length, width, height, stacks, slices);
-}
+//void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
+//	float incrL = len / slices;
+//	float incrH = hei / stacks;
+//	float incrW = wid / slices;
+//	float startingL = -len / 2, l = startingL;
+//	float startingH = -hei / 2, h = startingH;
+//	float startingW = -wid / 2, w = startingW;
+//	int i;
+//
+//	for (i = 0; i < slices; i++){
+//		points.push_back(point(l, h, 0));
+//		l += incrL;
+//	}
+//	for (i = 0; i < stacks; i++){
+//		points.push_back(point(l, h, 0));
+//		h += incrH;
+//	}
+//	for (i = 0; i < slices; i++){
+//		points.push_back(point(l, h, 0));
+//		l -= incrL;
+//	}
+//	for (i = 0; i < stacks; i++){
+//		points.push_back(point(l, h, 0));
+//		h -= incrH;
+//	}
+//
+//}
+//
+//
+//void completeFace(float len, float hei, float position, int slices, int stacks){
+//	float incrL = len / slices;
+//	float incrH = hei / stacks;
+//	float startingL = -len / 2, l = startingL;
+//	float startingH = -hei / 2, h = startingH;
+//
+//	for (int j = 0; j < stacks; j++){
+//		for (int i = 0; i < slices; i++){
+//			if (position < 0){
+//				put_point(i, l, h, position);
+//				put_point(i, l, h + incrH, position);
+//				put_point(i, l + incrL, h + incrH, position);
+//				put_point(i, l, h, position);
+//				put_point(i, l + incrL, h + incrH, position);
+//				put_point(i, l + incrL, h, position);
+//			}
+//			else{
+//				put_point(i, l, h, position);
+//				put_point(i, l + incrL, h + incrH, position);
+//				put_point(i, l, h + incrH, position);
+//
+//				put_point(i, l, h, position);
+//				put_point(i, l + incrL, h, position);
+//				put_point(i, l + incrL, h + incrH, position);
+//			}
+//			l += incrL;
+//		}
+//		h += incrH;
+//		l = startingL;
+//	}
+//}
+//
+//
+//
+//
+//void pointExtender(float len, float wid, float hei, int stacks, int slices){
+//	int numpts = (stacks + 1)*(slices + 1) - (stacks - 1) * (slices - 1);
+//	float incrW = wid / slices;
+//	float startingW = -wid / 2;
+//	float w = startingW;
+//	int j;
+//
+//	completeFace(len, hei, w, slices, stacks);
+//	for (int i = 0; i < slices; i++){
+//		for (j = 0; j < numpts - 1; j++){
+//			put_point(i, points[j].x, points[j].y, w);
+//			put_point(i, points[j + 1].x, points[j + 1].y, w);
+//			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
+//
+//			put_point(i, points[j].x, points[j].y, w);
+//			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
+//			put_point(i, points[j].x, points[j].y, w + incrW);
+//
+//		}
+//		put_point(i, points[j].x, points[j].y, w);
+//		put_point(i, points[0].x, points[0].y, w);
+//		put_point(i, points[0].x, points[0].y, w + incrW);
+//
+//		put_point(i, points[j].x, points[j].y, w);
+//		put_point(i, points[0].x, points[0].y, w + incrW);
+//		put_point(i, points[j].x, points[j].y, w + incrW);
+//
+//		w += incrW;
+//	}
+//	completeFace(len, hei, w, slices, stacks);
+//}
+//
+//
+//void create_plane(float length, float width, int slices, int stacks){
+//	getOuterPoints(length, 0, width, stacks, slices);
+//	completeFace(length, width, 0, slices, stacks);
+//}
+//
+//void create_parallelepiped(float length, float width, float height, int slices, int stacks){
+//	getOuterPoints(length, width, height, stacks, slices);
+//	pointExtender(length, width, height, stacks, slices);
+//}
 
 //Rotates model template to create complete model
-void point_rotator(float slices, float layers){
+void vertex_rotator(float slices, float layers){
 	float alpha = (float)M_PI/2.0f;
 	float aInc = (2.0f * (float)M_PI) / slices;
 
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
-			put_point(j, points[j].x, points[j].y, points[j].x, alpha, true);
-			put_point(j+1, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
-			put_point(j, points[j].x, points[j].y, points[j].x, (alpha + aInc), true);
+			put_vertex(verts[j], alpha, true);
+			put_vertex(verts[j + 1], alpha, true);
+			put_vertex(verts[j], (alpha + aInc), true);
 
-			put_point(j, points[j].x, points[j].y, points[j].x, (alpha + aInc), true); 
-			put_point(j+1, points[j + 1].x, points[j + 1].y, points[j + 1].x, alpha, true);
-			put_point(j+1, points[j + 1].x, points[j + 1].y, points[j + 1].x, (alpha + aInc), true);
+			put_vertex(verts[j], (alpha + aInc), true); 
+			put_vertex(verts[j + 1], alpha, true);
+			put_vertex(verts[j + 1], (alpha + aInc), true);
 		}
 		alpha += aInc;
 	}
@@ -411,15 +441,14 @@ void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = M_PI / layers;
 
-	for (int i = 0; i < layers; i++, beta += bInc){
-		points.push_back(point(radius * sin(beta), radius * cos(beta), 0));
-		normals.push_back(point(sin(beta), cos(beta), 0));
-	}
+	for (int i = 0; i < layers; i++, beta += bInc)
+		verts.push_back	(vertex(point(radius * sin(beta), radius * cos(beta), 0),
+								vec3(sin(beta), cos(beta), 0)));
 
-	points.push_back(point(0,-radius, 0));
-	normals.push_back(point(0,-1,0));
+	verts.push_back(vertex(	point(0, -radius, 0),
+							vec3(0, -1, 0)));
 
-	point_rotator(slices, layers);
+	vertex_rotator(slices, layers);
 }
 
 void create_cone(float radius, float height, float slices, float layers){
@@ -435,7 +464,7 @@ void create_cone(float radius, float height, float slices, float layers){
 	points.push_back(point(0, 0, 0));
 	normals.push_back(point(0, -1, 0));
 
-	point_rotator(slices, layers + 1);
+	vertex_rotator(slices, layers + 1);
 }
 
 void create_torus(float or, float ir, float slices, float layers){
@@ -447,7 +476,7 @@ void create_torus(float or, float ir, float slices, float layers){
 		normals.push_back(point(sin(beta),cos(beta),0));
 	}
 
-	point_rotator(slices, layers);
+	vertex_rotator(slices, layers);
 }
 
 void create_ring(float or, float ir, float slices){
@@ -456,7 +485,7 @@ void create_ring(float or, float ir, float slices){
 	points.push_back(point(or, 0, 0));
 	normals.push_back(point(0, 1, 0));
 
-	point_rotator(slices, 1);
+	vertex_rotator(slices, 1);
 
 	points.clear();
 	normals.clear();
@@ -466,7 +495,7 @@ void create_ring(float or, float ir, float slices){
 	points.push_back(point(ir+0.001, 0, ir+0.001));
 	normals.push_back(point(0, -1, 0));
 
-	point_rotator(slices, 1);
+	vertex_rotator(slices, 1);
 }
 
 void create_cylinder(float radius, float height, float slices, float layers){
@@ -482,7 +511,7 @@ void create_cylinder(float radius, float height, float slices, float layers){
 	points.push_back(point(0, currH - hDec, 0));
 	normals.push_back(point(0, -1, 0));
 
-	point_rotator(slices, layers + 2);
+	vertex_rotator(slices, layers + 2);
 }
 
 void rand_displace(int aSize, int lastSize, float rD, float rA){
@@ -558,7 +587,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Plane..." << endl;
-		create_plane(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
+		//create_plane(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
 	else if (strcmp(argv[1], "bezier") == 0){
 		if (argc != 5){
@@ -590,7 +619,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Box..." << endl;
-		create_parallelepiped(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]));
+		//create_parallelepiped(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]));
 	}
 	else if (strcmp(argv[1], "cone") == 0){
 		if (argc != 7){

@@ -1,10 +1,20 @@
 <cena>
 	<luzes>
-		<luz tipo="POINT" posX="0" posY="10" posZ="0" />
+		<luz tipo="POINT" posX="0" posY="0" posZ="0" />
 	</luzes>
   	<grupo>
+  		<rotacao tempo="5" eixoY="1" />
         <modelos>
-            <modelo ficheiro="..\Release\sphereLig.3d" diffR="0.8" diffG="0.8" diffB="0.15" />
+            <modelo ficheiro="..\Release\sphereLig.3d" diffR="0.8" diffG="0.1" diffB="0.1" />
         </modelos>
+        <grupo>
+        	<rotacao tempo="5" eixoX="1" eixoY="1" eixoZ="1"/>
+	        <grupo>
+		    	<translacao X="3"/>
+		        <modelos>
+		            <modelo ficheiro="..\Release\sphereLig.3d" diffR="0.2" diffG="0.8" diffB="0.2" />
+		        </modelos>
+	   		</grupo>
+   		</grupo>
     </grupo>
 </cena>
