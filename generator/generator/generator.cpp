@@ -31,34 +31,34 @@ vector<vec3> nOrder;				//model normals -> now a vector
 //put_point default parameters
 void put_point(int vInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
 //put_vertex default parameters
-void put_vertex(vertex v, float angle, bool rotate);
+void put_vertex(int nInd, float x, float y, float z, float angle, bool rotate);
 
 
 void create_file(const char* filename){
 	unsigned int pSize = 3 * pOrder.size();
 	unsigned int iSize = indices.size();
 	float *pCoords = (float*)malloc(pSize * sizeof(float));
-	float *nCoords = (float*)malloc(2 * pSize * sizeof(float));
+	float *nCoords = (float*)malloc(pSize * sizeof(float));
 
 
 	for (int j = 0, i = 0, k = 0; j<pOrder.size(); j++) {
-		pCoords[i++] = pOrder[j].x;
-		nCoords[k++] = nOrder[j].x;
-		nCoords[k++] = nOrder[j].x;
-		pCoords[i++] = pOrder[j].y;
-		nCoords[k++] = nOrder[j].y;
-		nCoords[k++] = nOrder[j].y;
-		pCoords[i++] = pOrder[j].z;
-		nCoords[k++] = nOrder[j].z;
-		nCoords[k++] = nOrder[j].z;
+		pCoords[i] = pOrder[j].x;
+		nCoords[i++] = nOrder[j].x;
+		pCoords[i] = pOrder[j].y;
+		nCoords[i++] = nOrder[j].y;
+		pCoords[i] = pOrder[j].z;
+		nCoords[i++] = nOrder[j].z;
 	}
+
+	//for (int i = 0; i < iSize; i++)
+	//	cout << indices[i] << endl;
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
 	newFile.write((char *)&pSize, sizeof(unsigned int));
 	newFile.write((char *)&pCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&iSize, sizeof(unsigned int));
 	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
-	newFile.write((char *)&nCoords[0], 2*pSize*sizeof(float));
+	newFile.write((char *)&nCoords[0], pSize*sizeof(float));
 }
 
 point rotate_point(point p, float angle){
@@ -90,11 +90,20 @@ point rotate_point(point p, float angle){
 //
 //}
 
-void put_vertex(vertex v, float angle, bool rotate){
+void put_vertex(int vInd, float angle, bool rotate){
 	map<vertex, unsigned int>::iterator it;
+	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.x);
+	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.x);
 
+	vertex v = vertex(p,n);
+
+	//cout << "v.p: " << v.p.x << "," << v.p.y << "," << v.p.z << endl;
+	//cout << "v.n: " << v.n.x << "," << v.n.y << "," << v.n.z << endl;
 	if (rotate)
 		v.rotate(angle);
+	//cout << "After rotate" << endl;
+	//cout << "v.p: " << v.p.x << "," << v.p.y << "," << v.p.z << endl;
+	//cout << "v.n: " << v.n.x << "," << v.n.y << "," << v.n.z << endl;
 
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
@@ -424,13 +433,13 @@ void vertex_rotator(float slices, float layers){
 
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
-			put_vertex(verts[j], alpha, true);
-			put_vertex(verts[j + 1], alpha, true);
-			put_vertex(verts[j], (alpha + aInc), true);
+			put_vertex(j, alpha, true);
+			put_vertex(j + 1, alpha, true);
+			put_vertex(j, (alpha + aInc), true);
 
-			put_vertex(verts[j], (alpha + aInc), true); 
-			put_vertex(verts[j + 1], alpha, true);
-			put_vertex(verts[j + 1], (alpha + aInc), true);
+			put_vertex(j, (alpha + aInc), true); 
+			put_vertex(j + 1, alpha, true);
+			put_vertex(j + 1, (alpha + aInc), true);
 		}
 		alpha += aInc;
 	}
@@ -441,9 +450,15 @@ void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = M_PI / layers;
 
-	for (int i = 0; i < layers; i++, beta += bInc)
-		verts.push_back	(vertex(point(radius * sin(beta), radius * cos(beta), 0),
-								vec3(sin(beta), cos(beta), 0)));
+	for (int i = 0; i < layers; i++, beta += bInc){
+		point p = (point(radius * sin(beta), radius * cos(beta), 0));
+		vec3 n = vec3(3 * sin(beta), 3 * cos(beta), 0);
+		cout << n.length() << endl;
+		n.normalize();
+		cout << n.length() << endl;
+		cout << n.x + n.y + n.z << endl;
+		verts.push_back(vertex(p, n));
+	}
 
 	verts.push_back(vertex(	point(0, -radius, 0),
 							vec3(0, -1, 0)));
@@ -456,15 +471,17 @@ void create_cone(float radius, float height, float slices, float layers){
 	float rInc = radius / layers, hDec = height / layers;
 	float normalAngle = (atan(height/radius) * (180/M_PI));
 
-	for (int i = 0; i < (layers + 1); i++, currR += rInc, currH -= hDec){
-		points.push_back(point(currR, currH, 0));
-		normals.push_back(point(cos(normalAngle), sin(normalAngle), 0));
-	}
+	for (int i = 0; i < (layers + 1); i++, currR += rInc, currH -= hDec)
+		verts.push_back(vertex(	point(currR, currH, 0),
+								vec3(cos(normalAngle), sin(normalAngle), 0)));
 
-	points.push_back(point(0, 0, 0));
-	normals.push_back(point(0, -1, 0));
 
-	vertex_rotator(slices, layers + 1);
+	verts.push_back(vertex(	point(radius, 0, 0),
+							vec3(0, -1, 0)));
+	verts.push_back(vertex(	point(0, 0, 0),
+							vec3(0, -1, 0)));
+
+	vertex_rotator(slices, layers + 2);
 }
 
 void create_torus(float or, float ir, float slices, float layers){

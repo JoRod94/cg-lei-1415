@@ -46,8 +46,8 @@ void read_bin(string filename){
 	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
 	i.read((char *)&(f->indices[0]), f->n_ind*sizeof(unsigned int));
 
-	f->normal = (float *)malloc(2*(f->n_coords)*sizeof(float));
-	i.read((char *)f->normal , 2*f->n_coords*sizeof(float));
+	f->normal = (float *)malloc((f->n_coords)*sizeof(float));
+	i.read((char *)f->normal , f->n_coords*sizeof(float));
 
 	f->vertex_buffer_nr = active_buffer++;
 	f->normal_buffer_nr = active_buffer++;
