@@ -44,6 +44,7 @@ float gridSize = 50, gridScale = 1;
 bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, drawXY, drawZY
 float fps = 0.0f;
 bool showFPS = false;
+bool shouldDrawNormals = false;
 
 // Time variables
 int globalTime = 0;
@@ -194,15 +195,16 @@ float fix_sign(float d1,float d2){
 
 static void draw_vbo(figure f){
 
-	//uncomment to see normals
-	//glBegin(GL_LINES);
-	//for (int i = 0; i < f->n_coords; i += 3){
-	//	glVertex3f(f->vertex[i], f->vertex[i + 1], f->vertex[i + 2]);
-	//	glVertex3f(	f->vertex[i] + fix_sign(f->vertex[i],f->normal[i]),
-	//		f->vertex[i + 1] + fix_sign(f->vertex[i + 1], f->normal[i + 1]),
-	//		f->vertex[i + 2] + fix_sign(f->vertex[i+2], f->normal[i+2]));
-	//}
-	//glEnd();
+	if (shouldDrawNormals){
+		glBegin(GL_LINES);
+		for (int i = 0; i < f->n_coords; i += 3){
+			glVertex3f(f->vertex[i], f->vertex[i + 1], f->vertex[i + 2]);
+			glVertex3f(f->vertex[i] + fix_sign(f->vertex[i], f->normal[i]),
+				f->vertex[i + 1] + fix_sign(f->vertex[i + 1], f->normal[i + 1]),
+				f->vertex[i + 2] + fix_sign(f->vertex[i + 2], f->normal[i + 2]));
+		}
+		glEnd();
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->vertex_buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -460,6 +462,32 @@ static void mouseMotion(int x, int y) {
 	yOri = y;
 }
 
+static void reset_engine() {
+	glDisable(GL_LIGHTING);
+
+	for (int i = 0; i < scenes.size(); i++) {
+		vector<light> vl = scenes[i]->lights;
+		int size = vl.size();
+		for (int j = 0; j < size; j++){
+			glDisable(vl[j]->lId);
+		}
+	}
+
+	scenes.clear();
+	files.clear();
+}
+
+static void reload_engine() {
+	pair<vector<scene>, map<string, figure> > read_values = reset_and_read_xml(xmlName);
+
+	scenes = read_values.first;
+	files = read_values.second;
+
+	create_lights();
+	generate_vbos();
+
+	glutPostRedisplay();
+}
 
 static void polygonModeHandler(int id_op){
 	switch (id_op){
@@ -497,64 +525,43 @@ static void gridModeHandler(int id_op){
 	}
 }
 
-static void reset_engine() {
-	glDisable(GL_LIGHTING);
+static void toggleHandler(int id_op){
+	switch (id_op) {
+	case 1:
+		showFPS = !showFPS;
+		glutSetWindowTitle("Motor 3D");
+		break;
 
-	for (int i = 0; i < scenes.size(); i++) {
-		vector<light> vl = scenes[i]->lights;
-		int size = vl.size();
-		for (int j = 0; j < size; j++){
-			glDisable(vl[j]->lId);
+	case 2:
+		shouldDrawNormals = !shouldDrawNormals;
+		break;
+
+	case 3:
+		for (int i = 0; i < scenes.size(); i++) {
+			vector<group> groups = scenes[i]->groups;
+			for (int j = 0; j < groups.size(); j++) {
+				vector<Transformation*> vt = groups[j]->transformations;
+				for (int w = 0; w < vt.size(); w++) {
+					if (Translation* t = dynamic_cast<Translation*>(vt[w]))
+						t->toggle_line();
+				}
+			}
 		}
+
+		break;
 	}
-
-	scenes.clear();
-	files.clear();
-}
-
-static void reload_engine() {
-	pair<vector<scene>, map<string, figure> > read_values = reset_and_read_xml(xmlName);
-
-	scenes = read_values.first;
-	files = read_values.second;
-
-	create_lights();
-	generate_vbos();
-
-	glutPostRedisplay();
 }
 
 static void mainMenuHandler(int id_op) {
-	switch (id_op) {
-	case 3:
-			showFPS = !showFPS;
-			glutSetWindowTitle("Motor 3D");
-			break;
-
-	case 4:
-			for (int i = 0; i < scenes.size(); i++) {
-				vector<group> groups = scenes[i]->groups;
-				for (int j = 0; j < groups.size(); j++) {
-					vector<Transformation*> vt = groups[j]->transformations;
-					for (int w = 0; w < vt.size(); w++) {
-						if (Translation* t = dynamic_cast<Translation*>(vt[w]))
-							t->toggle_line();
-					}
-				}
-			}
-			
-			break;
-
-	case 5:
-			reset_engine();
-			reload_engine();
-			break;
+	if (id_op == 5){
+		reset_engine();
+		reload_engine();
 	}
 
 }
 
 static void createMenu(){
-	int polygonMode, gridMode, mainMenu;
+	int polygonMode, gridMode, toggle, mainMenu;
 
 	polygonMode = glutCreateMenu(polygonModeHandler);
 	glutAddMenuEntry("Line Mode", 1);
@@ -567,12 +574,16 @@ static void createMenu(){
 	glutAddMenuEntry("X-Y Grid", 3);
 	glutAddMenuEntry("Z-Y Grid", 4);
 
+	toggle = glutCreateMenu(toggleHandler);
+	glutAddMenuEntry("Toggle FPS Counter", 1);
+	glutAddMenuEntry("Toggle Model Normals", 2);
+	glutAddMenuEntry("Toggle Curve Lines", 3);
+
 	mainMenu = glutCreateMenu(mainMenuHandler);
 	glutAddSubMenu("Polygon Mode", polygonMode);
 	glutAddSubMenu("Grid Mode", gridMode);
-	glutAddMenuEntry("Toggle FPS Counter", 3);
-	glutAddMenuEntry("Toggle Curve Lines", 4);
-	glutAddMenuEntry("Reload XML", 5);
+	glutAddSubMenu("Toggle", toggle);
+	glutAddMenuEntry("Reload XML", 4);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
