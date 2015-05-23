@@ -190,7 +190,7 @@ static void drawGrid(){
 }
 
 float fix_sign(float d1,float d2){
-		return ((d1 < 0) == (d2 < 0))?d2:-(d2);
+		return ((d1 <= 0) == (d2 <= 0))?d2:-(d2);
 }
 
 static void draw_vbo(figure f){
@@ -280,8 +280,6 @@ static void generate_vbos(){
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->normal_buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->normal, GL_STATIC_DRAW);
-
-		//libertar memória
 	}
 }
 

@@ -31,7 +31,7 @@ vector<vec3> nOrder;				//model normals -> now a vector
 //put_point default parameters
 void put_point(int vInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
 //put_vertex default parameters
-void put_vertex(int nInd, float x, float y, float z, float angle, bool rotate);
+void put_vertex(int nInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
 
 
 void create_file(const char* filename){
@@ -97,13 +97,9 @@ void put_vertex(int vInd, float angle, bool rotate){
 
 	vertex v = vertex(p,n);
 
-	//cout << "v.p: " << v.p.x << "," << v.p.y << "," << v.p.z << endl;
-	//cout << "v.n: " << v.n.x << "," << v.n.y << "," << v.n.z << endl;
+
 	if (rotate)
 		v.rotate(angle);
-	//cout << "After rotate" << endl;
-	//cout << "v.p: " << v.p.x << "," << v.p.y << "," << v.p.z << endl;
-	//cout << "v.n: " << v.n.x << "," << v.n.y << "," << v.n.z << endl;
 
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
@@ -450,15 +446,9 @@ void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = M_PI / layers;
 
-	for (int i = 0; i < layers; i++, beta += bInc){
-		point p = (point(radius * sin(beta), radius * cos(beta), 0));
-		vec3 n = vec3(3 * sin(beta), 3 * cos(beta), 0);
-		cout << n.length() << endl;
-		n.normalize();
-		cout << n.length() << endl;
-		cout << n.x + n.y + n.z << endl;
-		verts.push_back(vertex(p, n));
-	}
+	for (int i = 0; i < layers; i++, beta += bInc)
+		verts.push_back(vertex(	point(radius * sin(beta), radius * cos(beta), 0),
+								vec3(sin(beta), cos(beta), 0)));
 
 	verts.push_back(vertex(	point(0, -radius, 0),
 							vec3(0, -1, 0)));
@@ -488,29 +478,27 @@ void create_torus(float or, float ir, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = (2 * (float)M_PI) / layers;
 
-	for (int i = 0; i < (layers + 1); i++, beta += bInc){
-		points.push_back(point((or + ir) * sin(beta), ir * cos(beta), 0));
-		normals.push_back(point(sin(beta),cos(beta),0));
+	for (int i = 0; i < (layers + 1); i++, beta += bInc)
+	{
+		point p = point(or + (ir * sin(beta)), ir * cos(beta), 0);
+		verts.push_back(vertex(p,
+			vec3(sin(beta), cos(beta), 0)));
+		cout << p.x << ", " << p.y << ", " << p.z << endl;
 	}
 
 	vertex_rotator(slices, layers);
 }
 
 void create_ring(float or, float ir, float slices){
-	points.push_back(point(ir, 0, 0));
-	normals.push_back(point(0,1,0));
-	points.push_back(point(or, 0, 0));
-	normals.push_back(point(0, 1, 0));
+	verts.push_back(vertex(point(ir, 0, 0),vec3(0, 1, 0)));
+	verts.push_back(vertex(point(or, 0, 0), vec3(0, 1, 0)));
 
 	vertex_rotator(slices, 1);
 
-	points.clear();
-	normals.clear();
+	verts.clear();
 
-	points.push_back(point(or+0.001, 0, or+0.001));
-	normals.push_back(point(0, -1, 0));
-	points.push_back(point(ir+0.001, 0, ir+0.001));
-	normals.push_back(point(0, -1, 0));
+	verts.push_back(vertex(point(or, 0.0001, 0), vec3(0, -1, 0)));
+	verts.push_back(vertex(point(ir, 0.0001, 0), vec3(0, -1, 0)));
 
 	vertex_rotator(slices, 1);
 }
@@ -519,16 +507,16 @@ void create_cylinder(float radius, float height, float slices, float layers){
 	float currH = height / 2;
 	float hDec = height / layers;
 
-	points.push_back(point(0, currH, 0));
-	normals.push_back(point(0, 1, 0));
-	for (int i = 0; i < (layers + 1); i++, currH -= hDec){
-		points.push_back(point(radius, currH, 0));
-		normals.push_back(point(1,0,0));
-	}
-	points.push_back(point(0, currH - hDec, 0));
-	normals.push_back(point(0, -1, 0));
+	verts.push_back(vertex(point(0, currH, 0), vec3(0, 1, 0)));
+	verts.push_back(vertex(point(radius, currH, 0), vec3(0, 1, 0)));
 
-	vertex_rotator(slices, layers + 2);
+	for (int i = 0; i < (layers + 1); i++, currH -= hDec)
+		verts.push_back(vertex(point(radius, currH, 0), vec3(1, 0, 0)));
+
+	verts.push_back(vertex(point(radius, currH+hDec, 0), vec3(0, -1, 0)));
+	verts.push_back(vertex(point(0, currH+hDec, 0), vec3(0, -1, 0)));
+
+	vertex_rotator(slices, layers + 4);
 }
 
 void rand_displace(int aSize, int lastSize, float rD, float rA){
