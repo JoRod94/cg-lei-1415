@@ -551,7 +551,7 @@ static void toggleHandler(int id_op){
 }
 
 static void mainMenuHandler(int id_op) {
-	if (id_op == 5){
+	if (id_op == 4){
 		reset_engine();
 		reload_engine();
 	}
