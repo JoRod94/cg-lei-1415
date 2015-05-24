@@ -31,7 +31,7 @@ vector<vec3> nOrder;				//model normals -> now a vector
 //put_point default parameters
 void put_point(int vInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
 //put_vertex default parameters
-void put_vertex(int nInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
+void put_vertex(int vInd, float angle, bool rotate);
 
 
 void create_file(const char* filename){
@@ -92,8 +92,8 @@ point rotate_point(point p, float angle){
 
 void put_vertex(int vInd, float angle, bool rotate){
 	map<vertex, unsigned int>::iterator it;
-	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.x);
-	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.x);
+	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.z);
+	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.z);
 
 	vertex v = vertex(p,n);
 
