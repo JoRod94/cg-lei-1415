@@ -1,20 +1,12 @@
 <cena>
 	<luzes>
-		<luz tipo="POINT" posX="0" posY="0" posZ="0" />
+		<luz tipo="VECTOR" posX="1" posY="1" posZ="1" />
 	</luzes>
-  	<grupo>
-  		<rotacao tempo="5" eixoY="1" />
+    <grupo>
+    	<rotacao tempo="20" eixoY="1" eixoX="0.5"/>
         <modelos>
-            <modelo ficheiro="..\Release\sphereLig.3d" diffR="0.8" diffG="0.1" diffB="0.1" />
+            <modelo ficheiro="..\Release\teapot.3d" diffR="0.2" diffG="0.2" diffB="0.8" />
         </modelos>
-        <grupo>
-        	<rotacao tempo="5" eixoX="1" eixoY="1" eixoZ="1"/>
-	        <grupo>
-		    	<translacao X="3"/>
-		        <modelos>
-		            <modelo ficheiro="..\Release\sphereLig.3d" diffR="0.2" diffG="0.8" diffB="0.2" />
-		        </modelos>
-	   		</grupo>
-   		</grupo>
-    </grupo>
+	</grupo>
 </cena>
+
