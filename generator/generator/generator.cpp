@@ -168,7 +168,7 @@ point cubic_bezier_zz(float t, point* p) {
 
 	return pf;
 }
-
+/*
 vec3 bezier_tangent_yy(float t, point* p) {
 	vec3 v;
 
@@ -194,9 +194,30 @@ vec3 bezier_tangent_yy(float t, point* p) {
 		3 * pow(t, 2) * p[3].z;
 
 	return v;
+}*/
+
+vec3 bezier_tangent_yy(float t, point *p) {
+	vec3 v;
+
+	v.x = -3 * pow(1 - t, 2) * p[0].x +
+		(9 * pow(t, 2) - 12 * t + 3) * p[1].x +
+		(6 * t - 9 * pow(t, 2)) * p[2].x +
+		3 * pow(t, 2) * p[3].x;
+
+	v.y = -3 * pow(1 - t, 2) * p[0].y +
+		(9 * pow(t, 2) - 12 * t + 3) * p[1].y +
+		(6 * t - 9 * pow(t, 2)) * p[2].y +
+		3 * pow(t, 2) * p[3].y;
+
+	v.z = -3 * pow(1 - t, 2) * p[0].z +
+		(9 * pow(t, 2) - 12 * t + 3) * p[1].z +
+		(6 * t - 9 * pow(t, 2)) * p[2].z +
+		3 * pow(t, 2) * p[3].z;
+
+	return v;
 }
 
-vec3 bezier_tangent_zz(float t, point *p) {
+/*vec3 bezier_tangent_zz(float t, point *p) {
 	vec3 v;
 
 	v.x = -3 * pow(1 - t, 2) * p[0].x +
@@ -221,7 +242,29 @@ vec3 bezier_tangent_zz(float t, point *p) {
 		3 * pow(t, 2) * p[3].y;
 
 	return v;
+}*/
+
+vec3 bezier_tangent_zz(float t, point *p) {
+	vec3 v;
+
+	v.x = -3 * pow(1 - t, 2) * p[0].x +
+		(9 * pow(t, 2) - 12 * t + 3) * p[1].x +
+		(6 * t - 9 * pow(t, 2)) * p[2].x +
+		3 * pow(t, 2) * p[3].x;
+
+	v.z = -3 * pow(1 - t, 2) * p[0].y +
+		(9 * pow(t, 2) - 12 * t + 3) * p[1].y +
+		(6 * t - 9 * pow(t, 2)) * p[2].y +
+		3 * pow(t, 2) * p[3].y;
+
+	v.y = -3 * pow(1 - t, 2) * p[0].z +
+		(9 * pow(t, 2) - 12 * t + 3) * p[1].z +
+		(6 * t - 9 * pow(t, 2)) * p[2].z +
+		3 * pow(t, 2) * p[3].z;
+
+	return v;
 }
+
 
 vertex interpolate_yy(float u, float v, Patch p) {
 	int j = 0, w = 0;
