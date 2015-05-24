@@ -28,11 +28,6 @@ vector<point> pOrder;				//model points
 vector<unsigned int> indices;		//model point indices
 vector<vec3> nOrder;				//model normals -> now a vector
 
-//put_point default parameters
-void put_point(int vInd, float x, float y, float z, float angle = 0.0f, bool rotate = false);
-//put_vertex default parameters
-void put_vertex(int vInd, float angle, bool rotate);
-
 
 void create_file(const char* filename){
 	unsigned int pSize = 3 * pOrder.size();
@@ -90,16 +85,14 @@ point rotate_point(point p, float angle){
 //
 //}
 
-void put_vertex(int vInd, float angle, bool rotate){
+void put_vertex_rot(int vInd, float angle){
 	map<vertex, unsigned int>::iterator it;
 	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.z);
 	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.z);
 
 	vertex v = vertex(p,n);
 
-
-	if (rotate)
-		v.rotate(angle);
+	v.rotate(angle);
 
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
@@ -429,13 +422,13 @@ void vertex_rotator(float slices, float layers){
 
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
-			put_vertex(j, alpha, true);
-			put_vertex(j + 1, alpha, true);
-			put_vertex(j, (alpha + aInc), true);
+			put_vertex_rot(j, alpha);
+			put_vertex_rot(j + 1, alpha);
+			put_vertex_rot(j, (alpha + aInc));
 
-			put_vertex(j, (alpha + aInc), true); 
-			put_vertex(j + 1, alpha, true);
-			put_vertex(j + 1, (alpha + aInc), true);
+			put_vertex_rot(j, (alpha + aInc)); 
+			put_vertex_rot(j + 1, alpha);
+			put_vertex_rot(j + 1, (alpha + aInc));
 		}
 		alpha += aInc;
 	}
