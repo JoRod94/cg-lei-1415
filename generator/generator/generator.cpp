@@ -112,14 +112,15 @@ void put_vertex(int vInd, float angle, bool rotate){
 
 }
 
-void _put_point(point p){
-	map<point, unsigned int>::iterator it;
+void _put_vertex(vertex v){
+	map<vertex, unsigned int>::iterator it;
 
-	if ((it = pMap.find(p)) != pMap.end())
+	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
 	else{
-		pOrder.push_back(p);
-		pMap[p] = lastInd;
+		pOrder.push_back(v.p);
+		nOrder.push_back(v.n);
+		vMap[v] = lastInd;
 		indices.push_back(lastInd++);
 	}
 }
@@ -248,7 +249,7 @@ vertex interpolate_yy(float u, float v, Patch p) {
 	return vertex( pt, v_tangent.cross(u_tangent) );
 }
 
-vec3 interpolate_zz(float u, float v, Patch p) {
+vertex interpolate_zz(float u, float v, Patch p) {
 	int j = 0, w = 0;
 	point pt;
 	point u_points[4];
@@ -295,13 +296,13 @@ void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
 		v3 = interpolate_yy(u, next_v, p);
 	}
 
-	_put_point(v0);
-	_put_point(v1);
-	_put_point(v2);
+	_put_vertex(v0);
+	_put_vertex(v1);
+	_put_vertex(v2);
 
-	_put_point(v2);
-	_put_point(v3);
-	_put_point(v0);
+	_put_vertex(v2);
+	_put_vertex(v3);
+	_put_vertex(v0);
 }
 
 
