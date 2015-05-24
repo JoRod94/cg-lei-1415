@@ -672,7 +672,7 @@ int main(int argc, char* argv[]) {
 			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		std::cout << "Generating Plane..." << endl;
+		std::cout << "Generating Figure..." << endl;
 		bezier_surface(stof(argv[2]), argv[3],argv[4], false);
 	}
 	else if (strcmp(argv[1], "ibezier") == 0){
@@ -680,7 +680,7 @@ int main(int argc, char* argv[]) {
 			std::cout << "Wrong number of arguments" << endl;
 			return 0;
 		}
-		std::cout << "Generating Plane..." << endl;
+		std::cout << "Generating Figure..." << endl;
 		bezier_surface(stof(argv[2]), argv[3], argv[4], true);
 	}
 	else if (strcmp(argv[1], "sphere") == 0){
