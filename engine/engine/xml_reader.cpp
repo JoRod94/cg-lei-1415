@@ -5,6 +5,7 @@
 #include <fstream>
 #include <map>
 #include <utility>
+#include <sys/stat.h>
 #include "transformation.h"
 #include "color.h"
 #include "translation.h"
@@ -20,6 +21,11 @@ using namespace std;
 map<string, figure> m_files;
 int active_buffer = 0;
 int currLight = 0;
+
+static bool file_exists(const char* filename) {
+	struct stat buffer;
+	return (stat(filename, &buffer) == 0);
+}
 
 void read_bin(string filename){
 	figure f = new_figure();
@@ -113,8 +119,30 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	return nullptr;
 }
 
-static vector<pair<string, Color*> > group_points(tinyxml2::XMLElement* group) {
-    vector<pair<string, Color*> > points;
+static bool valid_texture(const char* filename) {
+	bool b = file_exists(filename);
+	if (!b)
+		cout << "INEXISTENT TEXTURE FILE, IGNORING..." << endl;
+
+	return b;
+}
+
+char* get_model_texture(tinyxml2::XMLElement* model) {
+	const char* texture = model->Attribute(_XML_TEXTURE);
+	if (texture && valid_texture(texture))
+		return (char*)texture;
+	else
+		return NULL;
+}
+
+static model_attribute get_model_attributes(tinyxml2::XMLElement* model) {
+	Color* c = get_model_colors(model);
+	const char* texture = get_model_texture(model);
+	return new_model_attribute(c, texture);	
+}
+
+static vector<pair<string, model_attribute> > group_points(tinyxml2::XMLElement* group) {
+    vector<pair<string, model_attribute> > points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
 
 	if (models) {
@@ -122,8 +150,8 @@ static vector<pair<string, Color*> > group_points(tinyxml2::XMLElement* group) {
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
 			read_bin(filename);
-			Color* c = get_model_colors(model);
-			points.push_back(make_pair(filename, c));
+			model_attribute ma = get_model_attributes(model);
+			points.push_back(make_pair(filename, ma));
 		}
 	}
     return points;
@@ -211,7 +239,7 @@ bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
     }
     vector<Transformation*> t = group_transformations(g);
 	vector<Transformation*> c = group_colors(g);
-    vector<pair<string, Color*> > pt = group_points(g);
+    vector<pair<string, model_attribute> > pt = group_points(g);
     vector<group> sg;
 
 	for (int i = 0; i < c.size(); i++)

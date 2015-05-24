@@ -15,6 +15,7 @@
 #define _XML_ROTATION       "rotacao"
 #define _XML_SCALE          "escala"
 #define _XML_POINT			"ponto"
+#define _XML_TEXTURE		"textura"
 #define _XML_X              "X"
 #define _XML_Y              "Y"
 #define _XML_Z              "Z"

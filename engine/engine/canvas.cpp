@@ -34,7 +34,7 @@ group new_empty_group() {
     return (group)calloc(sizeof(s_group), 1);
 }
 
-group new_group(vector<Transformation*> transformations, vector<pair<string, Color*> > points, vector<group> subgroups) {
+group new_group(vector<Transformation*> transformations, vector<pair<string, model_attribute> > points, vector<group> subgroups) {
 	group g = new_empty_group();
 
 	g->transformations = transformations;
@@ -48,4 +48,11 @@ group new_group(vector<Transformation*> transformations, vector<pair<string, Col
 
 figure new_figure() {
     return (figure)malloc(sizeof(struct s_figure));
+}
+
+model_attribute new_model_attribute(Color* color, const char* texture) {
+	model_attribute ma = (model_attribute)calloc(1, sizeof(s_model_attribute));
+	ma->color = color;
+	ma->texture = texture;
+	return ma;
 }
