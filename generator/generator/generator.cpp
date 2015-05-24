@@ -289,7 +289,9 @@ vertex interpolate_yy(float u, float v, Patch p) {
 	pt = cubic_bezier(v, v_points);
 	v_tangent = bezier_tangent_yy(v, v_points);
 	v_tangent.normalize();
-	return vertex( pt, v_tangent.cross(u_tangent) );
+	vec3 tangent = v_tangent.cross(u_tangent);
+	tangent.normalize();
+	return vertex( pt, tangent );
 }
 
 vertex interpolate_zz(float u, float v, Patch p) {
@@ -315,7 +317,9 @@ vertex interpolate_zz(float u, float v, Patch p) {
 	pt = cubic_bezier(u, u_points);
 	u_tangent = bezier_tangent_yy(u, u_points);
 	u_tangent.normalize();
-	return vertex( pt, u_tangent.cross(v_tangent) );
+	vec3 tangent = u_tangent.cross(v_tangent);
+	tangent.normalize();
+	return vertex( pt, tangent);
 }
 
 void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
