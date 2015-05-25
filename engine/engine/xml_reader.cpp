@@ -136,34 +136,28 @@ static bool valid_texture(const char* filename) {
 	return b;
 }
 
-char* get_model_texture(tinyxml2::XMLElement* model, int *texID) {
+int get_model_texture(tinyxml2::XMLElement* model) {
 	const char* texture = model->Attribute(_XML_TEXTURE);
 	if (texture && valid_texture(texture)){
-		return (char*)texture;
+		return 0; // change to id
 		//GEN IMAGE E O RESTO DA TRALHA
 	}
 	else
-		return NULL;
+		return -1;
 }
 
-static model_attribute get_model_attributes(tinyxml2::XMLElement* model, int *texID) {
-	Color* c = get_model_colors(model);
-	const char* texture = get_model_texture(model, texID);
-	return new_model_attribute(c, texture);	
-}
-
-static vector<pair<string, model_attribute> > group_points(tinyxml2::XMLElement* group) {
-    vector<pair<string, model_attribute> > points;
+static vector<pair<string, Color*> > group_points(tinyxml2::XMLElement* group) {
+    vector<pair<string, Color*> > points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
 
 	if (models) {
 		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
-			int texID;
-			model_attribute ma = get_model_attributes(model,&texID);
+			Color* c = get_model_colors(model);
+			int texID = get_model_texture(model);
 			read_bin(filename,texID);
-			points.push_back(make_pair(filename, ma));
+			points.push_back(make_pair(filename, c));
 		}
 	}
     return points;
@@ -251,7 +245,7 @@ bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
     }
     vector<Transformation*> t = group_transformations(g);
 	vector<Transformation*> c = group_colors(g);
-    vector<pair<string, model_attribute> > pt = group_points(g);
+    vector<pair<string, Color*> > pt = group_points(g);
     vector<group> sg;
 
 	for (int i = 0; i < c.size(); i++)

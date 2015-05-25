@@ -235,9 +235,9 @@ static void draw_group(group g) {
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
 		map<string, figure>::iterator p = files.find((g->points)[i].first);
-		model_attribute ma = (g->points)[i].second;
-		if (ma->color != nullptr)
-			ma->color->apply();
+		Color* c = (g->points)[i].second;
+		if (c != nullptr)
+			c->apply();
 		// if (ma->texture)
 			// apply texture
 		if (p != files.end()) {

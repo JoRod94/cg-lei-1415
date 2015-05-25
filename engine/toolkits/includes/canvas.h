@@ -29,14 +29,9 @@ typedef struct s_figure {
 	int image_texture_ID;
 } *figure;
 
-typedef struct s_model_attribute {
-	Color* color;
-	const char* texture;
-} *model_attribute;
-
 typedef struct s_group {
 	vector<Transformation*> transformations;
-	vector<pair<string, model_attribute> > points;
+	vector<pair<string, Color *> > points;
 	vector<struct s_group *> subgroups;
 } *group;
 
@@ -54,10 +49,8 @@ light new_light(GLenum lId, float x, float y, float z, float type);
 
 group new_empty_group();
 
-group new_group(vector<Transformation*> transformations, vector<pair<string, model_attribute> > points, vector<group> subgroups);
+group new_group(vector<Transformation*> transformations, vector<pair<string, Color *> > points, vector<group> subgroups);
 
 figure new_figure();
-
-model_attribute new_model_attribute(Color* color, const char* filename);
 
 #endif
