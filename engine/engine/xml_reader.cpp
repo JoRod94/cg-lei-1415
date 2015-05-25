@@ -27,7 +27,7 @@ static bool file_exists(const char* filename) {
 	return (stat(filename, &buffer) == 0);
 }
 
-void read_bin(string filename){
+void read_bin(string filename, int texId){
 	figure f = new_figure();
 
 	map<string, figure>::iterator file = m_files.find(filename);
@@ -44,19 +44,28 @@ void read_bin(string filename){
 		return;
 	}
 
+	//positions
 	i.read((char *)&(f->n_coords), sizeof(unsigned int));
 	f->vertex = (float *)malloc((f->n_coords)*sizeof(float));
 	i.read((char *)f->vertex , f->n_coords*sizeof(float));
 
+	//indices
 	i.read((char *)&(f->n_ind), sizeof(unsigned int));
 	f->indices = (unsigned int *)malloc(f->n_ind*sizeof(unsigned int));
 	i.read((char *)&(f->indices[0]), f->n_ind*sizeof(unsigned int));
 
+	//normals
 	f->normal = (float *)malloc((f->n_coords)*sizeof(float));
 	i.read((char *)f->normal , f->n_coords*sizeof(float));
 
+	//texture coordinates
+	i.read((char *)&(f->n_tex_coords), sizeof(unsigned int));
+	f->tex_coord = (float *)malloc((f->n_tex_coords)*sizeof(float));
+	i.read((char *)f->tex_coord, f->n_tex_coords*sizeof(float));
+
 	f->vertex_buffer_nr = active_buffer++;
 	f->normal_buffer_nr = active_buffer++;
+	f->image_texture_ID = texId;
 
 	m_files[filename] = f;
 }
@@ -127,17 +136,19 @@ static bool valid_texture(const char* filename) {
 	return b;
 }
 
-char* get_model_texture(tinyxml2::XMLElement* model) {
+char* get_model_texture(tinyxml2::XMLElement* model, int *texID) {
 	const char* texture = model->Attribute(_XML_TEXTURE);
-	if (texture && valid_texture(texture))
+	if (texture && valid_texture(texture)){
 		return (char*)texture;
+		//GEN IMAGE E O RESTO DA TRALHA
+	}
 	else
 		return NULL;
 }
 
-static model_attribute get_model_attributes(tinyxml2::XMLElement* model) {
+static model_attribute get_model_attributes(tinyxml2::XMLElement* model, int *texID) {
 	Color* c = get_model_colors(model);
-	const char* texture = get_model_texture(model);
+	const char* texture = get_model_texture(model, texID);
 	return new_model_attribute(c, texture);	
 }
 
@@ -149,8 +160,9 @@ static vector<pair<string, model_attribute> > group_points(tinyxml2::XMLElement*
 		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
-			read_bin(filename);
-			model_attribute ma = get_model_attributes(model);
+			int texID;
+			model_attribute ma = get_model_attributes(model,&texID);
+			read_bin(filename,texID);
 			points.push_back(make_pair(filename, ma));
 		}
 	}

@@ -18,11 +18,15 @@ typedef struct s_light {
 typedef struct s_figure {
 	float* vertex;
 	float* normal;
+	float* tex_coord;
 	unsigned int* indices;
-	unsigned int n_ind;
 	unsigned int n_coords;
+	unsigned int n_tex_coords;
+	unsigned int n_ind;
 	int vertex_buffer_nr;
 	int normal_buffer_nr;
+	int texture_buffer_nr;
+	int image_texture_ID;
 } *figure;
 
 typedef struct s_model_attribute {

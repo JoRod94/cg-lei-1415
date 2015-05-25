@@ -22,27 +22,28 @@ vector<point> points;				//deprecated
 vector<point> normals;				//deprecated
 
 map<vertex, unsigned int> vMap;		//vertex-index dictionary
-map<point,unsigned int> pMap;		//deprecated
+map<point, unsigned int> pMap;		//deprecated
 
-vector<point> pOrder;				//model points
+vector<vertex>	vFinal;				//final vertex w/ tCoords
 vector<unsigned int> indices;		//model point indices
-vector<vec3> nOrder;				//model normals -> now a vector
 
 
 void create_file(const char* filename){
-	unsigned int pSize = 3 * pOrder.size();
+	unsigned int pSize = 3 * vFinal.size();
+	unsigned int tcSize = 2 * vFinal.size();
 	unsigned int iSize = indices.size();
-	float *pCoords = (float*)malloc(pSize * sizeof(float));
-	float *nCoords = (float*)malloc(pSize * sizeof(float));
+	float* pCoords = (float*)malloc(pSize * sizeof(float));
+	float* nCoords = (float*)malloc(pSize * sizeof(float));
+	float* tcCoords = (float*)malloc(tcSize * sizeof(float));
 
 
-	for (int j = 0, i = 0, k = 0; j<pOrder.size(); j++) {
-		pCoords[i] = pOrder[j].x;
-		nCoords[i++] = nOrder[j].x;
-		pCoords[i] = pOrder[j].y;
-		nCoords[i++] = nOrder[j].y;
-		pCoords[i] = pOrder[j].z;
-		nCoords[i++] = nOrder[j].z;
+	for (int j = 0, i = 0; j < vFinal.size(); j++) {
+		pCoords[i] = vFinal[j].p.x;
+		nCoords[i++] = vFinal[j].n.x;
+		pCoords[i] = vFinal[j].p.y;
+		nCoords[i++] = vFinal[j].n.y;
+		pCoords[i] = vFinal[j].p.z;
+		nCoords[i++] = vFinal[j].n.z;
 	}
 
 	//for (int i = 0; i < iSize; i++)
@@ -54,12 +55,8 @@ void create_file(const char* filename){
 	newFile.write((char *)&iSize, sizeof(unsigned int));
 	newFile.write((char *)&indices[0], iSize*sizeof(unsigned int));
 	newFile.write((char *)&nCoords[0], pSize*sizeof(float));
-}
-
-point rotate_point(point p, float angle){
-	p.x = p.x * sin(angle);
-	p.z = p.z * cos(angle);
-	return p;
+	newFile.write((char *)&tcSize, sizeof(unsigned int));
+	newFile.write((char *)&tcCoords[0], tcSize*sizeof(float));
 }
 
 //void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
@@ -85,20 +82,19 @@ point rotate_point(point p, float angle){
 //
 //}
 
-void put_vertex_rot(int vInd, float angle){
+void put_vertex_rot(int vInd, float angle, float currW){
 	map<vertex, unsigned int>::iterator it;
 	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.z);
 	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.z);
 
-	vertex v = vertex(p,n);
+	vertex v = vertex(p,n,currW,verts[vInd].tc_y);
 
 	v.rotate(angle);
 
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
 	else{
-		pOrder.push_back(v.p);
-		nOrder.push_back(v.n);
+		vFinal.push_back(v);
 		vMap[v] = lastInd;
 		indices.push_back(lastInd++);
 	}
@@ -111,8 +107,7 @@ void _put_vertex(vertex v){
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
 	else{
-		pOrder.push_back(v.p);
-		nOrder.push_back(v.n);
+		vFinal.push_back(v);
 		vMap[v] = lastInd;
 		indices.push_back(lastInd++);
 	}
@@ -539,18 +534,20 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 void vertex_rotator(float slices, float layers){
 	float alpha = (float)M_PI/2.0f;
 	float aInc = (2.0f * (float)M_PI) / slices;
+	float currW = 0.0f, wInc = 1.0f / slices;
 
 	for (int i = 0; i < slices; i++){
 		for (int j = 0; j < layers; j++){
-			put_vertex_rot(j, alpha);
-			put_vertex_rot(j + 1, alpha);
-			put_vertex_rot(j, (alpha + aInc));
+			put_vertex_rot(j, alpha, currW);
+			put_vertex_rot(j + 1, alpha, currW);
+			put_vertex_rot(j, (alpha + aInc), currW);
 
-			put_vertex_rot(j, (alpha + aInc)); 
-			put_vertex_rot(j + 1, alpha);
-			put_vertex_rot(j + 1, (alpha + aInc));
+			put_vertex_rot(j, (alpha + aInc), currW);
+			put_vertex_rot(j + 1, alpha, currW);
+			put_vertex_rot(j + 1, (alpha + aInc), currW);
 		}
 		alpha += aInc;
+		currW += wInc;
 	}
 
 }
@@ -558,13 +555,22 @@ void vertex_rotator(float slices, float layers){
 void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = M_PI / layers;
+	float currH = 1.0f, hDec = 1.0f / layers;
 
-	for (int i = 0; i < layers; i++, beta += bInc)
+	verts.push_back(vertex(	point(0, radius, 0),
+							vec3(0, 1, 0),
+							0, 1));
+
+	currH -= hDec;
+
+	for (int i = 1; i < layers; i++, currH -= hDec)
 		verts.push_back(vertex(	point(radius * sin(beta), radius * cos(beta), 0),
-								vec3(sin(beta), cos(beta), 0)));
+								vec3(sin(beta), cos(beta), 0),
+								0,currH));
 
 	verts.push_back(vertex(	point(0, -radius, 0),
-							vec3(0, -1, 0)));
+							vec3(0, -1, 0),
+							0,0));
 
 	vertex_rotator(slices, layers);
 }
@@ -632,37 +638,37 @@ void create_cylinder(float radius, float height, float slices, float layers){
 	vertex_rotator(slices, layers + 4);
 }
 
-void rand_displace(int aSize, int lastSize, float rD, float rA){
-	for (int i = lastSize; i < aSize; i++){
-		pOrder[i].x = rD * sin(rA);
-		pOrder[i].z = rD * cos(rA);
+//void rand_displace(int aSize, int lastSize, float rD, float rA){
+//	for (int i = lastSize; i < aSize; i++){
+//		pOrder[i].x = rD * sin(rA);
+//		pOrder[i].z = rD * cos(rA);
+//
+//		cout << pOrder[i].x << endl;
+//		cout << pOrder[i].z << endl;
+//	}
+//}
 
-		cout << pOrder[i].x << endl;
-		cout << pOrder[i].z << endl;
-	}
-}
-
-void create_asteroids(float ir, float or, float nrAsteroids, float radius, float slices, float layers){
-	float randDistance, randAngle;
-	int lastSize = 0;
-
-	srand(1);
-
-	for (int i = 0; i < nrAsteroids; i++){
-		create_sphere(radius, slices, layers);
-
-		randDistance = ir + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (or - ir)));
-		randAngle = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*M_PI)));
-		cout << randDistance << endl;
-		cout << randAngle << endl;
-		//rand_disform();
-
-		rand_displace((pOrder.size() - lastSize), lastSize,randDistance,randAngle);
-		cout << "asdasdsad"<<pOrder.size() << endl;
-
-		pMap.clear();
-	}
-}
+//void create_asteroids(float ir, float or, float nrAsteroids, float radius, float slices, float layers){
+//	float randDistance, randAngle;
+//	int lastSize = 0;
+//
+//	srand(1);
+//
+//	for (int i = 0; i < nrAsteroids; i++){
+//		create_sphere(radius, slices, layers);
+//
+//		randDistance = ir + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (or - ir)));
+//		randAngle = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*M_PI)));
+//		cout << randDistance << endl;
+//		cout << randAngle << endl;
+//		//rand_disform();
+//
+//		rand_displace((pOrder.size() - lastSize), lastSize,randDistance,randAngle);
+//		cout << "asdasdsad"<<pOrder.size() << endl;
+//
+//		pMap.clear();
+//	}
+//}
 
 
 bool valid_bezier(int argc, char* argv[]){
@@ -785,7 +791,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Asteroids..." << endl;
-		create_asteroids(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]), stof(argv[7]));
+		//create_asteroids(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]), stof(argv[7]));
 	}
 	else{
 		std::cout << "Command not recognized" << endl;
