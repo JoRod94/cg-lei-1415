@@ -21,6 +21,8 @@ using namespace std;
 map<string, figure> m_files;
 int active_buffer = 0;
 int currLight = 0;
+int currTex = 0;
+map <string, int> textures;
 
 static bool file_exists(const char* filename) {
 	struct stat buffer;
@@ -136,10 +138,26 @@ static bool valid_texture(const char* filename) {
 	return b;
 }
 
+static int texture_val(const char* texture) {
+	int id;
+	string t = string(texture);
+	
+	map<string, int>::iterator it = textures.find(t);
+	if (it != textures.end()) {
+		id = it->second;
+	}
+	else {
+		id = currTex;
+		textures[t] = currTex++;
+	}
+
+	return id;
+}
+
 int get_model_texture(tinyxml2::XMLElement* model) {
 	const char* texture = model->Attribute(_XML_TEXTURE);
 	if (texture && valid_texture(texture)){
-		return 0; // change to id
+		return texture_val(texture);
 		//GEN IMAGE E O RESTO DA TRALHA
 	}
 	else
