@@ -15,13 +15,13 @@
 #include "xml_reader.h"
 #include "engine.h"
 #include "canvas.h"
+#include <IL/il.h>
 
 using namespace std;
 
 map<string, figure> m_files;
 int active_buffer = 0;
 int currLight = 0;
-int currTex = 0;
 map <string, int> textures;
 
 static bool file_exists(const char* filename) {
@@ -67,6 +67,7 @@ void read_bin(string filename, int texId){
 
 	f->vertex_buffer_nr = active_buffer++;
 	f->normal_buffer_nr = active_buffer++;
+	f->texture_buffer_nr = active_buffer++;
 	f->image_texture_ID = texId;
 
 	m_files[filename] = f;
@@ -139,27 +140,46 @@ static bool valid_texture(const char* filename) {
 }
 
 static int texture_val(const char* texture) {
-	int id;
+	unsigned int texID;
 	string t = string(texture);
-	
+
 	map<string, int>::iterator it = textures.find(t);
-	if (it != textures.end()) {
-		id = it->second;
-	}
+	if (it != textures.end())
+		texID = it->second;
 	else {
-		id = currTex;
-		textures[t] = currTex++;
+		unsigned int ima, width, height;
+		unsigned char *texData;
+		ilGenImages(1, &ima);
+		ilBindImage(ima);
+		ilLoadImage((ILstring)texture);
+
+		width = ilGetInteger(IL_IMAGE_WIDTH);
+		height = ilGetInteger(IL_IMAGE_HEIGHT);
+		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+		texData = ilGetData();
+
+		glGenTextures(1, &texID);
+
+		glBindTexture(GL_TEXTURE_2D, texID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, texData);
+
+		textures[t] = texID;
 	}
 
-	return id;
+	return texID;
 }
 
 int get_model_texture(tinyxml2::XMLElement* model) {
 	const char* texture = model->Attribute(_XML_TEXTURE);
-	if (texture && valid_texture(texture)){
+	if (texture && valid_texture(texture))
 		return texture_val(texture);
-		//GEN IMAGE E O RESTO DA TRALHA
-	}
 	else
 		return -1;
 }

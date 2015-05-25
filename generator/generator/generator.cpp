@@ -36,18 +36,18 @@ void create_file(const char* filename){
 	float* nCoords = (float*)malloc(pSize * sizeof(float));
 	float* tcCoords = (float*)malloc(tcSize * sizeof(float));
 
+	cout << vFinal.size() << endl;
 
-	for (int j = 0, i = 0; j < vFinal.size(); j++) {
+	for (int j = 0, i = 0, k = 0; j < vFinal.size(); j++) {
 		pCoords[i] = vFinal[j].p.x;
 		nCoords[i++] = vFinal[j].n.x;
 		pCoords[i] = vFinal[j].p.y;
 		nCoords[i++] = vFinal[j].n.y;
 		pCoords[i] = vFinal[j].p.z;
 		nCoords[i++] = vFinal[j].n.z;
+		tcCoords[k++] = vFinal[j].tc_x;
+		tcCoords[k++] = vFinal[j].tc_y;
 	}
-
-	//for (int i = 0; i < iSize; i++)
-	//	cout << indices[i] << endl;
 
 	ofstream newFile(string(filename) + ".3d", ios::binary);
 	newFile.write((char *)&pSize, sizeof(unsigned int));
@@ -82,14 +82,18 @@ void create_file(const char* filename){
 //
 //}
 
-void put_vertex_rot(int vInd, float angle, float currW){
+void put_vertex_rot(int vInd, float angle, float w){
 	map<vertex, unsigned int>::iterator it;
-	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.z);
-	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.z);
+	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.x);
+	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.x);
 
-	vertex v = vertex(p,n,currW,verts[vInd].tc_y);
+	vertex v = vertex(p,n,w,verts[vInd].tc_y);
 
 	v.rotate(angle);
+
+	//cout << "-----\nPonto: " << v.p.x << " " << v.p.y << " " << v.p.z << " " << endl;
+	//cout << "Normal: " << v.n.x << " " << v.n.y << " " << v.n.z << " " << endl;
+	//cout << "TCoords: " << v.tc_x << " " << v.tc_y << " " << endl;
 
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
@@ -98,7 +102,6 @@ void put_vertex_rot(int vInd, float angle, float currW){
 		vMap[v] = lastInd;
 		indices.push_back(lastInd++);
 	}
-
 }
 
 void _put_vertex(vertex v){
@@ -540,11 +543,11 @@ void vertex_rotator(float slices, float layers){
 		for (int j = 0; j < layers; j++){
 			put_vertex_rot(j, alpha, currW);
 			put_vertex_rot(j + 1, alpha, currW);
-			put_vertex_rot(j, (alpha + aInc), currW);
+			put_vertex_rot(j, (alpha + aInc), currW + wInc);
 
-			put_vertex_rot(j, (alpha + aInc), currW);
+			put_vertex_rot(j, (alpha + aInc), currW + wInc);
 			put_vertex_rot(j + 1, alpha, currW);
-			put_vertex_rot(j + 1, (alpha + aInc), currW);
+			put_vertex_rot(j + 1, (alpha + aInc), currW + wInc);
 		}
 		alpha += aInc;
 		currW += wInc;
@@ -557,13 +560,7 @@ void create_sphere(float radius, float slices, float layers){
 	float bInc = M_PI / layers;
 	float currH = 1.0f, hDec = 1.0f / layers;
 
-	verts.push_back(vertex(	point(0, radius, 0),
-							vec3(0, 1, 0),
-							0, 1));
-
-	currH -= hDec;
-
-	for (int i = 1; i < layers; i++, currH -= hDec)
+	for (int i = 0; i < layers; i++, beta += bInc, currH -= hDec)
 		verts.push_back(vertex(	point(radius * sin(beta), radius * cos(beta), 0),
 								vec3(sin(beta), cos(beta), 0),
 								0,currH));
@@ -602,7 +599,6 @@ void create_torus(float or, float ir, float slices, float layers){
 		point p = point(or + (ir * sin(beta)), ir * cos(beta), 0);
 		verts.push_back(vertex(p,
 			vec3(sin(beta), cos(beta), 0)));
-		cout << p.x << ", " << p.y << ", " << p.z << endl;
 	}
 
 	vertex_rotator(slices, layers);

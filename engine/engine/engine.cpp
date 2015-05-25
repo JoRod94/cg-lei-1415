@@ -214,16 +214,17 @@ static void draw_vbo(figure f){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->normal_buffer_nr]);
 	glNormalPointer(GL_FLOAT, 0, 0);
 
-	if (f->image_texture_ID != -1)
+	if (f->image_texture_ID == -1)
 		glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 	else{
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[f->texture_buffer_nr]);
 		glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
-		glTexCoordPointer(GL_TEXTURE_2D, texIDs[f->image_texture_ID]);
+		glBindTexture(GL_TEXTURE_2D, f->image_texture_ID);
 		glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
 }
 
 static void draw_group(group g) {
@@ -238,8 +239,6 @@ static void draw_group(group g) {
 		Color* c = (g->points)[i].second;
 		if (c != nullptr)
 			c->apply();
-		// if (ma->texture)
-			// apply texture
 		if (p != files.end()) {
 			draw_vbo(p->second);
 		}
@@ -294,8 +293,10 @@ static void generate_vbos(){
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->normal_buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->normal, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->texture_buffer_nr]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_tex_coords), fIt->second->tex_coord, GL_STATIC_DRAW);
+		if (fIt->second->image_texture_ID != -1){
+			glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->texture_buffer_nr]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_tex_coords), fIt->second->tex_coord, GL_STATIC_DRAW);
+		}
 	}
 }
 
@@ -613,37 +614,6 @@ static int valid_xml(char* filename) {
 		return name;
 }
 
-void textureSetup(){
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-
-	//para cada modelo
-	unsigned int ima, width, height;
-	unsigned char *texData;
-
-	ilGenImages(1, &ima);
-	ilBindImage(ima);
-	ilLoadImage((ILstring)"mars.jpg");
-
-	width = ilGetInteger(IL_IMAGE_WIDTH);
-	height = ilGetInteger(IL_IMAGE_HEIGHT);
-	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-	texData = ilGetData();
-
-	glGenTextures(1, &texID);
-
-	glBindTexture(GL_TEXTURE_2D, texID);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, texData);
-}
-
 void initGL(){
 	// some OpenGL settings
 	glEnable(GL_DEPTH_TEST);
@@ -663,8 +633,6 @@ void initGL(){
 
 	create_lights();
 
-	textureSetup();
-
 	generate_vbos();
 }
 
@@ -682,6 +650,10 @@ int main(int argc, char **argv){
 		return 0;
 	}
 
+	//devIL
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
 	xmlName = argv[1];
 	pair<vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
@@ -708,9 +680,6 @@ int main(int argc, char **argv){
 
 	//glew
 	glewInit();
-
-	//devIL
-	ilInit();
 
 	//gl
 	initGL();

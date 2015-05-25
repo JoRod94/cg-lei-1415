@@ -2,12 +2,14 @@
 #include "vertex.h"
 
 bool vertex::operator==(const vertex& v) const{
-	return ((p == v.p) && (n == v.n));
+	return ((p == v.p) && (n == v.n) && (tc_x == v.tc_x) && (tc_y == v.tc_y));
 }
 
 bool vertex::operator< (const vertex& v) const {
 	return p < v.p
-		|| (p == v.p && n < v.n);
+		|| (p == v.p && n < v.n)
+		|| (p == v.p && n == v.n && tc_x < v.tc_x)
+		|| (p == v.p && n == v.n && tc_x == v.tc_x && tc_y < v.tc_y);
 }
 
 void vertex::put_tc(float tcx, float tcy){

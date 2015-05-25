@@ -1,0 +1,11 @@
+<cena>
+	<luzes>
+		<luz tipo="VECTOR" posX="1" posY="1" posZ="1" />
+	</luzes>
+    <grupo>
+        <modelos>
+            <modelo ficheiro="..\Release\sphereTex.3d" textura="..\Release\earth.jpg"/>
+        </modelos>
+	</grupo>
+</cena>
+
