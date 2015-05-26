@@ -350,6 +350,11 @@ void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
 		v3 = interpolate_yy(u, next_v, p);
 	}
 
+    v0.put_tc(u, v);
+    v1.put_tc(next_u, v);
+    v2.put_tc(next_u, next_v);
+    v3.put_tc(u, next_v);
+
 	_put_vertex(v0);
 	_put_vertex(v1);
 	_put_vertex(v2);
@@ -708,9 +713,9 @@ bool valid_bezier(int argc, char* argv[]){
 	int file = 1;
 	regex number("[0-9]*\.?[0-9]+");
 	regex word("[\\\a-zA-Z0-9\-_./]*[a-zA-Z0-9]");
-	
+
 	file = regex_match(argv[argc - 1], word);
-	
+
 	return file && regex_match(argv[2], number) && regex_match(argv[3], word);
 
 }
