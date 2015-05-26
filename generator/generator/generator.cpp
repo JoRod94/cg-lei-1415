@@ -558,12 +558,12 @@ void vertex_rotator(float slices, float layers){
 void create_sphere(float radius, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = M_PI / layers;
-	float currH = 1.0f, hDec = 1.0f / layers;
+	float currY = 1.0f, yDec = 1.0f / layers;
 
-	for (int i = 0; i < layers; i++, beta += bInc, currH -= hDec)
+	for (int i = 0; i < layers; i++, beta += bInc, currY -= yDec)
 		verts.push_back(vertex(	point(radius * sin(beta), radius * cos(beta), 0),
 								vec3(sin(beta), cos(beta), 0),
-								0,currH));
+								0,currY));
 
 	verts.push_back(vertex(	point(0, -radius, 0),
 							vec3(0, -1, 0),
@@ -576,16 +576,27 @@ void create_cone(float radius, float height, float slices, float layers){
 	float currR = 0.0f, currH = height;
 	float rInc = radius / layers, hDec = height / layers;
 	float normalAngle = (atan(height/radius) * (180/M_PI));
+	//texture coordinates calculations
+	float hypotenuse = sqrt(radius*radius + height*height);
+	float currY = 1.0f, yDec = (hypotenuse/(hypotenuse+radius)) / (layers+1);
 
-	for (int i = 0; i < (layers + 1); i++, currR += rInc, currH -= hDec)
+	for (int i = 0; i < (layers + 1); i++){
 		verts.push_back(vertex(	point(currR, currH, 0),
-								vec3(cos(normalAngle), sin(normalAngle), 0)));
+								vec3(cos(normalAngle), sin(normalAngle), 0),
+								0, currY));
+		currR += rInc;
+		currH -= hDec;
+		currY -= yDec;
+	}
 
 
 	verts.push_back(vertex(	point(radius, 0, 0),
-							vec3(0, -1, 0)));
+							vec3(0, -1, 0),
+							0,currY+yDec));
+
 	verts.push_back(vertex(	point(0, 0, 0),
-							vec3(0, -1, 0)));
+							vec3(0, -1, 0),
+							0,0));
 
 	vertex_rotator(slices, layers + 2);
 }
@@ -593,43 +604,47 @@ void create_cone(float radius, float height, float slices, float layers){
 void create_torus(float or, float ir, float slices, float layers){
 	float beta = 0.0f;
 	float bInc = (2 * (float)M_PI) / layers;
+	float currY = 1.0f, yDec = 1.0f / layers;
 
-	for (int i = 0; i < (layers + 1); i++, beta += bInc)
-	{
-		point p = point(or + (ir * sin(beta)), ir * cos(beta), 0);
-		verts.push_back(vertex(p,
-			vec3(sin(beta), cos(beta), 0)));
-	}
+	for (int i = 0; i < (layers + 1); i++, beta += bInc, currY -= yDec)
+		verts.push_back(vertex(	point(or + (ir * sin(beta)), ir * cos(beta), 0),
+								vec3(sin(beta), cos(beta), 0),
+								0,currY));
 
 	vertex_rotator(slices, layers);
 }
 
 void create_ring(float or, float ir, float slices){
-	verts.push_back(vertex(point(ir, 0, 0),vec3(0, 1, 0)));
-	verts.push_back(vertex(point(or, 0, 0), vec3(0, 1, 0)));
+	verts.push_back(vertex(point(ir, 0, 0),vec3(0, 1, 0),0,1));
+	verts.push_back(vertex(point(or, 0, 0), vec3(0, 1, 0),0,0.5f));
 
 	vertex_rotator(slices, 1);
 
 	verts.clear();
 
-	verts.push_back(vertex(point(or, 0.0001, 0), vec3(0, -1, 0)));
-	verts.push_back(vertex(point(ir, 0.0001, 0), vec3(0, -1, 0)));
+	verts.push_back(vertex(point(or, 0.0001, 0), vec3(0, -1, 0),0,0.5f));
+	verts.push_back(vertex(point(ir, 0.0001, 0), vec3(0, -1, 0),0,0));
 
 	vertex_rotator(slices, 1);
 }
 
 void create_cylinder(float radius, float height, float slices, float layers){
-	float currH = height / 2;
-	float hDec = height / layers;
+	float currH = height / 2, hDec = height / layers;
+	float texHeight = (height / (height + 2 * radius));
+	float texRadius = (radius / (height + 2 * radius));
+	float currY = 1.0f, yDec = texHeight / (layers+1);
 
-	verts.push_back(vertex(point(0, currH, 0), vec3(0, 1, 0)));
-	verts.push_back(vertex(point(radius, currH, 0), vec3(0, 1, 0)));
+	verts.push_back(vertex(point(0, currH, 0), vec3(0, 1, 0),0,1));
+	currY -= texRadius;
+	verts.push_back(vertex(point(radius, currH, 0), vec3(0, 1, 0),0,currY));
 
-	for (int i = 0; i < (layers + 1); i++, currH -= hDec)
-		verts.push_back(vertex(point(radius, currH, 0), vec3(1, 0, 0)));
+	for (int i = 0; i < (layers + 1); i++, currH -= hDec, currY -= yDec)
+		verts.push_back(vertex(	point(radius, currH, 0),
+								vec3(1, 0, 0),
+								0, currY));
 
-	verts.push_back(vertex(point(radius, currH+hDec, 0), vec3(0, -1, 0)));
-	verts.push_back(vertex(point(0, currH+hDec, 0), vec3(0, -1, 0)));
+	verts.push_back(vertex(point(radius, currH+hDec, 0), vec3(0, -1, 0), 0,texRadius));
+	verts.push_back(vertex(point(0, currH+hDec, 0), vec3(0, -1, 0), 0, 0));
 
 	vertex_rotator(slices, layers + 4);
 }
