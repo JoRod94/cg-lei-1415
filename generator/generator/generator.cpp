@@ -104,6 +104,22 @@ void put_vertex_rot(int vInd, float angle, float w){
 	}
 }
 
+void put_vertex_pp(float x, float y, float z, vec3 norm){
+	map<vertex, unsigned int>::iterator it;
+	point p = point(x, y, z);
+	vec3 n = vec3(norm.x, norm.y, norm.z);
+	vertex v = vertex(p, n);
+
+
+	if ((it = vMap.find(v)) != vMap.end())
+		indices.push_back(it->second);
+	else{
+		vFinal.push_back(v);
+		vMap[v] = lastInd;
+		indices.push_back(lastInd++);
+	}
+}
+
 void _put_vertex(vertex v){
 	map<vertex, unsigned int>::iterator it;
 
@@ -425,113 +441,119 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 }
 
 
+void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
+	float incrL = len / slices;
+	float incrH = hei / stacks;
+	float incrW = wid / slices;
+	float startingL = -len / 2, l = startingL;
+	float startingH = -hei / 2, h = startingH;
+	int i;
 
-//void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
-//	float incrL = len / slices;
-//	float incrH = hei / stacks;
-//	float incrW = wid / slices;
-//	float startingL = -len / 2, l = startingL;
-//	float startingH = -hei / 2, h = startingH;
-//	float startingW = -wid / 2, w = startingW;
-//	int i;
-//
-//	for (i = 0; i < slices; i++){
-//		points.push_back(point(l, h, 0));
-//		l += incrL;
-//	}
-//	for (i = 0; i < stacks; i++){
-//		points.push_back(point(l, h, 0));
-//		h += incrH;
-//	}
-//	for (i = 0; i < slices; i++){
-//		points.push_back(point(l, h, 0));
-//		l -= incrL;
-//	}
-//	for (i = 0; i < stacks; i++){
-//		points.push_back(point(l, h, 0));
-//		h -= incrH;
-//	}
-//
-//}
-//
-//
-//void completeFace(float len, float hei, float position, int slices, int stacks){
-//	float incrL = len / slices;
-//	float incrH = hei / stacks;
-//	float startingL = -len / 2, l = startingL;
-//	float startingH = -hei / 2, h = startingH;
-//
-//	for (int j = 0; j < stacks; j++){
-//		for (int i = 0; i < slices; i++){
-//			if (position < 0){
-//				put_point(i, l, h, position);
-//				put_point(i, l, h + incrH, position);
-//				put_point(i, l + incrL, h + incrH, position);
-//				put_point(i, l, h, position);
-//				put_point(i, l + incrL, h + incrH, position);
-//				put_point(i, l + incrL, h, position);
-//			}
-//			else{
-//				put_point(i, l, h, position);
-//				put_point(i, l + incrL, h + incrH, position);
-//				put_point(i, l, h + incrH, position);
-//
-//				put_point(i, l, h, position);
-//				put_point(i, l + incrL, h, position);
-//				put_point(i, l + incrL, h + incrH, position);
-//			}
-//			l += incrL;
-//		}
-//		h += incrH;
-//		l = startingL;
-//	}
-//}
-//
-//
-//
-//
-//void pointExtender(float len, float wid, float hei, int stacks, int slices){
-//	int numpts = (stacks + 1)*(slices + 1) - (stacks - 1) * (slices - 1);
-//	float incrW = wid / slices;
-//	float startingW = -wid / 2;
-//	float w = startingW;
-//	int j;
-//
-//	completeFace(len, hei, w, slices, stacks);
-//	for (int i = 0; i < slices; i++){
-//		for (j = 0; j < numpts - 1; j++){
-//			put_point(i, points[j].x, points[j].y, w);
-//			put_point(i, points[j + 1].x, points[j + 1].y, w);
-//			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
-//
-//			put_point(i, points[j].x, points[j].y, w);
-//			put_point(i, points[j + 1].x, points[j + 1].y, w + incrW);
-//			put_point(i, points[j].x, points[j].y, w + incrW);
-//
-//		}
-//		put_point(i, points[j].x, points[j].y, w);
-//		put_point(i, points[0].x, points[0].y, w);
-//		put_point(i, points[0].x, points[0].y, w + incrW);
-//
-//		put_point(i, points[j].x, points[j].y, w);
-//		put_point(i, points[0].x, points[0].y, w + incrW);
-//		put_point(i, points[j].x, points[j].y, w + incrW);
-//
-//		w += incrW;
-//	}
-//	completeFace(len, hei, w, slices, stacks);
-//}
-//
-//
-//void create_plane(float length, float width, int slices, int stacks){
-//	getOuterPoints(length, 0, width, stacks, slices);
-//	completeFace(length, width, 0, slices, stacks);
-//}
-//
-//void create_parallelepiped(float length, float width, float height, int slices, int stacks){
-//	getOuterPoints(length, width, height, stacks, slices);
-//	pointExtender(length, width, height, stacks, slices);
-//}
+	for (i = 0; i < slices; i++){
+		points.push_back(point(l, h, 0));
+		l += incrL;
+	}
+	for (i = 0; i < stacks; i++){
+		points.push_back(point(l, h, 0));
+		h += incrH;
+	}
+	for (i = 0; i < slices; i++){
+		points.push_back(point(l, h, 0));
+		l -= incrL;
+	}
+	for (i = 0; i < stacks; i++){
+		points.push_back(point(l, h, 0));
+		h -= incrH;
+	}
+
+}
+
+
+void completeFace(float len, float hei, float position, int slices, int stacks){
+	float incrL = len / slices;
+	float incrH = hei / stacks;
+	float startingL = -len / 2, l = startingL;
+	float startingH = -hei / 2, h = startingH;
+
+
+	for (int j = 0; j < stacks; j++){
+		for (int i = 0; i < slices; i++){
+			if (position < 0){
+				put_vertex_pp(l, h, position, vec3(0, 0, -1));
+				put_vertex_pp(l, h + incrH, position, vec3(0, 0, -1));
+				put_vertex_pp(l + incrL, h + incrH, position, vec3(0, 0, -1));
+				put_vertex_pp(l, h, position, vec3(0, 0, -1));
+				put_vertex_pp(l + incrL, h + incrH, position, vec3(0, 0, -1));
+				put_vertex_pp(l + incrL, h, position, vec3(0, 0, -1));
+			}
+			else{
+				put_vertex_pp(l, h, position, vec3(0, 0, 1));
+				put_vertex_pp(l + incrL, h + incrH, position, vec3(0, 0, 1));
+				put_vertex_pp(l, h + incrH, position, vec3(0, 0, 1));
+				put_vertex_pp(l, h, position, vec3(0, 0, 1));
+				put_vertex_pp(l + incrL, h, position, vec3(0, 0, 1));
+				put_vertex_pp(l + incrL, h + incrH, position, vec3(0, 0, 1));
+			}
+			l += incrL;
+		}
+		h += incrH;
+		l = startingL;
+	}
+}
+
+
+
+
+void pointExtender(float len, float wid, float hei, int stacks, int slices){
+	int numpts = (stacks + 1)*(slices + 1) - (stacks - 1) * (slices - 1);
+	float incrW = wid / slices;
+	float startingW = -wid / 2;
+	float w = startingW;
+	int j, v = 0;
+	vector<vec3> normals = { vec3(0, -1, 0), vec3(1, 0, 0), vec3(0, 1, 0), vec3(-1, 0, 0) };
+
+	completeFace(len, hei, w, slices, stacks);
+	for (int i = 0; i < slices; i++){
+		for (j = 0; j < numpts - 1; j++){
+			if (j == slices)
+				v++;
+			if (j == slices + stacks)
+				v++;
+			if (j == slices * 2 + stacks)
+				v++;
+			put_vertex_pp(points[j].x, points[j].y, w, normals[v]);
+			put_vertex_pp(points[j + 1].x, points[j + 1].y, w, normals[v]);
+			put_vertex_pp(points[j + 1].x, points[j + 1].y, w + incrW, normals[v]);
+			put_vertex_pp(points[j].x, points[j].y, w, normals[v]);
+			put_vertex_pp(points[j + 1].x, points[j + 1].y, w + incrW, normals[v]);
+			put_vertex_pp(points[j].x, points[j].y, w + incrW, normals[v]);
+
+		}
+		put_vertex_pp(points[j].x, points[j].y, w, normals[v]);
+		put_vertex_pp(points[0].x, points[0].y, w, normals[v]);
+		put_vertex_pp(points[0].x, points[0].y, w + incrW, normals[v]);
+		put_vertex_pp(points[j].x, points[j].y, w, normals[v]);
+		put_vertex_pp(points[0].x, points[0].y, w + incrW, normals[v]);
+		put_vertex_pp(points[j].x, points[j].y, w + incrW, normals[v]);
+
+		v = 0;
+		w += incrW;
+	}
+	completeFace(len, hei, w, slices, stacks);
+}
+
+
+void create_plane(float length, float width, int slices, int stacks){
+	getOuterPoints(length, 0.01f, width, stacks, slices);
+	completeFace(length, width, 0.01f, slices, stacks);
+}
+
+void create_parallelepiped(float length, float width, float height, int slices, int stacks){
+	getOuterPoints(length, width, height, stacks, slices);
+	pointExtender(length, width, height, stacks, slices);
+}
+
+
 
 //Rotates model template to create complete model
 void vertex_rotator(float slices, float layers){
@@ -722,7 +744,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Plane..." << endl;
-		//create_plane(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
+		create_plane(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
 	}
 	else if (strcmp(argv[1], "bezier") == 0){
 		if (argc != 5){
@@ -754,7 +776,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		std::cout << "Generating Box..." << endl;
-		//create_parallelepiped(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]));
+		create_parallelepiped(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]));
 	}
 	else if (strcmp(argv[1], "cone") == 0){
 		if (argc != 7){
