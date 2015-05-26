@@ -217,6 +217,7 @@ static void draw_vbo(figure f){
 	if (f->image_texture_ID == -1)
 		glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 	else{
+		glEnable(GL_TEXTURE_2D);
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[f->texture_buffer_nr]);
 		glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
@@ -292,7 +293,7 @@ static void generate_vbos(){
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->normal_buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->normal, GL_STATIC_DRAW);
-
+		
 		if (fIt->second->image_texture_ID != -1){
 			glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->texture_buffer_nr]);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_tex_coords), fIt->second->tex_coord, GL_STATIC_DRAW);
@@ -630,6 +631,7 @@ void initGL(){
 	//VBOs
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	create_lights();
 
@@ -649,16 +651,6 @@ int main(int argc, char **argv){
 		cout << "Please enter a valid XML file" << endl;
 		return 0;
 	}
-
-	//devIL
-	ilInit();
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-
-	xmlName = argv[1];
-	pair<vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
-    scenes = read_values.first;
-    files = read_values.second;
 
 	// inicialização
 	glutInit(&argc, argv);
@@ -680,6 +672,16 @@ int main(int argc, char **argv){
 
 	//glew
 	glewInit();
+
+	//devIL
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+
+	xmlName = argv[1];
+	pair<vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
+	scenes = read_values.first;
+	files = read_values.second;
 
 	//gl
 	initGL();

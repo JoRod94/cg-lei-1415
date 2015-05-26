@@ -149,6 +149,7 @@ static int texture_val(const char* texture) {
 	else {
 		unsigned int ima, width, height;
 		unsigned char *texData;
+
 		ilGenImages(1, &ima);
 		ilBindImage(ima);
 		ilLoadImage((ILstring)texture);

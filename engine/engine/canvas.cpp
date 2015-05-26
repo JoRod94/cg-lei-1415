@@ -6,10 +6,7 @@ using namespace std;
 
 scene new_scene(vector<group> groups, vector<light> lights) {
     scene s = (scene)calloc(1,sizeof(s_scene));
-	/*
-	copy(groups.begin(), groups.end(), s->groups);
-	copy(lights.begin(), lights.end(), s->lights);
-	*/
+
 	s->lights = lights;
 	s->groups = groups;
 	return s;
