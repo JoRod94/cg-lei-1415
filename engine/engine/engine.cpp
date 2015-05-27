@@ -106,30 +106,30 @@ void change_color() {
 
 static void keyActions(){
 	if (freeCamera){
-		if (keyHolds['w']) {
+		if (keyHolds['w'] || keyHolds['W']) {
 			pz += rz*freeCamSpeed;
 			px += rx*freeCamSpeed;
 			py += ry*freeCamSpeed;
 		}
-		if (keyHolds['s']) {
+		if (keyHolds['s'] || keyHolds['S']) {
 			pz -= rz*freeCamSpeed;
 			px -= rx*freeCamSpeed;
 			py -= ry*freeCamSpeed;
 		}
-		if (keyHolds['d']) {
+		if (keyHolds['d'] || keyHolds['D']) {
 			pz += rx*freeCamSpeed;
 			px -= rz*freeCamSpeed;
 		}
-		if (keyHolds['a']) {
+		if (keyHolds['a'] || keyHolds['A']) {
 			pz -= rx*freeCamSpeed;
 			px += rz*freeCamSpeed;
 		}
 	}
 
     else {
-		if (keyHolds['z'] && radius > 1)
+		if ((keyHolds['z'] || keyHolds['Z']) && radius > 1)
 			radius--;
-		if (keyHolds['x'])
+		if (keyHolds['x'] || keyHolds['X'])
 			radius++;
 	}
 }
@@ -192,7 +192,7 @@ static void drawGrid(){
 }
 
 float fix_sign(float d1,float d2){
-		return ((d1 <= 0) == (d2 <= 0))?d2:-(d2);
+		return ((d1 <= 0) == (d2 <= 0))?d2/d2:-(d2/d2);
 }
 
 static void draw_vbo(figure f){
