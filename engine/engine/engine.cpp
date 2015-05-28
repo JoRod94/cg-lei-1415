@@ -610,6 +610,7 @@ static int valid_xml(char* filename) {
 
 void initGL(){
 	// some OpenGL settings
+	glEnable(GL_NORMALIZE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
