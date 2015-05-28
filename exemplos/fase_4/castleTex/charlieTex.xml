@@ -1,0 +1,51 @@
+<cena>
+	<luzes>
+		<luz tipo="VECTOR" posX="5" posY="0" posZ="5" />
+	</luzes>
+	<grupo>
+	    <grupo>
+			<translacao Y="1" />
+					<modelos>
+						<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" />
+					</modelos>
+		</grupo>
+		<grupo>
+			<translacao Y="4" />
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+		</grupo>
+		<grupo>
+	        <translacao Y="1" />
+	        <grupo>
+	            <translacao X="2" />
+	            	<modelos>
+	                	<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            	</modelos>
+	        </grupo>
+			<grupo>
+	        	<translacao X="-2" />
+	            	<modelos>
+	                	<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            	</modelos>
+	       </grupo>
+		    
+		</grupo>
+		<grupo>
+	        <translacao Y="-3" />
+					
+	        <grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        </grupo>
+			<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        </grupo>
+	    </grupo>
+	</grupo>
+</cena>

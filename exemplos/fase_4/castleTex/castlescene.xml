@@ -1,0 +1,1181 @@
+﻿<camera alfa="180" beta="30" raio="85"/>
+<cena>
+	<luzes>
+		<luz tipo="point" posX="0" posY="3" posZ="0" />
+	</luzes>
+
+	<grupo>
+		
+		<rotacao angulo="270" eixoX="1" />
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\XYplaneTex.3d" textura="..\..\exemplos\fase_4\castleTex\grass.jpg"/>
+		</modelos>
+	</grupo>
+
+	<grupo>
+		<translacao Y="3.15" />
+		
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\boxATex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+		</modelos>
+	</grupo>
+
+	<grupo>
+		<translacao Y="6.65" />
+		
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\boxBTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+		</modelos>
+	</grupo>
+	<grupo>
+        <translacao Y="1.2" />
+        
+		<modelos>
+		    <modelo ficheiro="..\..\exemplos\fase_4\castleTex\boxCTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+        </modelos>
+	</grupo>
+
+	<grupo>
+		<translacao Y="0.675" Z="-7.2" />
+		
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\doorTex.3d" textura="..\..\exemplos\fase_4\castleTex\door.jpg"/>
+		</modelos>
+	</grupo>
+	<grupo>
+		<translacao Y="0.675" Z="-8.85" />
+		
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\doorTex.3d" textura="..\..\exemplos\fase_4\castleTex\door.jpg"/>
+		</modelos>
+	</grupo>
+	<grupo>
+        <translacao Z="-8" />
+
+        <grupo>
+        	<translacao Y="1.5" />
+			<grupo>
+	      		<modelos>
+	      			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\wallTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+	  			</modelos>
+    		</grupo>
+			<grupo>
+				<translacao X="8" Z="8" />
+				<rotacao angulo="90" eixoY="1" />
+        		<modelos>
+           			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\wallTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+      			</modelos>
+    		</grupo>
+			<grupo>
+				<translacao X="-8" Z="8" />
+				<rotacao angulo="90" eixoY="1" />
+				<modelos>
+            			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\wallTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+      			</modelos>
+    		</grupo>
+			<grupo>
+				<translacao Z="16" />
+        		<modelos>
+           			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\wallTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+      			</modelos>
+    		</grupo>
+    	</grupo>
+
+    	<grupo>
+			<translacao Y="2.5" />
+            
+			<grupo>
+				<translacao X="8" />
+				<modelos>
+                	<modelo ficheiro="..\..\exemplos\fase_4\castleTex\cornerTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+          		</modelos>
+        	</grupo>
+			<grupo>
+				<translacao X="-8" />
+            	<modelos>
+          			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\cornerTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+      			</modelos>
+        	</grupo>
+			<grupo>
+				<translacao X="8" Z="16" />
+           		<modelos>
+          			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\cornerTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+       			</modelos>
+        	</grupo>
+			<grupo>
+				<translacao X="-8" Z="16" />
+            	<modelos>
+          			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\cornerTex.3d" textura="..\..\exemplos\fase_4\castleTex\brickwall.jpg"/>
+       			</modelos>
+       		</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="8" Y="10" Z="16" />
+			
+			<modelos>
+				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\flagpoleTex.3d" textura="..\..\exemplos\fase_4\castleTex\pole.jpg"/>
+			</modelos>
+		</grupo>
+		<grupo>
+			<translacao X="10" Y="14" Z="16" />
+			
+			<modelos>
+				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\flagTex.3d" textura="..\..\exemplos\fase_4\castleTex\flag.jpg"/>
+			</modelos>
+		</grupo>
+
+	</grupo>
+	<grupo>
+		<escala X="0.1" Y="0.1" Z="0.1" />
+
+
+		<grupo>
+			<translacao X="50" Y="5" Z="-125" />
+
+			
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+        			<translacao Y="1" />
+				
+        			<grupo>
+	            			<translacao X="2" />
+        	    			<modelos>
+                				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+            				</modelos>
+	        		</grupo>
+				<grupo>
+        				<translacao X="-2" />
+            				<modelos>
+                				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+       				</grupo>
+				
+	    
+			</grupo>
+			<grupo>
+        			<translacao Y="-3" />
+				
+        			<grupo>
+	            			<translacao X="-0.5" />
+        	    			<modelos>
+                				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+          				</modelos>
+	        		</grupo>	
+				<grupo>
+            				<translacao X="0.5" />
+            				<modelos>
+                				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+          				</modelos>
+        			</grupo>
+				
+    		</grupo>
+		</grupo>
+
+
+		<grupo>
+			<translacao tempo="15">
+		            <ponto X="86" Y="5" Z="-250"/>
+		            <ponto X="-86"  Y="5" Z="-170"/>
+
+		            <ponto X="-86"  Y="5" Z="-220"/>
+		            <ponto X="55"  Y="5" Z="-200"/>
+	        </translacao>
+			
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+				<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+			</modelos>
+			</grupo>
+			<grupo>
+        		<translacao Y="1" />
+        		<grupo>
+            			<translacao X="2" />
+            			<modelos>
+                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+            			</modelos>
+        		</grupo>
+			<grupo>
+        			<translacao X="-2" />
+            			<modelos>
+                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+            			</modelos>
+       			</grupo>
+			
+	    
+			</grupo>
+			<grupo>
+        		<translacao Y="-3" />
+				
+        		<grupo>
+            			<translacao X="-0.5" />
+            			<modelos>
+                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+          			</modelos>
+        		</grupo>
+				<grupo>
+            			<translacao X="0.5" />
+            			<modelos>
+                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+          			</modelos>
+        		</grupo>
+			
+    		</grupo>
+		
+		</grupo>
+		<grupo>
+			<translacao tempo="30">
+		            <ponto X="360" Y="5" Z="320"/>
+		            <ponto X="-320"  Y="5" Z="320"/>
+		            <ponto X="-360"  Y="5" Z="-360"/>
+
+		            <ponto X="360"  Y="5" Z="-320"/>
+	        </translacao>
+			
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+			<grupo>
+	        		<translacao Y="-3" />
+				
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				
+	    		</grupo>
+		</grupo>
+
+
+		<grupo>
+			<translacao tempo="30">
+		            <ponto X="200" Y="5" Z="-250"/>
+		            <ponto X="-120"  Y="5" Z="-300"/>
+		            <ponto X="-120"  Y="5" Z="100"/>
+
+		            <ponto X="340"  Y="5" Z="100"/>
+	        </translacao>
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+			<grupo>
+	        		<translacao Y="-3" />
+				
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				
+	    		</grupo>
+		</grupo>
+
+
+		<grupo>
+			<translacao tempo="20">
+		            <ponto X="-200" Y="5" Z="-100"/>
+		            <ponto X="-120"  Y="5" Z="-100"/>
+		            <ponto X="-120"  Y="5" Z="100"/>
+		            <ponto X="120"  Y="5" Z="100"/>
+		            <ponto X="120"  Y="5" Z="-100"/>
+	        </translacao>
+			
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+			<grupo>
+	        		<translacao Y="-3" />
+				
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				
+	    		</grupo>
+		</grupo>
+
+
+		<grupo>
+			<translacao tempo="10">
+		            <ponto X="110" Y="5"/>
+		            <ponto X="120"  Y="5" Z="-20"/>
+		            <ponto X="130"  Y="5"/>
+		            <ponto X="120"  Y="5" Z="20"/>
+		            <ponto X="110"  Y="5"/>
+		            <ponto X="100"  Y="5" Z="40"/>
+	        </translacao>
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+			<grupo>
+	        		<translacao Y="-3" />
+				
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				
+	    		</grupo>
+		</grupo>
+
+
+		<grupo>
+			<translacao tempo="5">
+		            <ponto X="-15" Y="5" Z="-145"/>
+		            <ponto X="-20"  Y="5" Z="-165"/>
+		            <ponto X="-12"  Y="5" Z="-145"/>
+		            <ponto X="-14"  Y="5" Z="-130"/>
+	        </translacao>
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+
+
+			<grupo>
+	        		<translacao Y="-3" />
+				
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				
+	    		</grupo>
+		</grupo>
+		<grupo>
+			<translacao tempo="2">
+		            <ponto X="-31" Y="5" Z="-108"/>
+		            <ponto X="-30"  Y="5" Z="-110"/>
+		            <ponto X="-29"  Y="5" Z="-112"/>
+		            <ponto X="-28"  Y="5" Z="-110"/>
+	        </translacao>
+			
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+			<grupo>
+	        		<translacao Y="-3" />
+				
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+				
+	    		</grupo>
+		</grupo>
+		<grupo>
+			<translacao tempo="10">
+		            <ponto X="-75" Y="55" Z="-95"/>
+		            <ponto X="-90"  Y="55" Z="-95"/>
+		            <ponto X="-75"  Y="55" Z="-80"/>
+		            <ponto X="-80"  Y="55" Z="-90"/>
+	        </translacao>
+			
+			<grupo>
+				<translacao Y="1" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\torsoTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieshirt.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\headTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+	        		<translacao Y="1" />
+				
+	        		<grupo>
+	            			<translacao X="2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	        		</grupo>
+				<grupo>
+	        			<translacao X="-2" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charlieskin.jpg"/>
+	            			</modelos>
+	       			</grupo>
+				
+		    
+			</grupo>
+			<grupo>
+	        		<translacao Y="-3" />
+					
+	        		<grupo>
+	            			<translacao X="-0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+					<grupo>
+	            			<translacao X="0.5" />
+	            			<modelos>
+	                			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\limbTex.3d" textura="..\..\exemplos\fase_4\castleTex\charliejeans.jpg"/>
+	          			</modelos>
+	        		</grupo>
+	    	</grupo>
+		</grupo>
+	</grupo>
+
+	<grupo>
+		<escala X="1.1" Y="1.1" Z="1.1" />
+		<grupo>
+			<translacao X="14" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+
+		<grupo>
+			<translacao X="19" Z="-12" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="5" Z="-10"/>
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="-11" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-20" Z="-9" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-2" Z="10" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="-15" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="7" Z="-18" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="-15" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="10" Z="-14" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="11" Z="-20" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="-18" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-11" Z="-15" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="-13" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="14" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="19" Z="-12" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="8" Z="7" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="12" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="5" Z="10"/>
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="9" Z="11" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-20" Z="9" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-2" Z="10" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="15" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="7" Z="18" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="15" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="10" Z="12" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="11" Z="20" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-10" Z="18" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-11" Z="15" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+		<grupo>
+			<translacao X="-5" Z="13" />
+			<grupo>
+				<translacao Y="0.8" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treeleavesTex.3d" textura="..\..\exemplos\fase_4\castleTex\treeleaves.jpg"/>
+				</modelos>
+			</grupo>
+			<grupo>
+				<translacao Y="0.4" />
+				
+				<modelos>
+					<modelo ficheiro="..\..\exemplos\fase_4\castleTex\treebaseTex.3d" textura="..\..\exemplos\fase_4\castleTex\treebase.jpg"/>
+				</modelos>
+			</grupo>
+		</grupo>
+	</grupo>
+
+</cena>
