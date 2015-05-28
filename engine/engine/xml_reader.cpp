@@ -16,6 +16,7 @@
 #include "engine.h"
 #include "canvas.h"
 #include <IL/il.h>
+#include "skybox.h"
 
 using namespace std;
 
@@ -403,7 +404,7 @@ pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 	}
 
 	if (skybox) {
-		set_skybox( parseSkybox(skybox) );
+		set_skybox(parseSkybox(skybox));
 	}
 
 	for (tinyxml2::XMLElement* s = doc.FirstChildElement(_XML_SCENE);
