@@ -86,12 +86,12 @@ static void keyHoldsInit(){
 		keyHolds[i] = false;
 }
 
-static void reset_color() {
+void reset_color() {
 	if (!changed_color)
 		return;
 
 	if (glIsEnabled(GL_LIGHTING)) {
-		float wht[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		float wht[4] = { 255.0f, 255.0f, 255.0f, 1.0f };
 		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wht);
 	}
 	else
@@ -230,10 +230,11 @@ static void draw_group(group g) {
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
 		map<string, figure>::iterator p = files.find((g->points)[i].filename);
-		Color* c = (g->points)[i].color;
-		if (c != nullptr)
-			c->apply();
 		if (p != files.end()) {
+			Color* c = (g->points)[i].color;
+			if (c != nullptr) {
+				c->apply();
+			}
 			draw_vbo(p->second, g->points[i].texId);
 		}
     }

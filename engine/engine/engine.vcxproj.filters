@@ -27,9 +27,6 @@
     <ClInclude Include="..\toolkits\includes\rotation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\toolkits\includes\translation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\toolkits\includes\canvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -56,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="model.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\toolkits\includes\translation.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

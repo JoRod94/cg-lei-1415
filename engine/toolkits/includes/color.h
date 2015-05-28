@@ -6,7 +6,7 @@
 class Color : public Transformation {
 public:
 	float cInfo[4];
-	GLenum c_type;
+	GLenum color_type;
 	bool material;
 
 	Color(float r, float g, float b) {
@@ -15,7 +15,7 @@ public:
 		cInfo[2] = b;
 		cInfo[3] = 1.0f;
 		material = false;
-		c_type = GL_AMBIENT_AND_DIFFUSE;
+		color_type = GL_AMBIENT_AND_DIFFUSE;
 	}
 
 	Color(float r, float g, float b, bool m) {
@@ -24,7 +24,7 @@ public:
 		cInfo[2] = b;
 		cInfo[3] = 1.0f;
 		material = m;
-		c_type = GL_AMBIENT_AND_DIFFUSE;
+		color_type = GL_AMBIENT_AND_DIFFUSE;
 	}
 	
 	Color(float r, float g, float b, GLenum type, bool m) {
@@ -33,7 +33,7 @@ public:
 		cInfo[2] = b;
 		cInfo[3] = 1.0f;
 		material = m;
-		c_type = type;
+		color_type = type;
 	}
 
 	Color() {
@@ -42,7 +42,7 @@ public:
 		cInfo[2] = 0;
 		cInfo[3] = 1.0f;
 		material = false;
-		c_type = GL_AMBIENT_AND_DIFFUSE;
+		color_type = GL_AMBIENT_AND_DIFFUSE;
 	}
 
 	virtual void apply();

@@ -3,5 +3,5 @@
 
 void set_camera(float x, float y, float z);
 void change_color();
-
+void reset_color();
 #endif

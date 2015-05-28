@@ -125,18 +125,16 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	const char* diffG = model->Attribute(_XML_DIFF_G);
 	const char* diffB = model->Attribute(_XML_DIFF_B);
 	const char* colorType = model->Attribute(_XML_COLOR_TYPE);
-	GLenum c_type = GL_AMBIENT_AND_DIFFUSE;
-	cout << "HERE" << endl;
+	int type = GL_AMBIENT_AND_DIFFUSE;
 
 	if (colorType) {
 		if (strcmp(colorType, _XML_SPECULAR) == 0)
-			c_type = GL_SPECULAR;
+			type = GL_SPECULAR;
 		else if (strcmp(colorType, _XML_EMISSION) == 0) {
-			c_type = GL_EMISSION;
-			cout << "EMISSIVE" << endl;
+			type = GL_EMISSION;
 		}
 		else if (strcmp(colorType, _XML_AMB_DIFF) == 0)
-			c_type = GL_AMBIENT_AND_DIFFUSE;
+			type = GL_AMBIENT_AND_DIFFUSE;
 		else
 			return nullptr;
 	}
@@ -145,8 +143,9 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	// if none exists, return null
 	// if one exists, the others default to zero
 	// and we create a new color with the material flag on
-	if ( diffR && diffG && diffB )
-		return new Color(stof(diffR), stof(diffG), stof(diffB), c_type, true);
+	if (diffR && diffG && diffB) {
+		return new Color(stof(diffR), stof(diffG), stof(diffB), type, true);
+	}
 
 	return nullptr;
 }

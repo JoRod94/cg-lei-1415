@@ -7,11 +7,12 @@
 using namespace std;
 
 void Color::apply(){
-	if (material && glIsEnabled(GL_LIGHTING)) {
-		glMaterialfv(GL_FRONT, c_type, cInfo);
+	if (glIsEnabled(GL_LIGHTING) || material) {
+		glMaterialfv(GL_FRONT, color_type, cInfo);
 	}
-	else
+	else {
 		glColor3ub(cInfo[0], cInfo[1], cInfo[2]);
+	}
 
 	change_color();
 }
