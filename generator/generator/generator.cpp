@@ -160,7 +160,7 @@ point cubic_bezier_zz(float t, point* p) {
 	return pf;
 }
 /*
-vec3 bezier_tangent_yy(float t, point* p) {
+vec3 bezier_derivative_yy(float t, point* p) {
 	vec3 v;
 
 	v.x = -3 * pow(1 - t, 2) * p[0].x +
@@ -187,8 +187,8 @@ vec3 bezier_tangent_yy(float t, point* p) {
 	return v;
 }*/
 
-vec3 bezier_tangent_yy(float t, point *p) {
-	vec3 v;
+point bezier_derivative_yy(float t, point *p) {
+	point v;
 
 	v.x = -3 * pow(1 - t, 2) * p[0].x +
 		(9 * pow(t, 2) - 12 * t + 3) * p[1].x +
@@ -208,7 +208,7 @@ vec3 bezier_tangent_yy(float t, point *p) {
 	return v;
 }
 
-/*vec3 bezier_tangent_zz(float t, point *p) {
+/*vec3 bezier_derivative_zz(float t, point *p) {
 	vec3 v;
 
 	v.x = -3 * pow(1 - t, 2) * p[0].x +
@@ -235,8 +235,8 @@ vec3 bezier_tangent_yy(float t, point *p) {
 	return v;
 }*/
 
-vec3 bezier_tangent_zz(float t, point *p) {
-	vec3 v;
+point bezier_derivative_zz(float t, point *p) {
+	point v;
 
 	v.x = -3 * pow(1 - t, 2) * p[0].x +
 		(9 * pow(t, 2) - 12 * t + 3) * p[1].x +
@@ -261,6 +261,7 @@ vertex interpolate_yy(float u, float v, Patch p) {
 	int j = 0, w = 0;
 	point u_points[4];
 	point v_points[4];
+	point vt_points[4];
 	point pt;
 	vec3 u_tangent;
 	vec3 v_tangent;
@@ -271,18 +272,24 @@ vertex interpolate_yy(float u, float v, Patch p) {
 		j = (j + 1) % 4;
 
 		if (j == 0) {
-			u_tangent = bezier_tangent_yy(u, u_points);
-			u_tangent.normalize();
+			vt_points[w] = bezier_derivative_yy(u, u_points);
 			v_points[w++] = cubic_bezier(u, u_points);
 		}
 	}
 
 	pt = cubic_bezier(v, v_points);
-	v_tangent = bezier_tangent_yy(v, v_points);
+	point tmp_u = cubic_bezier(v, vt_points);
+	point tmp_v = bezier_derivative_yy(v, v_points);
+	
+	u_tangent = vec3(tmp_u.x, tmp_u.y, tmp_u.z);
+	v_tangent = vec3(tmp_v.x, tmp_v.y, tmp_v.z);
 	v_tangent.normalize();
-	vec3 tangent = v_tangent.cross(u_tangent);
-	tangent.normalize();
-	return vertex( pt, tangent );
+	u_tangent.normalize();
+	
+	vec3 normal = v_tangent.cross(u_tangent);
+	normal.normalize();
+	
+	return vertex( pt, normal );
 }
 
 vertex interpolate_zz(float u, float v, Patch p) {
@@ -290,8 +297,7 @@ vertex interpolate_zz(float u, float v, Patch p) {
 	point pt;
 	point u_points[4];
 	point v_points[4];
-	vec3 v_tangent;
-	vec3 u_tangent;
+	point ut_points[4]; // tangent u points
 
 	for (int i = 0; i < 16; i++) {
 		v_points[j] = p.getPoint(i);
@@ -299,18 +305,25 @@ vertex interpolate_zz(float u, float v, Patch p) {
 		j = (j + 1) % 4;
 
 		if (j == 0) {
+			ut_points[w] = bezier_derivative_zz(v, v_points);
 			u_points[w++] = cubic_bezier_zz(v, v_points);
-			v_tangent = bezier_tangent_zz(v, v_points);
-			v_tangent.normalize();
 		}
 	}
 
 	pt = cubic_bezier(u, u_points);
-	u_tangent = bezier_tangent_yy(u, u_points);
+	
+	point tmp_v = cubic_bezier(u, ut_points);
+	point tmp_u = bezier_derivative_yy(u, u_points);
+	
+	vec3 u_tangent = vec3(tmp_u.x, tmp_u.y, tmp_u.z);
+	vec3 v_tangent = vec3(tmp_v.x, tmp_v.y, tmp_v.z);
+
 	u_tangent.normalize();
-	vec3 tangent = u_tangent.cross(v_tangent);
-	tangent.normalize();
-	return vertex( pt, tangent);
+	v_tangent.normalize();
+	
+	vec3 normal = u_tangent.cross(v_tangent);
+	normal.normalize();
+	return vertex(pt,normal);
 }
 
 void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
