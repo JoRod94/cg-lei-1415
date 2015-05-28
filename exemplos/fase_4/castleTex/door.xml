@@ -1,0 +1,21 @@
+<cena>
+	<luzes>
+		<luz tipo="point" posX="0" posY="3" posZ="0" />
+	</luzes>
+
+	<grupo>
+		
+		<rotacao angulo="270" eixoX="1" />
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\XYplaneTex.3d" textura="..\..\exemplos\fase_4\castleTex\grass.jpg"/>
+		</modelos>
+	</grupo>
+
+	<grupo>
+		<translacao Y="0.675" Z="-7.2" />
+		
+		<modelos>
+			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\doorTex.3d" textura="..\..\exemplos\fase_4\castleTex\door.jpg"/>
+		</modelos>
+	</grupo>
+</cena>
