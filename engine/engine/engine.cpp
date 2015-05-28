@@ -370,14 +370,15 @@ static void renderScene(void) {
 
 	if (engine_skybox){
 		glPushMatrix();
-		if (freeCamera) 
+		if (freeCamera)
 			glTranslatef(px, py, pz);
-		else 
+		else
 			glTranslatef((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))));
 
 		engine_skybox->draw();
 		glPopMatrix();
 	}
+	
 	drawGrid();
 	renderScenes();
 
@@ -693,14 +694,13 @@ int main(int argc, char **argv){
 	scenes = read_values.first;
 	files = read_values.second;
 
-	if (engine_skybox){
-		engine_skybox->init_textures();
-	}
 
 	//gl
 	initGL();
 
-
+	// carregar texturas skybox, se disponiveis
+	if(engine_skybox)
+		engine_skybox->init_textures();
 	// entrar no ciclo do GLUT
 	glutMainLoop();
 

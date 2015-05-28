@@ -130,14 +130,12 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	const char* diffB = model->Attribute(_XML_DIFF_B);
 	const char* colorType = model->Attribute(_XML_COLOR_TYPE);
 	GLenum c_type = GL_AMBIENT_AND_DIFFUSE;
-	cout << "HERE" << endl;
 
 	if (colorType) {
 		if (strcmp(colorType, _XML_SPECULAR) == 0)
 			c_type = GL_SPECULAR;
 		else if (strcmp(colorType, _XML_EMISSION) == 0) {
 			c_type = GL_EMISSION;
-			cout << "EMISSIVE" << endl;
 		}
 		else if (strcmp(colorType, _XML_AMB_DIFF) == 0)
 			c_type = GL_AMBIENT_AND_DIFFUSE;
