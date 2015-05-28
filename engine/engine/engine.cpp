@@ -22,6 +22,7 @@
 #include "xml_reader.h"
 #include "canvas.h"
 #include "point.h"
+#include "skybox.h"
 
 #define DEFAULT_CAM_RADIUS	10.0f
 
@@ -74,7 +75,7 @@ bool changed_color = false; // wether or not we have changed the color in a draw
 
 Skybox* engine_skybox;
 
-void set_skybox(Skybox* s) {
+void set_skybox(Skybox *s){
 	engine_skybox = s;
 }
 
@@ -367,6 +368,16 @@ static void renderScene(void) {
 
 	glPolygonMode(GL_FRONT, mode);
 
+	if (engine_skybox){
+		glPushMatrix();
+		if (freeCamera) 
+			glTranslatef(px, py, pz);
+		else 
+			glTranslatef((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))));
+
+		engine_skybox->draw();
+		glPopMatrix();
+	}
 	drawGrid();
 	renderScenes();
 
@@ -681,6 +692,10 @@ int main(int argc, char **argv){
 	pair<vector<scene>, map<string, figure> > read_values = read_xml(xmlName);
 	scenes = read_values.first;
 	files = read_values.second;
+
+	if (engine_skybox){
+		engine_skybox->init_textures();
+	}
 
 	//gl
 	initGL();
