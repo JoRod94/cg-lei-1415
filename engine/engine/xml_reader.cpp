@@ -17,6 +17,7 @@
 #include "canvas.h"
 #include <IL/il.h>
 #include "model.h"
+#include "skybox.h"
 
 using namespace std;
 
@@ -26,6 +27,9 @@ int currLight = 0;
 map <string, int> textures;
 
 static bool file_exists(const char* filename) {
+	if (!filename)
+		return false;
+
 	struct stat buffer;
 	return (stat(filename, &buffer) == 0);
 }
@@ -358,6 +362,51 @@ scene parse_scene(tinyxml2::XMLElement* scene) {
      return new_scene(groups, lights);
 }
 
+static bool valid_skybox(tinyxml2::XMLElement* skybox) {
+	tinyxml2::XMLElement* front = skybox->FirstChildElement(_XML_SKY_FRONT);
+	tinyxml2::XMLElement* left = skybox->FirstChildElement(_XML_SKY_LEFT);
+	tinyxml2::XMLElement* back = skybox->FirstChildElement(_XML_SKY_BACK);
+	tinyxml2::XMLElement* right = skybox->FirstChildElement(_XML_SKY_RIGHT);
+	tinyxml2::XMLElement* top = skybox->FirstChildElement(_XML_SKY_TOP);
+	tinyxml2::XMLElement* bottom = skybox->FirstChildElement(_XML_SKY_BOTTOM);
+
+	if (!(front && left && back && right && top && bottom))
+		return false;
+
+	const char* front_file = front->Attribute(_XML_FILE);
+	const char* left_file = left->Attribute(_XML_FILE);
+	const char* back_file = back->Attribute(_XML_FILE);
+	const char* right_file = right->Attribute(_XML_FILE);
+	const char* top_file = top->Attribute(_XML_FILE);
+	const char* bottom_file = bottom->Attribute(_XML_FILE);
+	
+	return (file_exists(front_file) && file_exists(back_file) &&
+		file_exists(left_file) && file_exists(right_file) &&
+		file_exists(top_file) && file_exists(bottom_file));
+}
+
+static Skybox* parseSkybox(tinyxml2::XMLElement* skybox) {
+	tinyxml2::XMLElement* front = skybox->FirstChildElement(_XML_SKY_FRONT);
+	tinyxml2::XMLElement* left = skybox->FirstChildElement(_XML_SKY_LEFT);
+	tinyxml2::XMLElement* back = skybox->FirstChildElement(_XML_SKY_BACK);
+	tinyxml2::XMLElement* right = skybox->FirstChildElement(_XML_SKY_RIGHT);
+	tinyxml2::XMLElement* top = skybox->FirstChildElement(_XML_SKY_TOP);
+	tinyxml2::XMLElement* bottom = skybox->FirstChildElement(_XML_SKY_BOTTOM);
+
+	if (valid_skybox(skybox)) {
+		return new Skybox(front->Attribute(_XML_FILE),
+			left->Attribute(_XML_FILE),
+			back->Attribute(_XML_FILE),
+			right->Attribute(_XML_FILE),
+			top->Attribute(_XML_FILE),
+			bottom->Attribute(_XML_FILE));
+	}
+	else {
+		cout << "Invalid skybox, ignoring..." << endl;
+		return nullptr;
+	}
+}
+
 pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(xmlName);
@@ -365,11 +414,16 @@ pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
     vector<scene> scenes;
 
     tinyxml2::XMLElement* camera = doc.FirstChildElement(_XML_CAMERA);
+	tinyxml2::XMLElement* skybox = doc.FirstChildElement(_XML_SKYBOX);
 
 	if (camera) {
 		set_camera(camera->FloatAttribute(_XML_CAM_ALPHA),
 			camera->FloatAttribute(_XML_CAM_BETA),
 			camera->FloatAttribute(_XML_CAM_RADIUS));
+	}
+
+	if (skybox) {
+		set_skybox(parseSkybox(skybox));
 	}
 
 	for (tinyxml2::XMLElement* s = doc.FirstChildElement(_XML_SCENE);

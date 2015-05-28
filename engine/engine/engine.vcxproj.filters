@@ -53,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="model.h">
       <Filter>Header Files</Filter>
+  </ClInclude>
+    <ClInclude Include="skybox.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\toolkits\includes\translation.h">
       <Filter>Resource Files</Filter>
@@ -93,6 +96,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="model.cpp">
+    	<Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

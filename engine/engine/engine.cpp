@@ -22,6 +22,7 @@
 #include "xml_reader.h"
 #include "canvas.h"
 #include "point.h"
+#include "skybox.h"
 
 #define DEFAULT_CAM_RADIUS	10.0f
 
@@ -71,6 +72,12 @@ int xOri = -1;
 int yOri = -1;
 
 bool changed_color = false; // wether or not we have changed the color in a drawing iteration
+
+Skybox* engine_skybox;
+
+void set_skybox(Skybox *s){
+	engine_skybox = s;
+}
 
 void set_camera(float a, float b, float r) {
 	defAlpha = (a * M_PI) / 180;
@@ -362,6 +369,17 @@ static void renderScene(void) {
 
 	glPolygonMode(GL_FRONT, mode);
 
+	if (engine_skybox){
+		glPushMatrix();
+		if (freeCamera)
+			glTranslatef(px, py, pz);
+		else
+			glTranslatef((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))));
+
+		engine_skybox->draw();
+		glPopMatrix();
+	}
+	
 	drawGrid();
 	renderScenes();
 
@@ -678,10 +696,13 @@ int main(int argc, char **argv){
 	scenes = read_values.first;
 	files = read_values.second;
 
+
 	//gl
 	initGL();
 
-
+	// carregar texturas skybox, se disponiveis
+	if(engine_skybox)
+		engine_skybox->init_textures();
 	// entrar no ciclo do GLUT
 	glutMainLoop();
 
