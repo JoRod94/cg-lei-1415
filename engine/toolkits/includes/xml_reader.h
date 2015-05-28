@@ -46,6 +46,7 @@
 #define _XML_CAM_RADIUS		"raio"
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
+#define _XML_SKYBOX			"skybox"
 
 using namespace std;
 
