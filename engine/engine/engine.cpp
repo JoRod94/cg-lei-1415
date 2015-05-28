@@ -91,7 +91,7 @@ void reset_color() {
 		return;
 
 	if (glIsEnabled(GL_LIGHTING)) {
-		float wht[4] = { 255.0f, 255.0f, 255.0f, 1.0f };
+		float wht[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wht);
 	}
 	else
