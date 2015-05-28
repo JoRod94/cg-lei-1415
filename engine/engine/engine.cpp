@@ -141,13 +141,6 @@ static void gridBoolInit(){
 
 static void drawGrid(){
 	if (gridBools[0]){
-		
-		if (glIsEnabled(GL_LIGHTING)) {
-			float green[4] = { 0.0f, 255.0f, 0.0f, 1.0f };
-			glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
-		}
-		else
-			glColor3ub(0, 255, 0);
 
 		if (gridBools[1]){
 			for (float i = -gridSize; i <= gridSize; i += gridScale){
@@ -192,7 +185,7 @@ static void drawGrid(){
 }
 
 float fix_sign(float d1,float d2){
-		return ((d1 <= 0) == (d2 <= 0))?d2/d2:-(d2/d2);
+		return ((d1 <= 0) == (d2 <= 0))?d2:-(d2);
 }
 
 static void draw_vbo(figure f){
