@@ -207,7 +207,7 @@ static void draw_vbo(figure f, unsigned int texId){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->normal_buffer_nr]);
 	glNormalPointer(GL_FLOAT, 0, 0);
 
-	if (texId == -1)
+	if (texId == 0)
 		glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 	else{
 		glEnable(GL_TEXTURE_2D);

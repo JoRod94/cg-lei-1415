@@ -36,7 +36,7 @@ void read_bin(string filename, bool has_texture){
 	map<string, figure>::iterator file = m_files.find(filename);
 
 	if (file != m_files.end()) {
-		file->second->has_tex = has_texture;
+		file->second->has_tex = file->second->has_tex || has_texture;
 		free(f);
 		cout << "MODEL FILE ALREADY READ: " << filename << endl;
 		return;
@@ -201,7 +201,7 @@ int get_model_texture(tinyxml2::XMLElement* model) {
 	if (texture && valid_texture(texture))	
 		return texture_val(texture);
 	else 
-		return -1;
+		return 0;
 }
 
 static vector<Model> group_points(tinyxml2::XMLElement* group) {
@@ -214,7 +214,7 @@ static vector<Model> group_points(tinyxml2::XMLElement* group) {
 			string filename = model->Attribute(_XML_FILE);
 			Color* color = get_model_colors(model);
 			int texID = get_model_texture(model);
-			read_bin(filename, texID != -1);
+			read_bin(filename, texID != 0);
 			points.push_back( Model(color, texID, filename) );
 		}
 	}
