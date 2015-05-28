@@ -288,8 +288,8 @@ vertex interpolate_yy(float u, float v, Patch p) {
 	
 	vec3 normal = v_tangent.cross(u_tangent);
 	normal.normalize();
-	
-	return vertex( pt, normal );
+
+	return vertex( pt, normal, u, v );
 }
 
 vertex interpolate_zz(float u, float v, Patch p) {
@@ -323,7 +323,7 @@ vertex interpolate_zz(float u, float v, Patch p) {
 	
 	vec3 normal = u_tangent.cross(v_tangent);
 	normal.normalize();
-	return vertex(pt,normal);
+	return vertex(pt, normal, v, u);
 }
 
 void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
@@ -347,12 +347,7 @@ void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
 		v3 = interpolate_yy(u, next_v, p);
 	}
 
-    v0.put_tc(u, v);
-    v1.put_tc(next_u, v);
-    v2.put_tc(next_u, next_v);
-    v3.put_tc(u, next_v);
-
-	_put_vertex(v0);
+ 	_put_vertex(v0);
 	_put_vertex(v1);
 	_put_vertex(v2);
 
