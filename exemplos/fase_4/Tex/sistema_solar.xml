@@ -1,11 +1,10 @@
 <cena>
 	<luzes>
-		<luz tipo="VECTOR" posX="1" posY="1" posZ="1" />
+		<luz tipo="POINT" posX="0" posY="0" posZ="0" />
 	</luzes>
 	<!-- SOL -->
 	<grupo>
 		<escala X="22" Y="22" Z="22"/>
-		<cor R="255" G="165" B="0"/>
 		<modelos>
 			<modelo ficheiro="sphereTex.3d" textura="texture_sun.jpg"/>
 		</modelos>
