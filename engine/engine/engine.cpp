@@ -72,6 +72,12 @@ int yOri = -1;
 
 bool changed_color = false; // wether or not we have changed the color in a drawing iteration
 
+Skybox* engine_skybox;
+
+void set_skybox(Skybox* s) {
+	engine_skybox = s;
+}
+
 void set_camera(float a, float b, float r) {
 	defAlpha = (a * M_PI) / 180;
 	defBeta = (b * M_PI) / 180;
