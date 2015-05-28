@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 #include <GL/glut.h>
+#include "model.h"
 
 using namespace std;
 
@@ -26,12 +27,12 @@ typedef struct s_figure {
 	int vertex_buffer_nr;
 	int normal_buffer_nr;
 	int texture_buffer_nr;
-	int image_texture_ID;
+	bool has_tex;
 } *figure;
 
 typedef struct s_group {
 	vector<Transformation*> transformations;
-	vector<pair<string, Color *> > points;
+	vector<Model> points;
 	vector<struct s_group *> subgroups;
 } *group;
 
@@ -49,7 +50,7 @@ light new_light(GLenum lId, float x, float y, float z, float type);
 
 group new_empty_group();
 
-group new_group(vector<Transformation*> transformations, vector<pair<string, Color *> > points, vector<group> subgroups);
+group new_group(vector<Transformation*> transformations, vector<Model> points, vector<group> subgroups);
 
 figure new_figure();
 

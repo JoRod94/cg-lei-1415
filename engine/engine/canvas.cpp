@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "canvas.h"
+#include "model.h"
 #include <utility>
 
 using namespace std;
@@ -31,7 +32,7 @@ group new_empty_group() {
     return (group)calloc(sizeof(s_group), 1);
 }
 
-group new_group(vector<Transformation*> transformations, vector<pair<string, Color *> > points, vector<group> subgroups) {
+group new_group(vector<Transformation*> transformations, vector<Model> points, vector<group> subgroups) {
 	group g = new_empty_group();
 
 	g->transformations = transformations;

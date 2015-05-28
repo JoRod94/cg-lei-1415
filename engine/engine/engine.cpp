@@ -188,7 +188,7 @@ float fix_sign(float d1,float d2){
 		return ((d1 <= 0) == (d2 <= 0))?d2:-(d2);
 }
 
-static void draw_vbo(figure f){
+static void draw_vbo(figure f, unsigned int texId){
 
 	if (shouldDrawNormals){
 		glBegin(GL_LINES);
@@ -207,14 +207,14 @@ static void draw_vbo(figure f){
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->normal_buffer_nr]);
 	glNormalPointer(GL_FLOAT, 0, 0);
 
-	if (f->image_texture_ID == -1)
+	if (texId == -1)
 		glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 	else{
 		glEnable(GL_TEXTURE_2D);
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[f->texture_buffer_nr]);
 		glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
-		glBindTexture(GL_TEXTURE_2D, f->image_texture_ID);
+		glBindTexture(GL_TEXTURE_2D, texId);
 		glDrawElements(GL_TRIANGLES, f->n_ind, GL_UNSIGNED_INT, f->indices);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -229,12 +229,12 @@ static void draw_group(group g) {
 	}
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
-		map<string, figure>::iterator p = files.find((g->points)[i].first);
-		Color* c = (g->points)[i].second;
+		map<string, figure>::iterator p = files.find((g->points)[i].filename);
+		Color* c = (g->points)[i].color;
 		if (c != nullptr)
 			c->apply();
 		if (p != files.end()) {
-			draw_vbo(p->second);
+			draw_vbo(p->second, g->points[i].texId);
 		}
     }
 
@@ -287,7 +287,7 @@ static void generate_vbos(){
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->normal_buffer_nr]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_coords), fIt->second->normal, GL_STATIC_DRAW);
 		
-		if (fIt->second->image_texture_ID != -1){
+		if (fIt->second->has_tex){
 			glBindBuffer(GL_ARRAY_BUFFER, buffers[fIt->second->texture_buffer_nr]);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (fIt->second->n_tex_coords), fIt->second->tex_coord, GL_STATIC_DRAW);
 		}

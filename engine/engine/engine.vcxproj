@@ -97,10 +97,12 @@
     <ClInclude Include="..\toolkits\includes\transformation.h" />
     <ClInclude Include="..\toolkits\includes\translation.h" />
     <ClInclude Include="..\toolkits\includes\xml_reader.h" />
+    <ClInclude Include="model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="engine.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="rotation.cpp" />
     <ClCompile Include="scale.cpp" />

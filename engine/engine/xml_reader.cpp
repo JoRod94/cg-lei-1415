@@ -16,6 +16,7 @@
 #include "engine.h"
 #include "canvas.h"
 #include <IL/il.h>
+#include "model.h"
 
 using namespace std;
 
@@ -29,12 +30,13 @@ static bool file_exists(const char* filename) {
 	return (stat(filename, &buffer) == 0);
 }
 
-void read_bin(string filename, int texId){
+void read_bin(string filename, bool has_texture){
 	figure f = new_figure();
 
 	map<string, figure>::iterator file = m_files.find(filename);
 
 	if (file != m_files.end()) {
+		file->second->has_tex = has_texture;
 		free(f);
 		cout << "MODEL FILE ALREADY READ: " << filename << endl;
 		return;
@@ -68,7 +70,7 @@ void read_bin(string filename, int texId){
 	f->vertex_buffer_nr = active_buffer++;
 	f->normal_buffer_nr = active_buffer++;
 	f->texture_buffer_nr = active_buffer++;
-	f->image_texture_ID = texId;
+	f->has_tex = has_texture;
 
 	m_files[filename] = f;
 }
@@ -122,12 +124,30 @@ static Color* get_model_colors(tinyxml2::XMLElement* model) {
 	const char* diffR = model->Attribute(_XML_DIFF_R);
 	const char* diffG = model->Attribute(_XML_DIFF_G);
 	const char* diffB = model->Attribute(_XML_DIFF_B);
+	const char* colorType = model->Attribute(_XML_COLOR_TYPE);
+	GLenum c_type = GL_AMBIENT_AND_DIFFUSE;
+	cout << "HERE" << endl;
+
+	if (colorType) {
+		if (strcmp(colorType, _XML_SPECULAR) == 0)
+			c_type = GL_SPECULAR;
+		else if (strcmp(colorType, _XML_EMISSION) == 0) {
+			c_type = GL_EMISSION;
+			cout << "EMISSIVE" << endl;
+		}
+		else if (strcmp(colorType, _XML_AMB_DIFF) == 0)
+			c_type = GL_AMBIENT_AND_DIFFUSE;
+		else
+			return nullptr;
+	}
+
 	// check if any exists
 	// if none exists, return null
 	// if one exists, the others default to zero
 	// and we create a new color with the material flag on
 	if ( diffR && diffG && diffB )
-		return new Color(stof(diffR), stof(diffG), stof(diffB), true);
+		return new Color(stof(diffR), stof(diffG), stof(diffB), c_type, true);
+
 	return nullptr;
 }
 
@@ -179,24 +199,24 @@ static int texture_val(const char* texture) {
 
 int get_model_texture(tinyxml2::XMLElement* model) {
 	const char* texture = model->Attribute(_XML_TEXTURE);
-	if (texture && valid_texture(texture))
+	if (texture && valid_texture(texture))	
 		return texture_val(texture);
-	else
+	else 
 		return -1;
 }
 
-static vector<pair<string, Color*> > group_points(tinyxml2::XMLElement* group) {
-    vector<pair<string, Color*> > points;
+static vector<Model> group_points(tinyxml2::XMLElement* group) {
+    vector<Model> points;
     tinyxml2::XMLElement* models = group->FirstChildElement(_XML_MODELS);
 
 	if (models) {
 		for (tinyxml2::XMLElement* model = models->FirstChildElement(_XML_MODEL);
 			model != NULL; model = model->NextSiblingElement(_XML_MODEL)) {
 			string filename = model->Attribute(_XML_FILE);
-			Color* c = get_model_colors(model);
+			Color* color = get_model_colors(model);
 			int texID = get_model_texture(model);
-			read_bin(filename,texID);
-			points.push_back(make_pair(filename, c));
+			read_bin(filename, texID != -1);
+			points.push_back( Model(color, texID, filename) );
 		}
 	}
     return points;
@@ -265,18 +285,6 @@ static vector<Transformation*> group_transformations(tinyxml2::XMLElement* group
     return vt;
 }
 
-vector<Transformation*> colorize(tinyxml2::XMLElement* g) {
-	vector<Transformation*> v;
-
-	tinyxml2::XMLElement* color = g->FirstChildElement(_XML_COLOR);
-	if (color == NULL)
-		v.push_back(new Color(255, 255, 255));
-	else
-		v = group_colors(g);
-
-	return v;
-}
-
 bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
     if(! valid_group(g)) {
         cout << "Invalid group found. Ignoring..." << endl;
@@ -284,7 +292,7 @@ bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
     }
     vector<Transformation*> t = group_transformations(g);
 	vector<Transformation*> c = group_colors(g);
-    vector<pair<string, Color*> > pt = group_points(g);
+    vector<Model> pt = group_points(g);
     vector<group> sg;
 
 	for (int i = 0; i < c.size(); i++)
@@ -292,14 +300,14 @@ bool parseGroup(tinyxml2::XMLElement* g, group &ret) {
 
 	tinyxml2::XMLElement* subgroup = g->FirstChildElement(_XML_GROUP);
 	while(subgroup != NULL) {
-			group maybe_sub = (group)malloc(sizeof(struct s_group));
+		group maybe_sub = new_empty_group();
 
 
-			if (parseGroup(subgroup, maybe_sub)) {
-				sg.push_back(maybe_sub);
-			}
-			subgroup = subgroup->NextSiblingElement(_XML_GROUP);
-       }
+		if (parseGroup(subgroup, maybe_sub)) {
+			sg.push_back(maybe_sub);
+		}
+		subgroup = subgroup->NextSiblingElement(_XML_GROUP);
+    }
 
     ret = new_group(t, pt, sg);
     return true;
