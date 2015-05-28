@@ -54,11 +54,8 @@
     <ClInclude Include="..\toolkits\includes\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="model.h">
-=======
     <ClInclude Include="skybox.h">
->>>>>>> Implementing Skybox
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -96,11 +93,8 @@
     <ClCompile Include="canvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="model.cpp">
-=======
     <ClCompile Include="skybox.cpp">
->>>>>>> Implementing Skybox
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

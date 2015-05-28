@@ -97,11 +97,8 @@
     <ClInclude Include="..\toolkits\includes\transformation.h" />
     <ClInclude Include="..\toolkits\includes\translation.h" />
     <ClInclude Include="..\toolkits\includes\xml_reader.h" />
-<<<<<<< HEAD
     <ClInclude Include="model.h" />
-=======
     <ClInclude Include="skybox.h" />
->>>>>>> Implementing Skybox
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.cpp" />
