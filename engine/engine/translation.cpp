@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <GL/glut.h>
 #include "translation.h"
-#include <iostream>
 
 
 void getCatmullRomPoint(float t, int *indices, float *res, float *der, vector<point> p) {

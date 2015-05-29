@@ -119,7 +119,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp" />
-    <ClCompile Include="transformation.cpp" />
     <ClCompile Include="translation.cpp" />
     <ClCompile Include="vec3.cpp" />
     <ClCompile Include="xml_reader.cpp" />

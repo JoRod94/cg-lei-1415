@@ -22,6 +22,8 @@
 
 #define DEFAULT_CAM_RADIUS	10.0f
 #include "cFrustum.h"
+#include <scale.h>
+#include <rotation.h>
 
 // VBO variables
 GLuint* buffers;
@@ -72,7 +74,9 @@ bool changed_color = false; // wether or not we have changed the color in a draw
 
 Skybox* engine_skybox;
 
-point group_origin = point(0, 0, 0);
+point g_orig(0, 0, 0);
+point g_scale(1, 0, 0);
+point g_rot(0,0,0);
 
 void set_skybox(Skybox *s){
 	engine_skybox = s;
@@ -203,8 +207,11 @@ float fix_sign(float d1,float d2){
 }
 
 static void draw_vbo(figure f, unsigned int texId){
-	Vec3 org(group_origin.x, group_origin.y, group_origin.z);
-	if (frustumCullOn && (frustum.sphereInFrustum(org, f->bound_sphere_Radius) == cFrustum::OUTSIDE))
+	Vec3 p(g_orig.x + g_rot.x, g_orig.y + g_rot.y, g_orig.z + g_rot.z);
+	Vec3 scl(g_scale.x, g_scale.y, g_scale.z);
+	float sL = (scl.length())?scl.length():1;
+
+	if (frustumCullOn && (frustum.sphereInFrustum(p, sL*f->bound_sphere_Radius) == cFrustum::OUTSIDE))
 		return;
 
 	if (shouldDrawNormals){
@@ -243,9 +250,13 @@ static void draw_group(group g) {
 
 	for (unsigned int i = 0; i < g->transformations.size(); i++) {
 		(g->transformations[i])->apply();
-		if (Translation* t = dynamic_cast<Translation*>(g->transformations[i])) {
-			group_origin.move(t->x, t->y, t->z);
-		}
+		if (Translation* t = dynamic_cast<Translation*>(g->transformations[i]))
+			g_orig.move(t->x, t->y, t->z);
+		else if (Scale* s = dynamic_cast<Scale*>(g->transformations[i]))
+			g_scale.move(s->x, s->y, s->z);
+		/*else if (Rotation* r = dynamic_cast<Rotation*>(g->transformations[i]))
+			g_rot.move(r->x, r->y, r->z);*/
+
 	}
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
@@ -276,7 +287,8 @@ static void renderPoints(vector<group> groups) {
 		++it){
 		reset_color();
 		draw_group(*it);
-		group_origin.reset();
+		g_orig.reset();
+		g_scale.reset();
 	}
 }
 

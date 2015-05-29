@@ -16,8 +16,6 @@
 unsigned int lastInd = 0;
 unsigned int boundSphereRadius = 0;
 vector<vertex> verts;				//model template
-vector<point> points;				//deprecated
-vector<point> normals;				//deprecated
 
 map<vertex, unsigned int> vMap;		//vertex-index dictionary
 

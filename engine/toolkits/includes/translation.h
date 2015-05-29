@@ -1,7 +1,6 @@
 #ifndef _TRANSLATE_H
 #define _TRANSLATE_H
 #include "transformation.h"
-#include <iostream>
 #include "point.h"
 
 using namespace std;
