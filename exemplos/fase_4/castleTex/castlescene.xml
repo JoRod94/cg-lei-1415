@@ -1,7 +1,15 @@
 ﻿<camera alfa="180" beta="30" raio="85"/>
+<skybox distancia="100">
+		<front ficheiro="bg\front.jpg"/>
+		<back ficheiro="bg\back.jpg"/>
+		<left ficheiro="bg\left.jpg"/>
+		<right ficheiro="bg\right.jpg"/>
+		<top ficheiro="bg\top.jpg"/>
+		<bottom ficheiro="grass.jpg"/>
+</skybox>
 <cena>
 	<luzes>
-		<luz tipo="point" posX="0" posY="3" posZ="0" />
+		<luz tipo="VECTOR" posX="10" posY="14" posZ="16"/>
 	</luzes>
 
 	<grupo>
