@@ -369,7 +369,6 @@ static bool valid_skybox(tinyxml2::XMLElement* skybox) {
 	tinyxml2::XMLElement* right = skybox->FirstChildElement(_XML_SKY_RIGHT);
 	tinyxml2::XMLElement* top = skybox->FirstChildElement(_XML_SKY_TOP);
 	tinyxml2::XMLElement* bottom = skybox->FirstChildElement(_XML_SKY_BOTTOM);
-	float dist = skybox->FloatAttribute(_XML_SKY_DISTANCE);
 
 	if (!(front && left && back && right && top && bottom))
 		return false;
@@ -383,7 +382,7 @@ static bool valid_skybox(tinyxml2::XMLElement* skybox) {
 	
 	return (file_exists(front_file) && file_exists(back_file) &&
 		file_exists(left_file) && file_exists(right_file) &&
-		file_exists(top_file) && file_exists(bottom_file)) && dist > 0;
+		file_exists(top_file) && file_exists(bottom_file));
 }
 
 static Skybox* parseSkybox(tinyxml2::XMLElement* skybox) {
@@ -395,7 +394,7 @@ static Skybox* parseSkybox(tinyxml2::XMLElement* skybox) {
 	tinyxml2::XMLElement* bottom = skybox->FirstChildElement(_XML_SKY_BOTTOM);
 
 	if (valid_skybox(skybox)) {
-		return new Skybox(skybox->FloatAttribute(_XML_SKY_DISTANCE), front->Attribute(_XML_FILE),
+		return new Skybox(front->Attribute(_XML_FILE),
 			left->Attribute(_XML_FILE),
 			back->Attribute(_XML_FILE),
 			right->Attribute(_XML_FILE),

@@ -47,7 +47,6 @@
 #define _XML_CAM_ALPHA		"alfa"
 #define _XML_CAM_BETA		"beta"
 #define _XML_SKYBOX			"skybox"
-#define _XML_SKY_DISTANCE	"distancia"
 #define _XML_SKY_FRONT		"front"
 #define _XML_SKY_LEFT		"left"
 #define _XML_SKY_RIGHT		"right"
