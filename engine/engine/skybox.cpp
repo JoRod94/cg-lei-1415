@@ -46,56 +46,56 @@ void Skybox::draw(){
 	// front
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1,0); glVertex3f(10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, 10.0f, -10.0f);
-	glTexCoord2f(0,1); glVertex3f(-10.0f, 10.0f, -10.0f);
+	glTexCoord2f(0, 0); glVertex3f(-distance, -distance, -distance);
+	glTexCoord2f(1,0); glVertex3f(distance, -distance, -distance);
+	glTexCoord2f(1, 1); glVertex3f(distance, distance, -distance);
+	glTexCoord2f(0,1); glVertex3f(-distance, distance, -distance);
 	glEnd();
 
 	// left
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 0); glVertex3f(-10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 1); glVertex3f(-10.0f, 10.0f, -10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, 10.0f, 10.0f);
+	glTexCoord2f(0, 0); glVertex3f(-distance, -distance, distance);
+	glTexCoord2f(1, 0); glVertex3f(-distance, -distance, -distance);
+	glTexCoord2f(1, 1); glVertex3f(-distance, distance, -distance);
+	glTexCoord2f(0, 1); glVertex3f(-distance, distance, distance);
 	glEnd();
 
 	// back
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 0); glVertex3f(-10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 1); glVertex3f(-10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0, 1); glVertex3f(10.0f, 10.0f, 10.0f);
+	glTexCoord2f(0, 0); glVertex3f(distance, -distance, distance);
+	glTexCoord2f(1, 0); glVertex3f(-distance, -distance, distance);
+	glTexCoord2f(1, 1); glVertex3f(-distance, distance, distance);
+	glTexCoord2f(0, 1); glVertex3f(distance, distance, distance);
 
 	glEnd();
 
 	// right
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0, 1); glVertex3f(10.0f, 10.0f, -10.0f);
+	glTexCoord2f(0, 0); glVertex3f(distance, -distance, -distance);
+	glTexCoord2f(1, 0); glVertex3f(distance, -distance, distance);
+	glTexCoord2f(1, 1); glVertex3f(distance, distance, distance);
+	glTexCoord2f(0, 1); glVertex3f(distance, distance, -distance);
 	glEnd();
 
 	// top
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, 10.0f, -10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, 10.0f, -10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, 10.0f, 10.0f);
+	glTexCoord2f(0, 0); glVertex3f(-distance, distance, -distance);
+	glTexCoord2f(1, 0); glVertex3f(distance, distance, -distance);
+	glTexCoord2f(1, 1); glVertex3f(distance, distance, distance);
+	glTexCoord2f(0, 1); glVertex3f(-distance, distance, distance);
 	glEnd();
 
 	// bottom
 	glBindTexture(GL_TEXTURE_2D, textures[5]);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, -10.0f, -10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, -10.0f, -10.0f);
+	glTexCoord2f(0, 0); glVertex3f(-distance, -distance, distance);
+	glTexCoord2f(1, 0); glVertex3f(distance, -distance, distance);
+	glTexCoord2f(1, 1); glVertex3f(distance, -distance, -distance);
+	glTexCoord2f(0, 1); glVertex3f(-distance, -distance, -distance);
 	glEnd();
 	
 	glPopAttrib();
