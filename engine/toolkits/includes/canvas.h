@@ -24,6 +24,7 @@ typedef struct s_figure {
 	unsigned int n_coords;
 	unsigned int n_tex_coords;
 	unsigned int n_ind;
+	unsigned int bound_sphere_Radius;
 	int vertex_buffer_nr;
 	int normal_buffer_nr;
 	int texture_buffer_nr;

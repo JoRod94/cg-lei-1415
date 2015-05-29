@@ -53,12 +53,21 @@
     </ClInclude>
     <ClInclude Include="model.h">
       <Filter>Header Files</Filter>
-  </ClInclude>
+    </ClInclude>
     <ClInclude Include="skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\toolkits\includes\translation.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cFrustum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +105,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="model.cpp">
-    	<Filter>Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cFrustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

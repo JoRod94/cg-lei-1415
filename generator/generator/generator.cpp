@@ -33,8 +33,6 @@ void create_file(const char* filename){
 	float* nCoords = (float*)malloc(pSize * sizeof(float));
 	float* tcCoords = (float*)malloc(tcSize * sizeof(float));
 
-	cout << vFinal.size() << endl;
-
 	for (int j = 0, i = 0, k = 0; j < vFinal.size(); j++) {
 		pCoords[i] = vFinal[j].p.x;
 		nCoords[i++] = vFinal[j].n.x;

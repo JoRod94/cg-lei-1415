@@ -97,13 +97,18 @@
     <ClInclude Include="..\toolkits\includes\transformation.h" />
     <ClInclude Include="..\toolkits\includes\translation.h" />
     <ClInclude Include="..\toolkits\includes\xml_reader.h" />
+    <ClInclude Include="cFrustum.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="plane.h" />
     <ClInclude Include="skybox.h" />
+    <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="cFrustum.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="plane.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="rotation.cpp" />
     <ClCompile Include="scale.cpp" />
@@ -116,6 +121,7 @@
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="transformation.cpp" />
     <ClCompile Include="translation.cpp" />
+    <ClCompile Include="vec3.cpp" />
     <ClCompile Include="xml_reader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

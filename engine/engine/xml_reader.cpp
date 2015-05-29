@@ -71,6 +71,9 @@ void read_bin(string filename, bool has_texture){
 	f->tex_coord = (float *)malloc((f->n_tex_coords)*sizeof(float));
 	i.read((char *)f->tex_coord, f->n_tex_coords*sizeof(float));
 
+	//bound sphere radius
+	i.read((char *)&(f->bound_sphere_Radius), sizeof(unsigned int));
+
 	f->vertex_buffer_nr = active_buffer++;
 	f->normal_buffer_nr = active_buffer++;
 	f->texture_buffer_nr = active_buffer++;
