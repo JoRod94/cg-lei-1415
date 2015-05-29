@@ -2,27 +2,24 @@
 #include "point.h"
 #include "patch.h"
 #include "vec3.h"
+#include "vertex.h"
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
 #include <string>
 #include <stdlib.h>
 #include <regex>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <map>
-#include "vertex.h"
-
-using namespace std;
 
 
 unsigned int lastInd = 0;
+unsigned int boundSphereRadius = 0;
 vector<vertex> verts;				//model template
 vector<point> points;				//deprecated
 vector<point> normals;				//deprecated
 
 map<vertex, unsigned int> vMap;		//vertex-index dictionary
-map<point, unsigned int> pMap;		//deprecated
 
 vector<vertex>	vFinal;				//final vertex w/ tCoords
 vector<unsigned int> indices;		//model point indices
@@ -57,43 +54,17 @@ void create_file(const char* filename){
 	newFile.write((char *)&nCoords[0], pSize*sizeof(float));
 	newFile.write((char *)&tcSize, sizeof(unsigned int));
 	newFile.write((char *)&tcCoords[0], tcSize*sizeof(float));
+	newFile.write((char *)&boundSphereRadius, sizeof(unsigned int));
 }
-
-//void put_point(int vInd, float x, float y, float z, float angle, bool rotate){
-//	map<point, unsigned int>::iterator it;
-//	point p = point(x, y, z);
-//	point n = point(normals[vInd].x, normals[vInd].y, normals[vInd].x);
-//
-//	if (rotate){
-//		p = rotate_point(p, angle);
-//		n = rotate_point(n, angle);
-//	}
-//
-//
-//	if ((it = pMap.find(p)) != pMap.end())
-//		indices.push_back(it->second);
-//	else{
-//		pOrder.push_back(p);
-//		nOrder.push_back(n);
-//		pMap[p] = lastInd;
-//		indices.push_back(lastInd++);
-//		cout << ">>> " << n.x << " " << n.y << " " << n.z << " " << endl;
-//	}
-//
-//}
 
 void put_vertex_rot(int vInd, float angle, float w){
 	map<vertex, unsigned int>::iterator it;
-	point p = point(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.x);
-	vec3 n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.x);
+	point p(verts[vInd].p.x, verts[vInd].p.y, verts[vInd].p.x);
+	vec3 n(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.x);
 
 	vertex v = vertex(p,n,w,verts[vInd].tc_y);
 
 	v.rotate(angle);
-
-	//cout << "-----\nPonto: " << v.p.x << " " << v.p.y << " " << v.p.z << " " << endl;
-	//cout << "Normal: " << v.n.x << " " << v.n.y << " " << v.n.z << " " << endl;
-	//cout << "TCoords: " << v.tc_x << " " << v.tc_y << " " << endl;
 
 	if ((it = vMap.find(v)) != vMap.end())
 		indices.push_back(it->second);
@@ -104,7 +75,7 @@ void put_vertex_rot(int vInd, float angle, float w){
 	}
 }
 
-void _put_vertex(vertex v){
+void put_vertex(vertex v){
 	map<vertex, unsigned int>::iterator it;
 
 	if ((it = vMap.find(v)) != vMap.end())
@@ -159,33 +130,6 @@ point cubic_bezier_zz(float t, point* p) {
 
 	return pf;
 }
-/*
-vec3 bezier_derivative_yy(float t, point* p) {
-	vec3 v;
-
-	v.x = -3 * pow(1 - t, 2) * p[0].x +
-		3 * pow(1 - t, 2) * p[1].x -
-		6 * t * (1 - t) * p[1].x -
-		3 * pow(t, 2) * p[2].x +
-		6 * t * (1 - t) * p[2].x +
-		3 * pow(t, 2) * p[3].x;
-
-	v.y = -3 * pow(1 - t, 2) * p[0].y +
-		3 * pow(1 - t, 2) * p[1].y -
-		6 * t * (1 - t) * p[1].y -
-		3 * pow(t, 2) * p[2].y +
-		6 * t * (1 - t) * p[2].y +
-		3 * pow(t, 2) * p[3].y;
-
-	v.z = -3 * pow(1 - t, 2) * p[0].z +
-		3 * pow(1 - t, 2) * p[1].z -
-		6 * t * (1 - t) * p[1].z -
-		3 * pow(t, 2) * p[2].z +
-		6 * t * (1 - t) * p[2].z +
-		3 * pow(t, 2) * p[3].z;
-
-	return v;
-}*/
 
 point bezier_derivative_yy(float t, point *p) {
 	point v;
@@ -208,32 +152,6 @@ point bezier_derivative_yy(float t, point *p) {
 	return v;
 }
 
-/*vec3 bezier_derivative_zz(float t, point *p) {
-	vec3 v;
-
-	v.x = -3 * pow(1 - t, 2) * p[0].x +
-		3 * pow(1 - t, 2) * p[1].x -
-		6 * t * (1 - t) * p[1].x -
-		3 * pow(t, 2) * p[2].x +
-		6 * t * (1 - t) * p[2].x +
-		3 * pow(t, 2) * p[3].x;
-
-	v.y = -3 * pow(1 - t, 2) * p[0].z +
-		3 * pow(1 - t, 2) * p[1].z -
-		6 * t * (1 - t) * p[1].z -
-		3 * pow(t, 2) * p[2].z +
-		6 * t * (1 - t) * p[2].z +
-		3 * pow(t, 2) * p[3].z;
-
-	v.z = -3 * pow(1 - t, 2) * p[0].y +
-		3 * pow(1 - t, 2) * p[1].y -
-		6 * t * (1 - t) * p[1].y -
-		3 * pow(t, 2) * p[2].y +
-		6 * t * (1 - t) * p[2].y +
-		3 * pow(t, 2) * p[3].y;
-
-	return v;
-}*/
 
 point bezier_derivative_zz(float t, point *p) {
 	point v;
@@ -326,6 +244,13 @@ vertex interpolate_zz(float u, float v, Patch p) {
 	return vertex(pt, normal, v, u);
 }
 
+void process_bezier_vertex(vertex v){
+	float l = vec3(v.p.x, v.p.y, v.p.z).length();
+	if (boundSphereRadius < l)
+		boundSphereRadius = l;
+	put_vertex(v);
+}
+
 void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
 	float u = i * inc,
 		v = j * inc,
@@ -347,15 +272,14 @@ void interpolate(int i, int j, float inc, Patch p, bool z_axis) {
 		v3 = interpolate_yy(u, next_v, p);
 	}
 
- 	_put_vertex(v0);
-	_put_vertex(v1);
-	_put_vertex(v2);
+ 	process_bezier_vertex(v0);
+	process_bezier_vertex(v1);
+	process_bezier_vertex(v2);
 
-	_put_vertex(v2);
-	_put_vertex(v3);
-	_put_vertex(v0);
+	process_bezier_vertex(v2);
+	process_bezier_vertex(v3);
+	process_bezier_vertex(v0);
 }
-
 
 void draw_patch(int tesselation, Patch p, bool axis) {
 	float inc = 1.0f / (float)tesselation;
@@ -477,20 +401,20 @@ void completeFace(float len, float hei, float position, int slices, int stacks){
 	for (int j = 0; j < stacks; j++){
 		for (int i = 0; i < slices; i++){
 			if (position < 0){
-				_put_vertex(vertex(point(l, h, position), vec3(0, 0, -1), l, h));
-				_put_vertex(vertex(point(l, h + incrH, position), vec3(0, 0, -1), l, h + incrH));
-				_put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, -1), l + incrL, h + incrH));
-				_put_vertex(vertex(point(l, h, position), vec3(0, 0, -1), l, h));
-				_put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, -1), l + incrL, h + incrH));
-				_put_vertex(vertex(point(l + incrL, h, position), vec3(0, 0, -1), l + incrL, h));
+				put_vertex(vertex(point(l, h, position), vec3(0, 0, -1), l, h));
+				put_vertex(vertex(point(l, h + incrH, position), vec3(0, 0, -1), l, h + incrH));
+				put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, -1), l + incrL, h + incrH));
+				put_vertex(vertex(point(l, h, position), vec3(0, 0, -1), l, h));
+				put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, -1), l + incrL, h + incrH));
+				put_vertex(vertex(point(l + incrL, h, position), vec3(0, 0, -1), l + incrL, h));
 			}
 			else{
-				_put_vertex(vertex(point(l, h, position), vec3(0, 0, 1), l, h));
-				_put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, 1), l + incrL, h + incrH));
-				_put_vertex(vertex(point(l, h + incrH, position), vec3(0, 0, 1), l, h + incrH));
-				_put_vertex(vertex(point(l, h, position), vec3(0, 0, 1), l, h));
-				_put_vertex(vertex(point(l + incrL, h, position), vec3(0, 0, 1), l + incrL, h));
-				_put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, 1), l + incrL, h + incrH));
+				put_vertex(vertex(point(l, h, position), vec3(0, 0, 1), l, h));
+				put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, 1), l + incrL, h + incrH));
+				put_vertex(vertex(point(l, h + incrH, position), vec3(0, 0, 1), l, h + incrH));
+				put_vertex(vertex(point(l, h, position), vec3(0, 0, 1), l, h));
+				put_vertex(vertex(point(l + incrL, h, position), vec3(0, 0, 1), l + incrL, h));
+				put_vertex(vertex(point(l + incrL, h + incrH, position), vec3(0, 0, 1), l + incrL, h + incrH));
 			}
 			l += incrL;
 		}
@@ -532,20 +456,20 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 				tcyp = points[j + 1].y;
 				v++;
 			}
-			_put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcy));
-			_put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w), normals[v], w, tcyp));
-			_put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w + incrW), normals[v], w + incrW, tcyp));
-			_put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcy));
-			_put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w + incrW), normals[v], w + incrW, tcyp));
-			_put_vertex(vertex(point(points[j].x, points[j].y, w + incrW), normals[v], w + incrW, tcy));
+			put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcy));
+			put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w), normals[v], w, tcyp));
+			put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w + incrW), normals[v], w + incrW, tcyp));
+			put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcy));
+			put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w + incrW), normals[v], w + incrW, tcyp));
+			put_vertex(vertex(point(points[j].x, points[j].y, w + incrW), normals[v], w + incrW, tcy));
 
 		}
-		_put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcyp));
-		_put_vertex(vertex(point(points[0].x, points[0].y, w), normals[v], w, points[0].y));
-		_put_vertex(vertex(point(points[0].x, points[0].y, w + incrW), normals[v], w + incrW, points[0].y));
-		_put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcyp));
-		_put_vertex(vertex(point(points[0].x, points[0].y, w + incrW), normals[v], w + incrW, points[0].y));
-		_put_vertex(vertex(point(points[j].x, points[j].y, w + incrW), normals[v], w + incrW, tcyp));
+		put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcyp));
+		put_vertex(vertex(point(points[0].x, points[0].y, w), normals[v], w, points[0].y));
+		put_vertex(vertex(point(points[0].x, points[0].y, w + incrW), normals[v], w + incrW, points[0].y));
+		put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcyp));
+		put_vertex(vertex(point(points[0].x, points[0].y, w + incrW), normals[v], w + incrW, points[0].y));
+		put_vertex(vertex(point(points[j].x, points[j].y, w + incrW), normals[v], w + incrW, tcyp));
 
 		v = 0;
 		w += incrW;
@@ -556,11 +480,19 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 void create_plane(float length, float width, int slices, int stacks){
 	getOuterPoints(length, 0.01f, width, stacks, slices);
 	completeFace(length, width, 0.01f, slices, stacks);
+
+	vec3 aux(length/2, width/2, 0);
+
+	boundSphereRadius = aux.length();
 }
 
 void create_parallelepiped(float length, float width, float height, int slices, int stacks){
 	getOuterPoints(length, width, height, stacks, slices);
 	pointExtender(length, width, height, stacks, slices);
+
+	vec3 aux(length / 2, width / 2, height / 2);
+
+	boundSphereRadius = aux.length();
 }
 
 
@@ -602,6 +534,8 @@ void create_sphere(float radius, float slices, float layers){
 							0,0));
 
 	vertex_rotator(slices, layers);
+
+	boundSphereRadius = radius;
 }
 
 void create_cone(float radius, float height, float slices, float layers){
@@ -631,6 +565,8 @@ void create_cone(float radius, float height, float slices, float layers){
 							0,0));
 
 	vertex_rotator(slices, layers + 2);
+
+	boundSphereRadius = (radius>height)?radius:height;
 }
 
 void create_torus(float or, float ir, float slices, float layers){
@@ -644,6 +580,8 @@ void create_torus(float or, float ir, float slices, float layers){
 								0,currY));
 
 	vertex_rotator(slices, layers);
+
+	boundSphereRadius = or + ir;
 }
 
 void create_ring(float or, float ir, float slices){
@@ -658,6 +596,8 @@ void create_ring(float or, float ir, float slices){
 	verts.push_back(vertex(point(ir, 0.0001, 0), vec3(0, -1, 0),0,0));
 
 	vertex_rotator(slices, 1);
+
+	boundSphereRadius = or + ir;
 }
 
 void create_cylinder(float radius, float height, float slices, float layers){
@@ -679,40 +619,10 @@ void create_cylinder(float radius, float height, float slices, float layers){
 	verts.push_back(vertex(point(0, currH+hDec, 0), vec3(0, -1, 0), 0, 0));
 
 	vertex_rotator(slices, layers + 4);
+
+	vec3 aux(radius, height / 2, 0);
+	boundSphereRadius = aux.length();
 }
-
-//void rand_displace(int aSize, int lastSize, float rD, float rA){
-//	for (int i = lastSize; i < aSize; i++){
-//		pOrder[i].x = rD * sin(rA);
-//		pOrder[i].z = rD * cos(rA);
-//
-//		cout << pOrder[i].x << endl;
-//		cout << pOrder[i].z << endl;
-//	}
-//}
-
-//void create_asteroids(float ir, float or, float nrAsteroids, float radius, float slices, float layers){
-//	float randDistance, randAngle;
-//	int lastSize = 0;
-//
-//	srand(1);
-//
-//	for (int i = 0; i < nrAsteroids; i++){
-//		create_sphere(radius, slices, layers);
-//
-//		randDistance = ir + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (or - ir)));
-//		randAngle = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*M_PI)));
-//		cout << randDistance << endl;
-//		cout << randAngle << endl;
-//		//rand_disform();
-//
-//		rand_displace((pOrder.size() - lastSize), lastSize,randDistance,randAngle);
-//		cout << "asdasdsad"<<pOrder.size() << endl;
-//
-//		pMap.clear();
-//	}
-//}
-
 
 bool valid_bezier(int argc, char* argv[]){
 	int file = 1;
@@ -823,18 +733,6 @@ int main(int argc, char* argv[]) {
 		}
 		std::cout << "Generating Ring..." << endl;
 		create_ring(stof(argv[2]), stof(argv[3]), stof(argv[4]));
-	}
-	else if (strcmp(argv[1], "asteroids") == 0){
-		if (argc != 9){
-			std::cout << "Wrong number of arguments" << endl;
-			return 0;
-		}
-		if (stof(argv[2]) > stof(argv[3])){
-			std::cout << "Inner radius must be smaller than outer radius" << endl;
-			return 0;
-		}
-		std::cout << "Generating Asteroids..." << endl;
-		//create_asteroids(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]), stof(argv[6]), stof(argv[7]));
 	}
 	else{
 		std::cout << "Command not recognized" << endl;
