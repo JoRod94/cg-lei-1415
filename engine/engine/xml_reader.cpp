@@ -438,6 +438,7 @@ pair<vector<scene>, map<string, figure> > read_xml(char* xmlName) {
 
 pair<vector<scene>, map<string, figure> > reset_and_read_xml(char* xmlName) {
 	m_files.clear();
+	textures.clear();
 	active_buffer = 0;
 	currLight = 0;
 	return read_xml(xmlName);
