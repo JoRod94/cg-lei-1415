@@ -75,6 +75,31 @@ void put_vertex_rot(int vInd, float angle, float w){
 	}
 }
 
+
+void put_vertex_pp(int vInd, float wid, float tcy, int norm){
+	vector<vec3> norms = { vec3(0.0f, -1.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(-1.0f, 0.0f, 0.0f) };
+	map<vertex, unsigned int>::iterator it;
+	point p = point(verts[vInd].p.x, verts[vInd].p.y, wid);
+	vec3 n;
+	if (norm > 0 && norm < 4){
+		n = norms[norm];
+	}
+	else
+		n = vec3(verts[vInd].n.x, verts[vInd].n.y, verts[vInd].n.z);
+
+	vertex v = vertex(p, n, wid, tcy);
+
+
+	if ((it = vMap.find(v)) != vMap.end())
+		indices.push_back(it->second);
+	else{
+		vFinal.push_back(v);
+		vMap[v] = lastInd;
+		indices.push_back(lastInd++);
+	}
+}
+
+
 void put_vertex(vertex v){
 	map<vertex, unsigned int>::iterator it;
 
@@ -362,7 +387,6 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 }
 
 
-
 void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
 	float incrL = len / slices;
 	float incrH = hei / stacks;
@@ -372,22 +396,21 @@ void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
 	int i;
 
 	for (i = 0; i < slices; i++){
-		points.push_back(point(l, h, 0));
+		verts.push_back(vertex(point(l, h, 0), vec3(0.0f, -1.0f, 0.0f)));
 		l += incrL;
 	}
 	for (i = 0; i < stacks; i++){
-		points.push_back(point(l, h, 0));
+		verts.push_back(vertex(point(l, h, 0), vec3(1.0f, 0.0f, 0.0f)));
 		h += incrH;
 	}
 	for (i = 0; i < slices; i++){
-		points.push_back(point(l, h, 0));
+		verts.push_back(vertex(point(l, h, 0), vec3(0.0f, 1.0f, 0.0f)));
 		l -= incrL;
 	}
 	for (i = 0; i < stacks; i++){
-		points.push_back(point(l, h, 0));
+		verts.push_back(vertex(point(l, h, 0), vec3(-1.0f, 0.0f, 0.0f)));
 		h -= incrH;
 	}
-
 }
 
 
@@ -432,46 +455,47 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 	float startingW = -wid / 2;
 	float w = startingW;
 	float tcy, tcyp;
-	int j, v = 0;
-	vector<vec3> normals = { vec3(0.0f, -1.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(-1.0f, 0.0f, 0.0f) };
+	int norm = 0;
+	int j;
 
 	completeFace(len, hei, w, slices, stacks);
 	for (int i = 0; i < slices; i++){
 		for (j = 0; j < numpts - 1; j++){
 			if (j < slices || (j >= slices + stacks && j < slices * 2 + stacks)){
-				tcy = points[j].x;
-				tcyp = points[j + 1].x;
+				tcy = verts[j].p.x;
+				tcyp = verts[j + 1].p.x;
 			}
 
 			if (j == slices){
-				v++;
-				tcy = points[j].y;
-				tcyp = points[j + 1].y;
+				tcy = verts[j].p.y;
+				tcyp = verts[j + 1].p.y;
+				norm = 1;
 			}
 			if (j == slices + stacks){
-				v++;
+				norm = 2;
 			}
 			if (j == slices * 2 + stacks){
-				tcy = points[j].y;
-				tcyp = points[j + 1].y;
-				v++;
+				tcy = verts[j].p.y;
+				tcyp = verts[j + 1].p.y;
+				norm = 3;
 			}
-			put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcy));
-			put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w), normals[v], w, tcyp));
-			put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w + incrW), normals[v], w + incrW, tcyp));
-			put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcy));
-			put_vertex(vertex(point(points[j + 1].x, points[j + 1].y, w + incrW), normals[v], w + incrW, tcyp));
-			put_vertex(vertex(point(points[j].x, points[j].y, w + incrW), normals[v], w + incrW, tcy));
+			put_vertex_pp(j, w, tcy, norm);
+			put_vertex_pp(j + 1, w, tcyp, norm);
+			put_vertex_pp(j + 1, w + incrW, tcyp, norm);
+			put_vertex_pp(j, w, tcy, norm);
+			put_vertex_pp(j + 1, w + incrW, tcyp, norm);
+			put_vertex_pp(j, w + incrW, tcy, norm);
 
+			norm = -1;
 		}
-		put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcyp));
-		put_vertex(vertex(point(points[0].x, points[0].y, w), normals[v], w, points[0].y));
-		put_vertex(vertex(point(points[0].x, points[0].y, w + incrW), normals[v], w + incrW, points[0].y));
-		put_vertex(vertex(point(points[j].x, points[j].y, w), normals[v], w, tcyp));
-		put_vertex(vertex(point(points[0].x, points[0].y, w + incrW), normals[v], w + incrW, points[0].y));
-		put_vertex(vertex(point(points[j].x, points[j].y, w + incrW), normals[v], w + incrW, tcyp));
+		norm = 3;
+		put_vertex_pp(j, w, tcyp, norm);
+		put_vertex_pp(0, w, verts[0].p.y, norm);
+		put_vertex_pp(0, w + incrW, verts[0].p.y, norm);
+		put_vertex_pp(j, w, tcyp, norm);
+		put_vertex_pp(0, w + incrW, verts[0].p.y, norm);
+		put_vertex_pp(j, w + incrW, tcyp, norm);
 
-		v = 0;
 		w += incrW;
 	}
 	completeFace(len, hei, w, slices, stacks);
