@@ -147,11 +147,14 @@ static void gridBoolInit(){
 static void drawGrid(){
 	
 	if (gridBools[0]){
+
 		if (glIsEnabled(GL_LIGHTING)) {
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, Color::green);
 		}
 		else
 			glColor3f(0, 1.0f, 0);
+		
+		change_color();
 		if (gridBools[1]){
 			for (float i = -gridSize; i <= gridSize; i += gridScale){
 				glBegin(GL_LINES);
@@ -191,8 +194,8 @@ static void drawGrid(){
 				glEnd();
 			}
 		}
-	reset_color();
 	}
+	reset_color();
 }
 
 float fix_sign(float d1,float d2){
