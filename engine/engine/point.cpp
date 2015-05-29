@@ -16,3 +16,14 @@ void point::add_to(vector<float> &vec) {
 	vec.push_back(z);
 }
 
+void point::move(float x, float y, float z) {
+	this->x += x;
+	this->y += y;
+	this->z += z;
+}
+
+void point::reset() {
+	x = 0;
+	y = 0;
+	z = 0;
+}

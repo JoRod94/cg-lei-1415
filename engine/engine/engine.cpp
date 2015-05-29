@@ -75,6 +75,8 @@ bool changed_color = false; // wether or not we have changed the color in a draw
 
 Skybox* engine_skybox;
 
+point group_origin = point(0, 0, 0);
+
 void set_skybox(Skybox *s){
 	engine_skybox = s;
 }
@@ -238,6 +240,9 @@ static void draw_group(group g) {
 
 	for (unsigned int i = 0; i < g->transformations.size(); i++) {
 		(g->transformations[i])->apply();
+		if (Translation* t = dynamic_cast<Translation*>(g->transformations[i])) {
+			group_origin.move(t->x, t->y, t->z);
+		}
 	}
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
@@ -268,6 +273,7 @@ static void renderPoints(vector<group> groups) {
 		++it){
 		reset_color();
 		draw_group(*it);
+		group_origin.reset();
 	}
 }
 

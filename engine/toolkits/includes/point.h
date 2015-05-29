@@ -15,6 +15,10 @@ public:
 	bool operator== (const point& p) const;
 
 	void add_to(vector<float> &vec);
+
+	void move(float x, float y, float z);
+
+	void reset();
 };
 
 #endif
