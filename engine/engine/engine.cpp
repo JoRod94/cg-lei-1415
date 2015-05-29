@@ -5,10 +5,8 @@
 #include <IL\il.h>
 #include <iostream>
 #include <glew.h>
-#include <string>
 #include <vector>
 #include <fstream>
-#include <sstream>
 #include <map>
 #include <math.h>
 #include <GL/glut.h>
@@ -17,8 +15,6 @@
 #include "transformation.h"
 #include "translation.h"
 #include "color.h"
-#include "rotation.h"
-#include "scale.h"
 #include "xml_reader.h"
 #include "canvas.h"
 #include "point.h"
@@ -26,8 +22,6 @@
 
 #define DEFAULT_CAM_RADIUS	10.0f
 #include "cFrustum.h"
-
-using namespace std;
 
 // VBO variables
 GLuint* buffers;
@@ -49,6 +43,7 @@ bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, dr
 float fps = 0.0f;
 bool showFPS = false;
 bool shouldDrawNormals = false;
+bool frustumCullOn = true;
 
 // Time variables
 int globalTime = 0;
@@ -71,7 +66,6 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
-bool frustumCullOn = true;
 cFrustum frustum;
 
 bool changed_color = false; // wether or not we have changed the color in a drawing iteration
@@ -378,9 +372,13 @@ static void renderScene(void) {
 	keyActions();
 
 	if (freeCamera){
-		gluLookAt(px, py, pz,
-			px + rx, py + ry, pz + rz,
-			0.0f, 1.0f, 0.0f);
+		Vec3 p(px, py, pz), l(px + rx, py + ry, pz + rz), u(0.0f, 1.0f, 0.0f);
+
+		gluLookAt(	p.x, p.y, p.z,
+					l.x, l.y, l.z,
+					u.x, u.y, u.z);
+
+		frustum.setCamDef(p, l, u);
 	}
 	else{
 		Vec3 p(radius*cos(beta)*sin(alpha), radius*sin(beta), radius*cos(beta)*cos(alpha)), l(0.0f, 0.0f, 0.0f), u(0.0f, 1.0f, 0.0f);
@@ -466,6 +464,7 @@ static void keyBoardInput(unsigned char key, int x, int y){
 static void keyUp(unsigned char key, int x, int y){
 	keyHolds[key] = false;
 }
+
 
 // Mouse button callback
 static void mousePress(int button, int state, int x, int y) {
