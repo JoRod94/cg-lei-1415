@@ -98,8 +98,7 @@ void reset_color() {
 		return;
 
 	if (glIsEnabled(GL_LIGHTING)) {
-		float wht[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wht);
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Color::white);
 	}
 	else
 		glColor3f(1.0f, 1.0f, 1.0f);
@@ -250,6 +249,8 @@ static void draw_group(group g) {
 				c->apply();
 			}
 			draw_vbo(p->second, g->points[i].texId);
+			if (c != nullptr)
+				c->reset_type();
 		}
     }
 
@@ -324,8 +325,9 @@ void create_lights() {
 		}
 	}
 
-	if(enabled)
+	if (enabled) {
 		glEnable(GL_LIGHTING);
+	}
 }
 
 static void changeSize(int w, int h) {

@@ -8,6 +8,9 @@ public:
 	float cInfo[4];
 	GLenum color_type;
 	bool material;
+	static const float reset[4];
+	static const float white[4];
+	static const float green[4];
 
 	Color(float r, float g, float b) {
 		cInfo[0] = r;
@@ -46,6 +49,7 @@ public:
 	}
 
 	virtual void apply();
+	void reset_type();
 };
 
 #endif
