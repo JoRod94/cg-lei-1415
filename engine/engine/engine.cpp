@@ -25,6 +25,7 @@
 #include "skybox.h"
 
 #define DEFAULT_CAM_RADIUS	10.0f
+#include "cFrustum.h"
 
 using namespace std;
 
@@ -70,6 +71,8 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
+bool frustumCullOn = true;
+cFrustum frustum;
 
 bool changed_color = false; // wether or not we have changed the color in a drawing iteration
 
@@ -203,6 +206,9 @@ float fix_sign(float d1,float d2){
 }
 
 static void draw_vbo(figure f, unsigned int texId){
+	Vec3 org(group_origin.x, group_origin.y, group_origin.z);
+	if (frustumCullOn && (frustum.sphereInFrustum(org, f->bound_sphere_Radius) == cFrustum::OUTSIDE))
+		return;
 
 	if (shouldDrawNormals){
 		glBegin(GL_LINES);
@@ -356,6 +362,8 @@ static void changeSize(int w, int h) {
 	// Set perspective
 	gluPerspective(45.0f, ratio, 1.0f, 1000.0f);
 
+	frustum.setCamInternals(45.0f, ratio, 1.0f, 1000.0f);
+
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -375,9 +383,13 @@ static void renderScene(void) {
 			0.0f, 1.0f, 0.0f);
 	}
 	else{
-		gluLookAt((radius*(cos(beta))*(sin(alpha))), radius*(sin(beta)), (radius*(cos(beta))*(cos(alpha))),
-			0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f);
+		Vec3 p(radius*cos(beta)*sin(alpha), radius*sin(beta), radius*cos(beta)*cos(alpha)), l(0.0f, 0.0f, 0.0f), u(0.0f, 1.0f, 0.0f);
+
+		gluLookAt(	p.x, p.y, p.z,
+					l.x, l.y, l.z,
+					u.x, u.y, u.z);
+
+		frustum.setCamDef(p, l, u);
 	}
 
 
@@ -570,15 +582,19 @@ static void gridModeHandler(int id_op){
 static void toggleHandler(int id_op){
 	switch (id_op) {
 	case 1:
+		frustumCullOn = !frustumCullOn;
+		break;
+
+	case 2:
 		showFPS = !showFPS;
 		glutSetWindowTitle("Motor 3D");
 		break;
 
-	case 2:
+	case 3:
 		shouldDrawNormals = !shouldDrawNormals;
 		break;
 
-	case 3:
+	case 4:
 		for (int i = 0; i < scenes.size(); i++) {
 			vector<group> groups = scenes[i]->groups;
 			for (int j = 0; j < groups.size(); j++) {
@@ -617,9 +633,10 @@ static void createMenu(){
 	glutAddMenuEntry("Z-Y Grid", 4);
 
 	toggle = glutCreateMenu(toggleHandler);
-	glutAddMenuEntry("Toggle FPS Counter", 1);
-	glutAddMenuEntry("Toggle Model Normals", 2);
-	glutAddMenuEntry("Toggle Curve Lines", 3);
+	glutAddMenuEntry("Toggle Frustum Culling", 1);
+	glutAddMenuEntry("Toggle FPS Counter", 2);
+	glutAddMenuEntry("Toggle Model Normals", 3);
+	glutAddMenuEntry("Toggle Curve Lines", 4);
 
 	mainMenu = glutCreateMenu(mainMenuHandler);
 	glutAddSubMenu("Polygon Mode", polygonMode);

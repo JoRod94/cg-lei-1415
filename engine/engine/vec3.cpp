@@ -1,65 +1,134 @@
 #include "stdafx.h"
-#include "vec3.h"
+#include "Vec3.h"
+
 #include <math.h>
+#include <stdio.h>
 
-bool vec3::operator==(const vec3& v) const {
-	return ((x == v.x) && (y == v.y) && (z == v.z)) ? true : false;
+Vec3::Vec3(float x, float y, float z) {
+	this->x = x;
+	this->y = y;
+	this->z = z;
 }
 
-bool vec3::operator< (const vec3& v) const {
-	return x < v.x
-		|| (x == v.x && y < v.y)
-		|| (x == v.x && y == v.y && z < v.z);
+Vec3::Vec3(const Vec3 &v) {
+	x = v.x;
+	y = v.y;
+	z = v.z;
 }
 
-vec3 vec3::operator+(const vec3& v) const {
-	return vec3((x + v.x), (y + v.y), (z + v.z));
+
+Vec3::Vec3() {
+	x = 0;
+	y = 0;
+	z = 0;
 }
 
-vec3 vec3::operator-(const vec3& v) const {
-	return vec3((x - v.x), (y - v.y), (z - v.z));
+
+Vec3::~Vec3(){}
+
+Vec3 Vec3::operator+(Vec3 &v) {
+	Vec3 res;
+
+	res.x = x + v.x;
+	res.y = y + v.y;
+	res.z = z + v.z;
+
+	return(res);
 }
 
-vec3 vec3::operator* (const vec3& v) const {
-	return vec3((x * v.x), (y * v.y), (z * v.z));
+Vec3 Vec3::operator-(const Vec3 &v) {
+	Vec3 res;
+
+	res.x = x - v.x;
+	res.y = y - v.y;
+	res.z = z - v.z;
+
+	return(res);
 }
 
-vec3 vec3::operator+(const float& n) const {
-	return vec3((x + n), (y + n), (z + n));
+Vec3 Vec3::operator-(void) {
+	Vec3 res;
+
+	res.x = -x;
+	res.y = -y;
+	res.z = -z;
+
+	return(res);
 }
 
-vec3 vec3::operator-(const float& n) const {
-	return vec3((x - n), (y - n), (z - n));
+// cross product
+Vec3 Vec3::operator*(Vec3 &v) {
+
+	Vec3 res;
+
+	res.x = y * v.z - z * v.y;
+	res.y = z * v.x - x * v.z;
+	res.z = x * v.y - y * v.x;
+
+	return (res);
 }
 
-vec3 vec3::operator*(const float& n) const {
-	return vec3((x * n), (y * n), (z * n));
+Vec3 Vec3::operator*(float t) {
+	Vec3 res;
+
+	res.x = x * t;
+	res.y = y * t;
+	res.z = z * t;
+
+	return (res);
 }
 
-vec3 vec3::operator/(const float& n) const {
-	//checks if we ared dividing by 0
-	return (n) ? vec3((x / n), (y / n), (z / n)) : *this;
+
+Vec3 Vec3::operator/(float t) {
+	Vec3 res;
+
+	res.x = x / t;
+	res.y = y / t;
+	res.z = z / t;
+
+	return (res);
 }
 
-float vec3::length() {
-	return sqrt(x*x + y*y + z*z);
+
+
+float Vec3::length() {
+	return((float)sqrt(x*x + y*y + z*z));
 }
 
-void vec3::normalize() {
-	float l = length();
-	x = x / l;
-	y = y / l;
-	z = z / l;
+void Vec3::normalize() {
+	float len;
+
+	len = length();
+	if (len) {
+		x /= len;;
+		y /= len;
+		z /= len;
+	}
 }
 
-float vec3::dot(vec3 v) {
-	return (x * v.x) + (y * v.y) + (z * v.z);
+
+float Vec3::innerProduct(Vec3 &v) {
+	return (x * v.x + y * v.y + z * v.z);
 }
 
-vec3 vec3::cross(vec3 v) {
-	return vec3(
-		(y*v.z) - (z*v.y),
-		(z*v.x) - (x*v.z),
-		(x*v.y) - (y*v.x)
-		);
+void Vec3::copy(const Vec3 &v) {
+	x = v.x;
+	y = v.y;
+	z = v.z;
+}
+
+void Vec3::set(float x, float y, float z) {
+	this->x = x;
+	this->y = y;
+	this->z = z;
+}
+
+Vec3 Vec3::scalarMult(float a) {
+	Vec3 res;
+
+	res.x = x * a;
+	res.y = y * a;
+	res.z = z * a;
+
+	return res;
 }
