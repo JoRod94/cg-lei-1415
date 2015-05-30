@@ -42,4 +42,7 @@ public:
 	void cFrustum::drawLines();
 	void cFrustum::drawPlanes();
 	void cFrustum::drawNormals();
+
+	bool gluInvertMatrix(const float m[16], float invOut[16]);
+	Vec3 getWorldCoords(float m1[16], float m2[16]);
 };

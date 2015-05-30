@@ -23,7 +23,6 @@
 #define DEFAULT_CAM_RADIUS	10.0f
 #include "cFrustum.h"
 #include <scale.h>
-#include <rotation.h>
 
 // VBO variables
 GLuint* buffers;
@@ -45,7 +44,7 @@ bool gridBools[4] = { false, false, false, false }; //shouldDrawGrid, drawXZ, dr
 float fps = 0.0f;
 bool showFPS = false;
 bool shouldDrawNormals = false;
-bool frustumCullOn = true;
+bool frustumCullOn = false;
 
 // Time variables
 int globalTime = 0;
@@ -68,15 +67,17 @@ float ry = 0.0f;
 float rz = 0.0f;
 int xOri = -1;
 int yOri = -1;
+
+//Frustrum variables
 cFrustum frustum;
+GLfloat camMVM[16], objMVM[16];
+int objDrawn = 0;
 
 bool changed_color = false; // wether or not we have changed the color in a drawing iteration
 
 Skybox* engine_skybox;
 
-point g_orig(0, 0, 0);
 point g_scale(1, 0, 0);
-point g_rot(0,0,0);
 
 void set_skybox(Skybox *s){
 	engine_skybox = s;
@@ -207,12 +208,19 @@ float fix_sign(float d1,float d2){
 }
 
 static void draw_vbo(figure f, unsigned int texId){
-	Vec3 p(g_orig.x + g_rot.x, g_orig.y + g_rot.y, g_orig.z + g_rot.z);
+	//gets ModelViewMatrix after transformations
+	glGetFloatv(GL_MODELVIEW_MATRIX, objMVM);
+
+	//multiply object ModelViewMatrix with it's inverse
+	Vec3 p = frustum.getWorldCoords(objMVM, camMVM);
+
 	Vec3 scl(g_scale.x, g_scale.y, g_scale.z);
 	float sL = (scl.length())?scl.length():1;
 
 	if (frustumCullOn && (frustum.sphereInFrustum(p, sL*f->bound_sphere_Radius) == cFrustum::OUTSIDE))
 		return;
+
+	objDrawn++;
 
 	if (shouldDrawNormals){
 		glBegin(GL_LINES);
@@ -224,6 +232,7 @@ static void draw_vbo(figure f, unsigned int texId){
 		}
 		glEnd();
 	}
+
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[f->vertex_buffer_nr]);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -248,15 +257,10 @@ static void draw_vbo(figure f, unsigned int texId){
 static void draw_group(group g) {
 	glPushMatrix();
 
-	for (unsigned int i = 0; i < g->transformations.size(); i++) {
+	for (unsigned int i = 0; i < g->transformations.size(); i++){
 		(g->transformations[i])->apply();
-		if (Translation* t = dynamic_cast<Translation*>(g->transformations[i]))
-			g_orig.move(t->x, t->y, t->z);
-		else if (Scale* s = dynamic_cast<Scale*>(g->transformations[i]))
+		if (Scale* s = dynamic_cast<Scale*>(g->transformations[i]))
 			g_scale.move(s->x, s->y, s->z);
-		/*else if (Rotation* r = dynamic_cast<Rotation*>(g->transformations[i]))
-			g_rot.move(r->x, r->y, r->z);*/
-
 	}
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
@@ -287,7 +291,6 @@ static void renderPoints(vector<group> groups) {
 		++it){
 		reset_color();
 		draw_group(*it);
-		g_orig.reset();
 		g_scale.reset();
 	}
 }
@@ -405,7 +408,10 @@ static void renderScene(void) {
 		frustum.setCamDef(p, l, u);
 	}
 
-
+	//get inverse of ModelViewMatrix
+	glGetFloatv(GL_MODELVIEW_MATRIX, camMVM);
+	frustum.gluInvertMatrix(camMVM, camMVM);
+	
 	glPolygonMode(GL_FRONT, mode);
 
 	if (engine_skybox){
@@ -431,16 +437,27 @@ static void renderTimer(){
 	if (globalTime - lastRender > renderStep ){
 		frame++;
 		lastRender = globalTime;
+		
+		char s[64];
+		if (frustumCullOn && showFPS)
+			sprintf_s(s, "Mini-Motor 3D | Models being drawn: %d | FPS: %f", objDrawn, fps);
+		else if (frustumCullOn)
+			sprintf_s(s, "Mini-Motor 3D | Models being drawn: %d", objDrawn);
+		else if (showFPS)
+			sprintf_s(s, "Mini-Motor 3D | FPS: %f", fps);
+		else
+			sprintf_s(s, "Mini-Motor 3D");
+
+		glutSetWindowTitle(s);
+
+		objDrawn = 0;
 		glutPostRedisplay();
 	}
 
 	if (showFPS && (globalTime - lastShowFPS > fpsStep)) {
-		char s[64];
 		fps = frame*1000.0 / (globalTime - lastShowFPS);
 		lastShowFPS = globalTime;
 		frame = 0.0f;
-		sprintf_s(s, "FPS: %f", fps);
-		glutSetWindowTitle(s);
 	}
 }
 
@@ -597,11 +614,12 @@ static void toggleHandler(int id_op){
 	switch (id_op) {
 	case 1:
 		frustumCullOn = !frustumCullOn;
+		glutSetWindowTitle("Mini-Motor 3D");
 		break;
 
 	case 2:
 		showFPS = !showFPS;
-		glutSetWindowTitle("Motor 3D");
+		glutSetWindowTitle("Mini-Motor 3D");
 		break;
 
 	case 3:
@@ -715,7 +733,7 @@ int main(int argc, char **argv){
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 800);
-	glutCreateWindow("Motor 3D");
+	glutCreateWindow("Mini-Motor 3D");
 
 	// registo de funções
 	glutDisplayFunc(renderScene);

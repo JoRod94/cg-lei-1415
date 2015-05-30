@@ -45,5 +45,7 @@ group new_group(vector<Transformation*> transformations, vector<Model> points, v
 }
 
 figure new_figure() {
-    return (figure)malloc(sizeof(struct s_figure));
+	figure f = (figure)calloc(1, sizeof(struct s_figure));
+	f->has_tex = false;
+    return f;
 }
