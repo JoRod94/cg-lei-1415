@@ -453,20 +453,20 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 	float startingW = -wid / 2, w = startingW;
 	float tcy, tcyp;
 	float tl = 0, th = 0, tw = 0;
-	int norm = 0;
+	int norm = -1;
 	int j;
 
 	completeFace(len, hei, w, slices, stacks);
 	for (int i = 0; i < slices; i++){
 		for (j = 0; j < numpts - 1; j++){
-			if (j == slices){
+			if (j == slices -1){
+				norm = 0;
+			}
+			if (j == slices + stacks -1){
 				norm = 1;
 			}
-			if (j == slices + stacks){
+			if (j == slices * 2 + stacks -1){
 				norm = 2;
-			}
-			if (j == slices * 2 + stacks){
-				norm = 3;
 			}
 			put_vertex_pp(j, w, 0, 0, norm);
 			put_vertex_pp(j + 1, w, 0, 1, norm);
@@ -474,7 +474,9 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 			put_vertex_pp(j, w, 0, 0, norm);
 			put_vertex_pp(j + 1, (w + incrW), 1, 1, norm);
 			put_vertex_pp(j, (w + incrW), 1, 0, norm);
+			norm = -1;
 		}
+		norm = 3;
 		put_vertex_pp(j, w, 0, 0, norm);
 		put_vertex_pp(0, w, 0, 1, norm);
 		put_vertex_pp(0, (w + incrW), 1, 1, norm);
@@ -483,7 +485,7 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 		put_vertex_pp(j, (w + incrW), 1, 0, norm);
 
 		w += incrW;
-		norm = 0;
+		norm = -1;
 	}
 	completeFace(len, hei, w, slices, stacks);
 }
