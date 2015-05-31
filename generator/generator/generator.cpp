@@ -226,7 +226,7 @@ vertex interpolate_yy(float u, float v, Patch p) {
 	vec3 normal = v_tangent.cross(u_tangent);
 	normal.normalize();
 
-	return vertex( pt, normal, u, v );
+	return vertex( pt, normal, u, 1-v );
 }
 
 vertex interpolate_zz(float u, float v, Patch p) {
@@ -260,7 +260,7 @@ vertex interpolate_zz(float u, float v, Patch p) {
 	
 	vec3 normal = u_tangent.cross(v_tangent);
 	normal.normalize();
-	return vertex(pt, normal, v, u);
+	return vertex(pt, normal, v, 1-u);
 }
 
 void process_bezier_vertex(vertex v){

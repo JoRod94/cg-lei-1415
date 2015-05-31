@@ -149,7 +149,7 @@
 	    </translacao>
 	    <rotacao angulo="-90" eixoY="1"/>
 		<modelos>
-			<modelo ficheiro="teapot.3d" />
+			<modelo ficheiro="teapot.3d" textura="teaTex.jpg"/>
 		</modelos>
 	</grupo>
 </cena>
