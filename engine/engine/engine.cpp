@@ -77,7 +77,7 @@ bool changed_color = false; // wether or not we have changed the color in a draw
 
 Skybox* engine_skybox;
 
-point g_scale(1, 0, 0);
+Vec3 g_scale(1, 0, 0);
 
 void set_skybox(Skybox *s){
 	engine_skybox = s;
@@ -211,17 +211,10 @@ float fix_sign(float d1,float d2){
 		return ((d1 <= 0) == (d2 <= 0))?d2:-(d2);
 }
 
-static void draw_vbo(figure f, unsigned int texId){
-	//gets ModelViewMatrix after transformations
-	glGetFloatv(GL_MODELVIEW_MATRIX, objMVM);
+static void draw_vbo(figure f, unsigned int texId, Vec3 worldPos){
+	float sL = (g_scale.length())?g_scale.length():1;
 
-	//multiply object ModelViewMatrix with it's inverse
-	Vec3 p = frustum.getWorldCoords(objMVM, camMVM);
-
-	Vec3 scl(g_scale.x, g_scale.y, g_scale.z);
-	float sL = (scl.length())?scl.length():1;
-
-	if (frustumCullOn && (frustum.sphereInFrustum(p, sL*f->bound_sphere_Radius) == cFrustum::OUTSIDE))
+	if (frustumCullOn && (frustum.sphereInFrustum(worldPos, sL*f->bound_sphere_Radius) == cFrustum::OUTSIDE))
 		return;
 
 	objDrawn++;
@@ -264,8 +257,14 @@ static void draw_group(group g) {
 	for (unsigned int i = 0; i < g->transformations.size(); i++){
 		(g->transformations[i])->apply();
 		if (Scale* s = dynamic_cast<Scale*>(g->transformations[i]))
-			g_scale.move(s->x, s->y, s->z);
+			g_scale.set(g_scale.x + s->x, g_scale.y+ s->y, g_scale.z + s->z);
 	}
+
+	//gets ModelViewMatrix after transformations
+	glGetFloatv(GL_MODELVIEW_MATRIX, objMVM);
+
+	//multiply object ModelViewMatrix with it's inverse
+	Vec3 worldPos = frustum.getWorldCoords(objMVM, camMVM);
 
 	for (unsigned int i = 0; i < g->points.size(); i++) {
 		map<string, figure>::iterator p = files.find((g->points)[i].filename);
@@ -274,7 +273,7 @@ static void draw_group(group g) {
 			if (c != nullptr) {
 				c->apply();
 			}
-			draw_vbo(p->second, g->points[i].texId);
+			draw_vbo(p->second, g->points[i].texId, worldPos);
 			if (c != nullptr)
 				c->reset_type();
 		}
@@ -295,7 +294,7 @@ static void renderPoints(vector<group> groups) {
 		++it){
 		reset_color();
 		draw_group(*it);
-		g_scale.reset();
+		g_scale.set(1,0,0);
 	}
 }
 
