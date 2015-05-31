@@ -134,6 +134,10 @@ static void keyActions(){
 			pz -= rx*freeCamSpeed;
 			px += rz*freeCamSpeed;
 		}
+		if (keyHolds[','] && (freeCamSpeed < 4))
+			freeCamSpeed += 0.1;
+		if (keyHolds['.'] && (freeCamSpeed > 0.4))
+			freeCamSpeed -= 0.1;
 	}
 
     else {
@@ -595,6 +599,7 @@ static void gridModeHandler(int id_op){
 	if (id_op == 1){
 		gridBoolInit();
 		gridSize = 50;
+		gridScale = 1;
 	}
 	else{
 		switch (id_op){
