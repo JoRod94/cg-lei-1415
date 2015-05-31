@@ -2,9 +2,8 @@
 <cena>
 	<luzes>
 		<luz tipo="POINT" posX="10" posY="14" posZ="16"/>
-		<luz tipo="POINT" posX="8" posY="5" posZ="8"/>
-		<luz tipo="POINT" posX="-8" posY="5" posZ="8"/>
 		<luz tipo="POINT" posX="8" posY="5" posZ="-8"/>
+		<luz tipo="POINT" posX="0" posY="0" posZ="-15"/>
 	</luzes>
 
 	<grupo>
