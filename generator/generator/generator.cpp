@@ -77,7 +77,7 @@ void put_vertex_pp(int vInd, float wid, float tcx, float tcy, int norm){
 	map<vertex, unsigned int>::iterator it;
 	point p = point(verts[vInd].p.x, verts[vInd].p.y, wid);
 	vec3 n;
-	if (norm > 0 && norm < 4){
+	if (norm >= 0 && norm < 4){
 		n = norms[norm];
 	}
 	else
@@ -383,6 +383,7 @@ void bezier_surface(int tesselation, string in, string out, bool inverted_axis) 
 }
 
 
+
 void getOuterPoints(float len, float wid, float hei, int stacks, int slices){
 	float incrL = len / slices;
 	float incrH = hei / stacks;
@@ -473,10 +474,7 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 			put_vertex_pp(j, w, 0, 0, norm);
 			put_vertex_pp(j + 1, (w + incrW), 1, 1, norm);
 			put_vertex_pp(j, (w + incrW), 1, 0, norm);
-
-			norm = -1;
 		}
-		norm = 3;
 		put_vertex_pp(j, w, 0, 0, norm);
 		put_vertex_pp(0, w, 0, 1, norm);
 		put_vertex_pp(0, (w + incrW), 1, 1, norm);
@@ -485,9 +483,11 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 		put_vertex_pp(j, (w + incrW), 1, 0, norm);
 
 		w += incrW;
+		norm = 0;
 	}
 	completeFace(len, hei, w, slices, stacks);
 }
+
 
 void create_plane(float length, float width, int slices, int stacks){
 	getOuterPoints(length, 0.01f, width, stacks, slices);
