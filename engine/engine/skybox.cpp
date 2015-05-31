@@ -45,11 +45,10 @@ void Skybox::create_clamp_texture(const char *filepath, int i){
 	glGenTextures(1, &textures[i]);
 	glBindTexture(GL_TEXTURE_2D, textures[i]);
 	glTexParameteri(GL_TEXTURE_2D,
-		GL_TEXTURE_WRAP_S,
-		GL_CLAMP);
+		GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,
 		GL_TEXTURE_WRAP_T,
-		GL_CLAMP);
+		GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,
 		GL_TEXTURE_MAG_FILTER,
 		GL_LINEAR);
