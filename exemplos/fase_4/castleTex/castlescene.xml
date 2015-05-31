@@ -1,12 +1,4 @@
 ﻿<camera alfa="180" beta="30" raio="85"/>
-<skybox distancia="60">
-		<front ficheiro="bg\front.jpg"/>
-		<back ficheiro="bg\back.jpg"/>
-		<left ficheiro="bg\left.jpg"/>
-		<right ficheiro="bg\right.jpg"/>
-		<top ficheiro="bg\top.jpg"/>
-		<bottom ficheiro="grass.jpg"/>
-</skybox>
 <cena>
 	<luzes>
 		<luz tipo="POINT" posX="10" posY="14" posZ="16"/>
@@ -16,7 +8,6 @@
 	</luzes>
 
 	<grupo>
-		<escala X="2" Z="2" />
 		<rotacao angulo="270" eixoX="1" />
 		<modelos>
 			<modelo ficheiro="..\..\exemplos\fase_4\castleTex\XYplaneTex.3d" textura="..\..\exemplos\fase_4\castleTex\grass.jpg"/>
