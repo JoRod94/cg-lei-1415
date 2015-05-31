@@ -1,23 +1,42 @@
 #include "stdafx.h"
 #include "skybox.h"
+#include <glew.h>
 #include <GL/glut.h>
-#include <IL\il.h>
+#include <IL/il.h>
+#include <iostream>
+
+
+using namespace std;
 
 
 void Skybox::init_textures()
 {
+
+	vertexBuffer = (float *)malloc(sizeof(float) * 4 * 6 * 3);
+	textureBuffer = (float *)malloc(sizeof(float) * 4 * 6 * 2);
+
+	glGenBuffers(1, &vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * 3, vertexBuffer, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &tex);
+	glBindBuffer(GL_ARRAY_BUFFER, tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * 2, textureBuffer, GL_STATIC_DRAW);
+
 	for (int i = 0; i < 6; i++){
 		create_clamp_texture(files[i], i);
 	}
+
+	generateSkyboxVBO();
 }
 
 void Skybox::create_clamp_texture(const char *filepath, int i){
-
+	ilGenImages(1, &images[i]);
 	ilBindImage(images[i]);
 	ilLoadImage((ILstring)filepath);
-	unsigned int tw = ilGetInteger(IL_IMAGE_WIDTH);
-	unsigned int th = ilGetInteger(IL_IMAGE_HEIGHT);
 	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+	int tw = ilGetInteger(IL_IMAGE_WIDTH);
+	int th = ilGetInteger(IL_IMAGE_HEIGHT);
 	unsigned char *texData = ilGetData();
 	glGenTextures(1, &textures[i]);
 	glBindTexture(GL_TEXTURE_2D, textures[i]);
@@ -37,6 +56,174 @@ void Skybox::create_clamp_texture(const char *filepath, int i){
 		GL_RGBA, GL_UNSIGNED_BYTE, texData);
 }
 
+void Skybox::generateSkyboxVBO(){
+	int v_count = 0;
+	int t_count = 0;
+
+	// front
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 1;
+
+
+	// left
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 1;
+
+
+
+	// back
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 1;
+
+
+	// right
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 1;
+
+
+
+	// top
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 1;
+
+
+	// bottom
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 0;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 1;
+}
+ 
 void Skybox::draw(){
 
 	glPushMatrix();
@@ -45,61 +232,18 @@ void Skybox::draw(){
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
 
-	// front
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, 10.0f, -10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, 10.0f, -10.0f);
-	glEnd();
+	glBindBuffer(GL_ARRAY_BUFFER, vertex);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	// left
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 0); glVertex3f(-10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 1); glVertex3f(-10.0f, 10.0f, -10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, 10.0f, 10.0f);
-	glEnd();
+	glBindBuffer(GL_ARRAY_BUFFER, tex);
+	glVertexPointer(2, GL_FLOAT, 0, 0);
 
-	// back
-	glBindTexture(GL_TEXTURE_2D, textures[2]);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 0); glVertex3f(-10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 1); glVertex3f(-10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0, 1); glVertex3f(10.0f, 10.0f, 10.0f);
 
-	glEnd();
+	for (int i = 0; i < 6; i++){
+		glBindTexture(GL_TEXTURE_2D, textures[i]);
+		glDrawArrays(GL_QUADS, i*4, 4);
+	}
 
-	// right
-	glBindTexture(GL_TEXTURE_2D, textures[3]);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(10.0f, -10.0f, -10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0, 1); glVertex3f(10.0f, 10.0f, -10.0f);
-	glEnd();
-
-	// top
-	glBindTexture(GL_TEXTURE_2D, textures[4]);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, 10.0f, -10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, 10.0f, -10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, 10.0f, 10.0f);
-	glEnd();
-
-	// bottom
-	glBindTexture(GL_TEXTURE_2D, textures[5]);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex3f(-10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 0); glVertex3f(10.0f, -10.0f, 10.0f);
-	glTexCoord2f(1, 1); glVertex3f(10.0f, -10.0f, -10.0f);
-	glTexCoord2f(0, 1); glVertex3f(-10.0f, -10.0f, -10.0f);
-	glEnd();
-	
 	glPopAttrib();
 	glPopMatrix();
 }

@@ -5,6 +5,9 @@ public:
 	const char *files[6];
 	unsigned int  images[6];
 	unsigned int  textures[6];
+	unsigned int vertex, tex;
+	float *vertexBuffer;
+	float *textureBuffer;
 
 	Skybox(const char *front, const char *left, const  char *back, const char *right, const char *top, const  char *bottom){
 		files[0] = front;
@@ -18,5 +21,6 @@ public:
 	virtual void init_textures();
 	virtual void create_clamp_texture(const char *filepath, int i);
 	virtual void draw();
+	virtual void generateSkyboxVBO();
 };
 
