@@ -570,6 +570,8 @@ static void reload_engine() {
 
 	create_lights();
 	generate_vbos();
+	if (engine_skybox)
+		engine_skybox->init_textures();
 
 	glutPostRedisplay();
 }
