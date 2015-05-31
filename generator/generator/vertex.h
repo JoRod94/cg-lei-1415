@@ -15,6 +15,7 @@ public:
 
 	bool operator== (const vertex& v) const;
 	bool operator< (const vertex& v) const;
+
 	void put_tc(float tcx, float tcy);
 	void rotate(float angle);
 };

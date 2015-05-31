@@ -14,13 +14,11 @@
 
 
 unsigned int lastInd = 0;
-unsigned int boundSphereRadius = 0;
 vector<vertex> verts;				//model template
-
 map<vertex, unsigned int> vMap;		//vertex-index dictionary
-
 vector<vertex>	vFinal;				//final vertex w/ tCoords
-vector<unsigned int> indices;		//model point indices
+vector<unsigned int> indices;		//model vertex indices
+unsigned int boundSphereRadius = 0;	//model bounding sphere radius
 
 
 void create_file(const char* filename){
