@@ -3,10 +3,8 @@
 #include <glew.h>
 #include <GL/glut.h>
 #include <IL/il.h>
-#include <iostream>
+#include <stdlib.h>
 
-
-using namespace std;
 
 
 void Skybox::init_textures()
@@ -45,11 +43,10 @@ void Skybox::create_clamp_texture(const char *filepath, int i){
 	glGenTextures(1, &textures[i]);
 	glBindTexture(GL_TEXTURE_2D, textures[i]);
 	glTexParameteri(GL_TEXTURE_2D,
-		GL_TEXTURE_WRAP_S,
-		GL_CLAMP);
+		GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,
 		GL_TEXTURE_WRAP_T,
-		GL_CLAMP);
+		GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,
 		GL_TEXTURE_MAG_FILTER,
 		GL_LINEAR);
@@ -316,6 +313,8 @@ void Skybox::draw(){
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
 		glDrawArrays(GL_TRIANGLES, i*6, 6);
 	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopAttrib();
 	glPopMatrix();

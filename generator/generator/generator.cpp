@@ -449,8 +449,6 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 	float incrtSL = 1 / slices;
 	float incrtST = 1 / stacks;
 	float startingW = -wid / 2, w = startingW;
-	float tcy, tcyp;
-	float tl = 0, th = 0, tw = 0;
 	int norm = -1;
 	int j;
 
@@ -490,7 +488,6 @@ void pointExtender(float len, float wid, float hei, int stacks, int slices){
 
 
 void create_plane(float length, float width, int slices, int stacks){
-	getOuterPoints(length, 0.01f, width, stacks, slices);
 	completeFace(length, width, 0.01f, slices, stacks);
 
 	vec3 aux(length/2, width/2, 0);

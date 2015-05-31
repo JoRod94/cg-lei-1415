@@ -1,4 +1,5 @@
 <cena>
+
 	<luzes>
 		<luz tipo="POINT" posX="0" posY="0" posZ="0" />
 	</luzes>
@@ -6,7 +7,7 @@
 	<grupo>
 		<escala X="22" Y="22" Z="22"/>
 		<modelos>
-			<modelo ficheiro="sphereTex.3d" textura="texture_sun.jpg"/>
+			<modelo ficheiro="sphereTex.3d" textura="texture_sun.jpg" diffR="1" diffG="1" diffB="1" tipo="EM" />
 		</modelos>
 	</grupo>
 	<!-- MERCURIO -->
@@ -16,7 +17,6 @@
 			<translacao X="30"/>
 			<rotacao tempo="5" eixoY="1" />
 			<escala X="0.3" Y="0.3" Z="0.3"/>
-			<cor R="102" G="102" B="102"/>
 			<modelos>
 				<modelo ficheiro="sphereTex.3d" textura="texture_mercury.jpg"/>
 			</modelos>
@@ -28,7 +28,6 @@
 		<grupo>
 			<translacao X="33"/>
 			<rotacao tempo="5" eixoY="1" />
-			<cor R="255" G="250" B="205"/>
 			<modelos>
 				<modelo ficheiro="sphereTex.3d" textura="texture_venus_atmosphere.jpg"/>
 			</modelos>
@@ -40,7 +39,6 @@
 		<grupo>
 			<translacao X="37"/>
 			<rotacao tempo="5" eixoY="1" />
-			<cor B="205"/>
 			<modelos>
 				<modelo ficheiro="sphereTex.3d" textura="texture_earth_clouds.jpg"/>
 			</modelos>
@@ -50,7 +48,6 @@
 				<grupo>
 					<translacao X="1.5"/>
 					<escala X="0.2" Y="0.2" Z="0.2"/>
-					<cor R="125" G="125" B="125"/>
 					<modelos>
 						<modelo ficheiro="sphereTex.3d" textura="texture_moon.jpg"/>
 					</modelos>
@@ -65,7 +62,6 @@
 			<translacao X="40"/>
 			<rotacao tempo="5" eixoY="1" />
 			<escala X="0.5" Y="0.5" Z="0.5"/>
-			<cor R="255" G="69"/>
 			<modelos>
 				<modelo ficheiro="sphereTex.3d" textura="texture_mars.jpg"/>
 			</modelos>
@@ -78,7 +74,6 @@
 			<translacao X="62"/>
 			<rotacao tempo="5" eixoY="1" />
 			<escala X="5.5" Y="5.5" Z="5.5"/>
-			<cor R="160" G="102" B="60"/>
 			<modelos>
 				<modelo ficheiro="sphereTex.3d" textura="texture_jupiter.jpg"/>
 			</modelos>
@@ -94,15 +89,13 @@
 			<grupo>
 			    <rotacao tempo="5" eixoY="1"/>
 				<escala X="5.3" Y="5.3" Z="5.3"/>
-				<cor R="222" G="184" B="135"/>
 				<modelos>
 					<modelo ficheiro="sphereTex.3d" textura="texture_saturn.jpg"/>
 				</modelos>
 				<grupo>
 					<escala X="1.4" Y="1.4" Z="1.4" />
-					<cor R="162" G="124" B="85"/>
 					<modelos>
-						<modelo ficheiro="saturnRingInd.3d" />
+						<modelo ficheiro="satRing.3d" />
 					</modelos>
 				</grupo>
 			</grupo>
@@ -118,15 +111,13 @@
 			<grupo>
 			    <rotacao tempo="5" eixoY="1"/>
 				<escala X="4.3" Y="4.3" Z="4.3"/>
-				<cor R="70" G="130" B="180"/>
 				<modelos>
 					<modelo ficheiro="sphereTex.3d" textura="texture_uranus.jpg"/>
 				</modelos>
 				<grupo>
 					<escala X="1.3" Y="1.3" Z="1.3" />
-					<cor R="190" G="190" B="190"/>
 					<modelos>
-						<modelo ficheiro="uranusRingInd.3d" />
+						<modelo ficheiro="urRing.3d" />
 					</modelos>
 				</grupo>
 			</grupo>
@@ -140,7 +131,6 @@
 			<translacao X="140"/>
 			<rotacao tempo="5" eixoY="1" />
 			<escala X="5" Y="5" Z="5"/>
-			<cor R="65" G="105" B="225"/>
 			<modelos>
 				<modelo ficheiro="sphereTex.3d" textura="texture_neptune.jpg"/>
 			</modelos>
@@ -158,9 +148,8 @@
 	        <ponto X="123.9" Y="61.95" Z="82.6"/>
 	    </translacao>
 	    <rotacao angulo="-90" eixoY="1"/>
-		<cor R="255" G="255" B="255"/>
 		<modelos>
-			<modelo ficheiro="ibezier.3d" />
+			<modelo ficheiro="teapot.3d" />
 		</modelos>
 	</grupo>
 </cena>
