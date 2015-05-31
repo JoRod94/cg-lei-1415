@@ -11,23 +11,27 @@ using namespace std;
 
 void Skybox::init_textures()
 {
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	vertexBuffer = (float *)malloc(sizeof(float) * 4 * 6 * 3);
-	textureBuffer = (float *)malloc(sizeof(float) * 4 * 6 * 2);
+	vertexBuffer = (float *)malloc(sizeof(float) * 6 * 6 * 3);
+	textureBuffer = (float *)malloc(sizeof(float) * 6 * 6 * 2);
+
+	generateSkyboxVBO();
 
 	glGenBuffers(1, &vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * 3, vertexBuffer, GL_STATIC_DRAW);
-
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 6 * 3, vertexBuffer, GL_STATIC_DRAW);
+	
 	glGenBuffers(1, &tex);
 	glBindBuffer(GL_ARRAY_BUFFER, tex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * 2, textureBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 6 * 2, textureBuffer, GL_STATIC_DRAW);
 
 	for (int i = 0; i < 6; i++){
 		create_clamp_texture(files[i], i);
 	}
 
-	generateSkyboxVBO();
+
 }
 
 void Skybox::create_clamp_texture(const char *filepath, int i){
@@ -54,6 +58,7 @@ void Skybox::create_clamp_texture(const char *filepath, int i){
 		GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, texData);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Skybox::generateSkyboxVBO(){
@@ -80,11 +85,23 @@ void Skybox::generateSkyboxVBO(){
 	textureBuffer[t_count++] = 1;
 	textureBuffer[t_count++] = 1;
 
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
 	vertexBuffer[v_count++] = -10.0f;
 	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = -10.0f;
 	textureBuffer[t_count++] = 0;
 	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
 
 
 	// left
@@ -107,12 +124,24 @@ void Skybox::generateSkyboxVBO(){
 	textureBuffer[t_count++] = 1;
 	textureBuffer[t_count++] = 1;
 
-	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
 	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
 	textureBuffer[t_count++] = 0;
 	textureBuffer[t_count++] = 1;
 
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
 
 
 	// back
@@ -135,12 +164,23 @@ void Skybox::generateSkyboxVBO(){
 	textureBuffer[t_count++] = 1;
 	textureBuffer[t_count++] = 1;
 
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
 	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = 10.0f;
 	textureBuffer[t_count++] = 0;
 	textureBuffer[t_count++] = 1;
 
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
 
 	// right
 
@@ -164,11 +204,21 @@ void Skybox::generateSkyboxVBO(){
 
 	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = -10.0f;
 	textureBuffer[t_count++] = 0;
 	textureBuffer[t_count++] = 1;
 
-
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
 
 	// top
 
@@ -190,11 +240,23 @@ void Skybox::generateSkyboxVBO(){
 	textureBuffer[t_count++] = 1;
 	textureBuffer[t_count++] = 1;
 
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
 	vertexBuffer[v_count++] = -10.0f;
 	vertexBuffer[v_count++] = 10.0f;
 	vertexBuffer[v_count++] = 10.0f;
 	textureBuffer[t_count++] = 0;
 	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
 
 
 	// bottom
@@ -217,11 +279,23 @@ void Skybox::generateSkyboxVBO(){
 	textureBuffer[t_count++] = 1;
 	textureBuffer[t_count++] = 1;
 
+	vertexBuffer[v_count++] = 10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	textureBuffer[t_count++] = 1;
+	textureBuffer[t_count++] = 1;
+
 	vertexBuffer[v_count++] = -10.0f;
 	vertexBuffer[v_count++] = -10.0f;
 	vertexBuffer[v_count++] = -10.0f;
 	textureBuffer[t_count++] = 0;
 	textureBuffer[t_count++] = 1;
+
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = -10.0f;
+	vertexBuffer[v_count++] = 10.0f;
+	textureBuffer[t_count++] = 0;
+	textureBuffer[t_count++] = 0;
 }
  
 void Skybox::draw(){
@@ -236,12 +310,11 @@ void Skybox::draw(){
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, tex);
-	glVertexPointer(2, GL_FLOAT, 0, 0);
-
+	glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
 	for (int i = 0; i < 6; i++){
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glDrawArrays(GL_QUADS, i*4, 4);
+		glDrawArrays(GL_TRIANGLES, i*6, 6);
 	}
 
 	glPopAttrib();
